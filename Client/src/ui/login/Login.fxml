@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="190.0" prefWidth="435.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.login.LoginView">
+	<children>
+		<HBox layoutX="13.0" layoutY="14.0" prefHeight="170.0" prefWidth="392.0" spacing="20.0">
+			<children>
+				<VBox prefHeight="109.0" prefWidth="78.0" spacing="34.0">
+					<children>
+						<Label text="Name:" />
+						<Label text="Passwort:" />
+						<Button fx:id="signUpBtn" mnemonicParsing="false" onAction="#signUpBtnClicked" prefHeight="39.0" prefWidth="102.0" style="-fx-border-color: red;" text="Sign up">
+							<font>
+								<Font size="14.0" />
+							</font>
+						</Button>
+					</children>
+					<padding>
+						<Insets top="9.0" />
+					</padding>
+				</VBox>
+				<VBox alignment="TOP_RIGHT" prefHeight="170.0" prefWidth="282.0" spacing="20.0">
+					<children>
+						<TextField fx:id="nameTxtField" prefHeight="10.0" prefWidth="282.0" />
+						<PasswordField fx:id="pwField" onKeyPressed="#keyPressed" prefHeight="10.0" prefWidth="282.0">
+							<padding>
+								<Insets top="20.0" />
+							</padding>
+						</PasswordField>
+						<Button fx:id="loginBtn" mnemonicParsing="false" onAction="#loginBtnClicked" prefHeight="45.0" prefWidth="85.0" text="Login" />
+					</children>
+				</VBox>
+			</children>
+		</HBox>
+	</children>
+</Pane>

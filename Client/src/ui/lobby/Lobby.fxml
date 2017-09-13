@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+	minWidth="-Infinity" prefHeight="734.0" prefWidth="1350.0"
+	xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="ui.lobby.LobbyView">
+	<children>
+		<TableView fx:id="contentTable" layoutX="9.0" layoutY="75.0"
+			prefHeight="433.0" prefWidth="1200.0">
+			<columns>
+				<TableColumn fx:id="iDColumn" prefWidth="130.0" text="ID" />
+				<TableColumn fx:id="nameColumn" prefWidth="249.0" text="Name" />
+				<TableColumn fx:id="buyInColumn" minWidth="0.0"
+					prefWidth="202.0" text="Buy - In" />
+				<TableColumn fx:id="startChipsColumn" minWidth="0.0"
+					prefWidth="238.0" text="Startchips" />
+				<TableColumn fx:id="paidColumn" minWidth="0.0"
+					prefWidth="151.0" text="Bezahlte Plätze" />
+				<TableColumn fx:id="playersMaxColumn" minWidth="0.0"
+					prefWidth="115.0" text="Spieler max" />
+				<TableColumn fx:id="signedUpColumn" minWidth="0.0"
+					prefWidth="112.0" text="angemeldet" />
+			</columns>
+		</TableView>
+		<Button fx:id="enrollBtn" layoutX="1225.0" layoutY="80.0"
+			mnemonicParsing="false" onAction="#enroll" prefHeight="426.0"
+			prefWidth="119.0" style="-fx-border-color: blue;" text="Anmelden!" />
+		<VBox layoutX="851.0" prefHeight="60.0" prefWidth="358.0"
+			spacing="15.0" style="-fx-border-color: blue;">
+			<children>
+				<HBox prefHeight="27.0" prefWidth="356.0" spacing="20.0">
+					<children>
+						<Label prefHeight="27.0" prefWidth="121.0" text="Eingeloggt als:" />
+						<Label fx:id="playerNameLbl" alignment="CENTER" prefHeight="27.0"
+							prefWidth="220.0" />
+					</children>
+				</HBox>
+				<HBox prefHeight="41.0" prefWidth="203.0" spacing="20.0">
+					<children>
+						<Label prefHeight="27.0" prefWidth="161.0" text="       Guthaben: " />
+						<Label fx:id="bankrollLbl" alignment="CENTER" prefHeight="27.0"
+							prefWidth="191.0" />
+					</children>
+				</HBox>
+			</children>
+		</VBox>
+		<VBox fx:id="createVBox" layoutX="5.0" layoutY="641.0"
+			prefHeight="89.0" prefWidth="1344.0" spacing="10.0" visible="false">
+			<children>
+				<HBox fx:id="createHBox" prefHeight="41.0" prefWidth="1336.0"
+					spacing="10.0">
+					<children>
+						<Label layoutX="10.0" layoutY="10.0" text="Name: " />
+						<TextField fx:id="nameTxtField" layoutX="52.0" layoutY="10.0" />
+						<Label layoutX="10.0" layoutY="10.0" text="Buy-In: " />
+						<TextField fx:id="buyInTxtField" layoutX="52.0" layoutY="10.0" />
+						<Label layoutX="276.0" layoutY="10.0" text="Startchips: " />
+						<TextField fx:id="startChipsTxtField" layoutX="318.0"
+							layoutY="10.0" />
+						<Label layoutX="542.0" layoutY="10.0" text="Bezahlte Plätze: " />
+						<TextField fx:id="paidTxtField" layoutX="584.0" layoutY="10.0"
+							prefHeight="39.0" prefWidth="66.0" />
+						<Label layoutX="888.0" layoutY="10.0" text="Spieler max. : " />
+						<TextField fx:id="playersMaxTxtField" layoutX="1017.0"
+							layoutY="10.0" prefHeight="39.0" prefWidth="59.0" />
+					</children>
+				</HBox>
+				<Button fx:id="createBtn" mnemonicParsing="false" onAction="#createBtnClicked"
+					prefHeight="39.0" prefWidth="1319.0" text="Anlegen" />
+			</children>
+		</VBox>
+	</children>
+</Pane>

@@ -3,9 +3,10 @@
 
 2.) Admin drückt auf Eval und die Spielernamen werden zu den jeweiligen Händen.
 
-3.) Spieler meldet sich an und landet in der lobby wo er alle anderen angemeldeten Spieler und die verfügbaren Spiele sehen kann.
+3.) Spieler meldet sich an und landet in der lobby wo er die verfügbaren Spiele sehen kann.
 
-4.)
+4.)* Wenn die maximale Anzahl an Spielern eines Spiels erreicht ist, werden die angemeldeten Spieler zum
+	entsprechenden Spiel weitergeleitet und das Spiel beginnt.
 
 5.)
 

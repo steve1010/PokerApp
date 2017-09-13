@@ -1,0 +1,4 @@
+INDEX VERSION 1.129+C:\Users\-steve-\workspace\projects\PokerApp\.metadata\.plugins\org.eclipse.jdt.core
+137624701.index
+3201793814.index
+2501520862.index

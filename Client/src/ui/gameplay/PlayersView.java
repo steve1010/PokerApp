@@ -235,7 +235,7 @@ public class PlayersView {
 		List<PlayerHand> hands = new ArrayList<>();
 		for (int i = 0; i < 10; i++) {
 			hands.add(getCards(i));
-			}
+		}
 		return hands;
 	}
 
@@ -415,6 +415,43 @@ public class PlayersView {
 				imageToCard((LocatedImage) boardCard2Imv.getImage()),
 				imageToCard((LocatedImage) boardCard3Imv.getImage()),
 				imageToCard((LocatedImage) boardCard4Imv.getImage()));
+	}
+
+	public void disablePlayerSlot(int slot) {
+		switch (slot) {
+		case 0:
+			vBox0.setVisible(false);
+			break;
+		case 1:
+			vBox1.setVisible(false);
+			break;
+		case 2:
+			vBox2.setVisible(false);
+			break;
+		case 3:
+			vBox3.setVisible(false);
+			break;
+		case 4:
+			vBox4.setVisible(false);
+			break;
+		case 5:
+			vBox5.setVisible(false);
+			break;
+		case 6:
+			vBox6.setVisible(false);
+			break;
+		case 7:
+			vBox7.setVisible(false);
+			break;
+		case 8:
+			vBox8.setVisible(false);
+			break;
+		case 9:
+			vBox9.setVisible(false);
+			break;
+		default:
+			break;
+		}
 	}
 
 }

@@ -187,4 +187,8 @@ public class LobbyModel extends Model {
 	public String getPw() {
 		return this.playerPw;
 	}
+
+	public ObservableList<IDGame> getGamesTableData() {
+		return gamesTableData;
+	}
 }

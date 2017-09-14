@@ -8,6 +8,7 @@ import entities.SafePlayer;
 import entities.gameplay.Board;
 import entities.gameplay.Card;
 import entities.gameplay.PlayerHand;
+import entities.lobby.IDGame;
 import javafx.stage.Stage;
 import ui.Controller;
 import ui.lobby.LobbyView;
@@ -21,8 +22,8 @@ public final class GameplayController implements Controller {
 	private final LobbyView lobbyView;
 
 	public GameplayController(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw, Stage primaryStage,
-			LoginView loginView, LobbyView lobbyView) {
-		this.model = new GameplayModel(serverAdress, loggedInPlayer, pw);
+			LoginView loginView, LobbyView lobbyView, IDGame idGame) {
+		this.model = new GameplayModel(serverAdress, loggedInPlayer, pw, idGame);
 		this.primaryStage = primaryStage;
 		this.loginView = loginView;
 		this.lobbyView = lobbyView;

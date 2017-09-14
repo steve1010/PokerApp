@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import entities.SafePlayer;
 import entities.gameplay.Card;
+import entities.lobby.IDGame;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -121,7 +122,70 @@ public class GameplayView {
 	}
 
 	public void setData(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw, Stage primaryStage,
-			LoginView loginView, LobbyView lobbyView) {
-		this.controller = new GameplayController(serverAdress, loggedInPlayer, pw, primaryStage, loginView, lobbyView);
+			LoginView loginView, LobbyView lobbyView, IDGame idGame) {
+		this.controller = new GameplayController(serverAdress, loggedInPlayer, pw, primaryStage, loginView, lobbyView,
+				idGame);
+		switch (idGame.getMaxPlayers()) {
+		case 1:
+			for (int i = 1; i < 10; i++) {
+				playersPaneController.disablePlayerSlot(i);
+			}
+			break;
+		case 2:
+			playersPaneController.disablePlayerSlot(1);
+			playersPaneController.disablePlayerSlot(2);
+			playersPaneController.disablePlayerSlot(3);
+			playersPaneController.disablePlayerSlot(4);
+			playersPaneController.disablePlayerSlot(6);
+			playersPaneController.disablePlayerSlot(7);
+			playersPaneController.disablePlayerSlot(8);
+			playersPaneController.disablePlayerSlot(9);
+			break;
+		case 3:
+			playersPaneController.disablePlayerSlot(0);
+			playersPaneController.disablePlayerSlot(2);
+			playersPaneController.disablePlayerSlot(3);
+			playersPaneController.disablePlayerSlot(4);
+			playersPaneController.disablePlayerSlot(6);
+			playersPaneController.disablePlayerSlot(7);
+			playersPaneController.disablePlayerSlot(8);
+			break;
+		case 4:
+			playersPaneController.disablePlayerSlot(0);
+			playersPaneController.disablePlayerSlot(2);
+			playersPaneController.disablePlayerSlot(3);
+			playersPaneController.disablePlayerSlot(5);
+			playersPaneController.disablePlayerSlot(7);
+			playersPaneController.disablePlayerSlot(8);
+			break;
+		case 5:
+			playersPaneController.disablePlayerSlot(1);
+			playersPaneController.disablePlayerSlot(3);
+			playersPaneController.disablePlayerSlot(5);
+			playersPaneController.disablePlayerSlot(7);
+			playersPaneController.disablePlayerSlot(9);
+			break;
+		case 6:
+			playersPaneController.disablePlayerSlot(3);
+			playersPaneController.disablePlayerSlot(5);
+			playersPaneController.disablePlayerSlot(7);
+			playersPaneController.disablePlayerSlot(9);
+			break;
+		case 7:
+			playersPaneController.disablePlayerSlot(2);
+			playersPaneController.disablePlayerSlot(7);
+			playersPaneController.disablePlayerSlot(8);
+			break;
+		case 8:
+			playersPaneController.disablePlayerSlot(8);
+			playersPaneController.disablePlayerSlot(9);
+			break;
+		case 9:
+			playersPaneController.disablePlayerSlot(9);
+			break;
+		default:
+			break;
+		}
+
 	}
 }

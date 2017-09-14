@@ -3,6 +3,7 @@ package ui.lobby;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Observable;
+import java.util.stream.Collectors;
 
 import entities.SafePlayer;
 import entities.lobby.IDGame;
@@ -38,13 +39,13 @@ public class LobbyCtrl extends Observable implements Controller {
 	public void update(Observable observable, Object o) {
 		if (o instanceof ClientInterna && (((ClientInterna) o).getType() == 2)) {
 			// trigger for game starting ..
-			openGameplayView();
+			openGameplayView(((ClientInterna) o).getId());
 		}
 		this.setChanged();
 		this.notifyObservers(o);
 	}
 
-	private void openGameplayView() {
+	private void openGameplayView(int i) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("../gameplay/Gameplay.fxml"));
 			Parent p = loader.load();
@@ -54,13 +55,12 @@ public class LobbyCtrl extends Observable implements Controller {
 				runningGameStage.sizeToScene();
 				runningGameStage.setX(200);
 				runningGameStage.setY(1);
-				runningGameStage.setTitle("Game started. Good Luck!");
-				System.out.println("LobbyCtrl.openGameplayView()");
-				System.err.println("Game started. Good Luck!");
+				runningGameStage.setTitle("Good Luck!");
 				runningGameStage.show();
 			});
 			((GameplayView) loader.getController()).setData(model.getServerAdress(), model.getLoggedInPlayer(),
-					model.getPw(), primaryStage, loginView, lobbyView);
+					model.getPw(), primaryStage, loginView, lobbyView, ((LobbyModel) model).getGamesTableData().stream()
+							.filter(game -> game.getId() == i).collect(Collectors.toList()).get(0));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

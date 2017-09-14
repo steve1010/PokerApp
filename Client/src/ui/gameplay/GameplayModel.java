@@ -8,6 +8,7 @@ import entities.SafePlayer;
 import entities.gameplay.Board;
 import entities.gameplay.Card;
 import entities.gameplay.PlayerHand;
+import entities.lobby.IDGame;
 import entities.query.Evaluation;
 import entities.query.GameQuery;
 import entities.query.GameQuery.Option;
@@ -17,11 +18,13 @@ public class GameplayModel extends Model {
 
 	private final SafePlayer loggedInPlayer;
 	private final String pw;
+	private final IDGame game;
 
-	public GameplayModel(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw) {
+	public GameplayModel(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw, IDGame game) {
 		super(serverAdress);
 		this.loggedInPlayer = loggedInPlayer;
 		this.pw = pw;
+		this.game = game;
 	}
 
 	public List<Card> deal() {
@@ -58,5 +61,9 @@ public class GameplayModel extends Model {
 	@Override
 	public String getPw() {
 		return this.pw;
+	}
+
+	public IDGame getGame() {
+		return game;
 	}
 }

@@ -2,7 +2,7 @@ package backend.handler;
 
 import java.net.InetSocketAddress;
 
-import entities.Player;
+import entities.SafePlayer;
 import entities.lobby.SerializableGame;
 import entities.query.Evaluation;
 import entities.query.GameQuery;
@@ -41,7 +41,7 @@ public final class GameClientHandler extends ClientHandler {
 				break;
 			case NEW_GAME:
 				SerializableGame game = gameContainer.addGame(received.getGame());
-				for (Player player : gameContainer.getPlayerStore().getAll()) {
+				for (SafePlayer player : gameContainer.getPlayerStore().getAll()) {
 					answer(new ServerMsg(MsgType.NEW_GAME_OFFERED, game.getId(), game), player.getAsyncAdress());
 				}
 				answer(game);

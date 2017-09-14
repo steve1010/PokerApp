@@ -7,6 +7,7 @@ import java.io.Serializable;
  * <li>1: true
  * <li>2: game_full
  * <li>3: already inGame
+ * <li>4: last player joined.
  *
  */
 public class One23 implements Serializable {

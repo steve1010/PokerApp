@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
-import entities.Player;
+import entities.SafePlayer;
 import entities.query.PlayersQuery;
 import entities.query.Query;
 import entities.query.server.One23;
@@ -40,17 +40,15 @@ public class PlayersClientHandler extends ClientHandler {
 			try {
 				List<String> lines = Files.readAllLines(Paths.get("users/users.txt"));
 				for (String line : lines) {
-
 					String registedUser = line.split(" -> ")[0];
 					if (registedUser.equals(received.getPlayerName())) {
 						answer(playerStore.getPlayerByName(received.getPlayerName()));
 						return;
 					}
 				}
-				answer(new Player(-1, null, null));
+				answer(new SafePlayer(-1, null, null, null));
 			} catch (IOException e) {
 				e.printStackTrace();
-
 			}
 			break;
 
@@ -62,16 +60,18 @@ public class PlayersClientHandler extends ClientHandler {
 			try {
 				List<String> lines = Files.readAllLines(Paths.get("users/users.txt"));
 				for (String line : lines) {
-
 					String[] usernamePw = line.split(" -> ");
 					String username = usernamePw[0];
 					String pw = usernamePw[1];
 
 					if (username.equals(received.getPlayerName()) && pw.equals(received.getPw())) {
-						answer(playerStore.addPlayer(username, getClientAdress()));
+						SafePlayer sp = playerStore.addPlayer(username, pw, getClientAdress());
+						answer(sp);
+						triggerServerMsg(new ServerMsg(MsgType.PLAYER_LOGIN, sp));
+						break;
 					}
 				}
-				answer(new Player(-1, null, null));
+				answer(new SafePlayer(-1, null, null, null));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -82,7 +82,9 @@ public class PlayersClientHandler extends ClientHandler {
 					StandardOpenOption.APPEND)) {
 				writer.newLine();
 				writer.write(received.getPlayerName() + " -> " + received.getPw());
-				answer(playerStore.addPlayer(received.getPlayerName(), getClientAdress()));
+				SafePlayer sp = playerStore.addPlayer(received.getPlayerName(), received.getPw(), getClientAdress());
+				answer(sp);
+				triggerServerMsg(new ServerMsg(MsgType.PLAYER_LOGIN, sp));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -92,13 +94,14 @@ public class PlayersClientHandler extends ClientHandler {
 			try {
 				List<String> lines = Files.readAllLines(Paths.get("users/users.txt"));
 				for (String line : lines) {
-
 					String[] usernamePw = line.split(" -> ");
 					String username = usernamePw[0];
 					String pw = usernamePw[1];
 
 					if (username.equals(received.getPlayerName()) && pw.equals(received.getPw())) {
 						playerStore.setLoggedOut(username);
+						triggerServerMsg(new ServerMsg(MsgType.PLAYER_LOGOUT,
+								gameContainer.getPlayerStore().getPlayerByName(username)));
 					}
 				}
 			} catch (IOException e) {
@@ -110,23 +113,29 @@ public class PlayersClientHandler extends ClientHandler {
 			One23 result = gameContainer.addPlayerToGame(received.getPlayer(), received.getGameId());
 			if (result.getI() == 1) {
 				answer(result);
-
-				// inform all:
-				List<Player> players = gameContainer.getPlayerStore().getAll();
-
-				for (Player player : players) {
-					// Convention: clients are listening on sending port+1 on a
-					// extra thread for server infos.
-					int val = 1 + player.getAdress().getPort();
-					answer(new ServerMsg(MsgType.NEW_PLAYER_ENROLLED, received.getGameId()),
-							new InetSocketAddress(player.getAdress().getAddress(), val));
-				}
-			} else {
-				answer(result);
+				triggerServerMsg(new ServerMsg(MsgType.NEW_PLAYER_ENROLLED, received.getGameId()));
+				break;
 			}
+			if (result.getI() == 4) {
+				answer(result);
+				triggerServerMsg(new ServerMsg(MsgType.LAST_PLAYER_ENROLLED, received.getGameId()));
+				break;
+			}
+			answer(result);
 			break;
 		default:
 			throw new IllegalStateException("-----------Illegal state!!-------------");
+		}
+	}
+
+	private void triggerServerMsg(ServerMsg serverMsg) {
+		// inform all players
+		List<SafePlayer> players = gameContainer.getPlayerStore().getAll();
+		for (SafePlayer player : players) {
+			// Convention: clients are listening on sending port+1 on a
+			// extra thread for server infos.
+			int asyncClientPort = 1 + player.getAdress().getPort();
+			answer(serverMsg, new InetSocketAddress(player.getAdress().getAddress(), asyncClientPort));
 		}
 	}
 }

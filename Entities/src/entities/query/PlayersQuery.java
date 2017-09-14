@@ -1,6 +1,7 @@
 package entities.query;
 
 import entities.Player;
+import entities.SafePlayer;
 
 public final class PlayersQuery extends Query {
 
@@ -41,11 +42,8 @@ public final class PlayersQuery extends Query {
 		this.pw = pw;
 	}
 
-	/**
-	 * TODO: maybe remove option parameter here..
-	 */
 	public PlayersQuery(Option option, String name, String pw) {
-		this.option = Option.REGISTER;
+		this.option = option;
 		this.playerName = name;
 		this.pw = pw;
 	}
@@ -56,6 +54,13 @@ public final class PlayersQuery extends Query {
 		this.player = player;
 		this.playerName = player.getName();
 		this.pw = null;
+	}
+
+	public PlayersQuery(int id, SafePlayer player) {
+		this.option = Option.ENROLL;
+		this.player = new Player(id, player.getName(), "", player.getAdress(), player.getGamesList());
+		this.pw = this.player.getPw();
+		this.playerName = player.getName();
 	}
 
 	public Option getOption() {
@@ -81,5 +86,4 @@ public final class PlayersQuery extends Query {
 	public Player getPlayer() {
 		return this.player;
 	}
-
 }

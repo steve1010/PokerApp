@@ -10,6 +10,7 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.util.Observable;
 
+import entities.SafePlayer;
 import entities.query.server.ServerMsg;
 
 public abstract class Model extends Observable {
@@ -116,4 +117,9 @@ public abstract class Model extends Observable {
 		this.setChanged();
 		this.notifyObservers(o);
 	}
+
+	public abstract SafePlayer getLoggedInPlayer();
+
+	public abstract String getPw();
+
 }

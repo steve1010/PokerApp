@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Observable;
 
-import entities.Player;
+import entities.SafePlayer;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import ui.Controller;
-import ui.gameplay.GameplayView;
 import ui.lobby.LobbyView;
 
 public class LoginController implements Controller {
@@ -20,11 +19,10 @@ public class LoginController implements Controller {
 	private Parent loginNode;
 	private Parent registerNode;
 	private boolean isResiterViewLoaded = false;
-	private Player loggedInPlayer;
+	private SafePlayer loggedInPlayer;
 
 	public LoginController(LoginView loginView) {
 		this.loginView = loginView;
-
 	}
 
 	@Override
@@ -32,16 +30,16 @@ public class LoginController implements Controller {
 	}
 
 	public void loginRequest(final String name, final String pw) {
-		Player player = model.checkLoginData(name, pw);
+		SafePlayer player = model.checkLoginData(name, pw);
 		if (player.isLoggedIn()) {
 			this.loggedInPlayer = player;
-			openLobbyView(player.getName());
+			openLobbyView(pw);
 		} else {
 			loginView.wrongLoginDataAlert();
 		}
 	}
 
-	protected void openLobbyView(String name) {
+	protected void openLobbyView(String pw) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("../lobby/Lobby.fxml"));
 			Parent p = loader.load();
@@ -50,7 +48,8 @@ public class LoginController implements Controller {
 			primaryStage.sizeToScene();
 			primaryStage.setTitle("Poker Lobby - Please choose your game!");
 			primaryStage.show();
-			((LobbyView) loader.getController()).createModel(model.getServerAdress(), loggedInPlayer);
+			((LobbyView) loader.getController()).setData(model.getServerAdress(), loggedInPlayer, pw, primaryStage,
+					loginView);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -77,13 +76,13 @@ public class LoginController implements Controller {
 		}
 	}
 
-	public Player userRegistered(String userName) {
+	public SafePlayer userRegistered(String userName) {
 		return model.isUserRegistered(userName);
 	}
 
 	public String signUpRequest(String userName, String pw, String pwConfirm) {
 
-		Player player = userRegistered(userName);
+		SafePlayer player = userRegistered(userName);
 		if (!(player.getId() == -1)) {
 			return "The choosen username is not available. Please try another one.";
 		}
@@ -95,23 +94,6 @@ public class LoginController implements Controller {
 			return "Congratulations! You were successfully registered!";
 		} else {
 			return "The entered password is not the same. Please try again.";
-		}
-	}
-
-	public void openGameplayView(String name) {
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("../gameplay/Gameplay.fxml"));
-			Parent p = loader.load();
-			primaryStage.close();
-			primaryStage.getScene().setRoot(p);
-			primaryStage.sizeToScene();
-			primaryStage.setX(200);
-			primaryStage.setY(1);
-			primaryStage.setTitle("Poker Lobby - Logged in as " + name);
-			((GameplayView) loader.getController()).setData(primaryStage, this, model.getServerAdress(), name);
-			primaryStage.show();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -153,5 +135,4 @@ public class LoginController implements Controller {
 		model = new LoginModel(serverAdress);
 		model.addObserver(this);
 	}
-
 }

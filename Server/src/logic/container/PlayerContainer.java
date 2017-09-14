@@ -5,62 +5,77 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import entities.Player;
+import entities.SafePlayer;
 
 /**
  * ThreadSafeTicketStore
  */
 public final class PlayerContainer {
 
-	private final List<Player> playersList = new ArrayList<>();
+	private final List<SafePlayer> playersList = new ArrayList<>();
 	private AtomicInteger currentId = new AtomicInteger(-1);
 	private final HashMap<String, Player> playersMap = new HashMap<>();
 	private final HashMap<Integer, Player> playersIdMap = new HashMap<>();
 
-	private final Object playersListLock = new Object();
-	private final Object playersMapLock = new Object();
+	private final Object playersLock = new Object();
+	private Object idLock = new Object();
 
-	public int getNewId() {
-		return currentId.incrementAndGet();
-	}
-
-	public List<Player> getAll() {
-		synchronized (playersListLock) {
-			return this.playersList;
+	public List<SafePlayer> getAll() {
+		synchronized (playersLock) {
+			return this.playersList.stream().filter(e -> e.isLoggedIn()).collect(Collectors.toList());
 		}
 	}
 
-	public Player addPlayer(String playerName, InetSocketAddress adress) {
-		synchronized (playersListLock) {
-			Player newPlayer = new Player(getNewId(), playerName, adress);
+	public SafePlayer addPlayer(String playerName, String pw, InetSocketAddress adress) {
+		synchronized (playersLock) {
+			Player newPlayer = new Player(getNewId(), playerName, pw, adress, new ArrayList<>());
 			newPlayer.setLoggedIn(true);
 			this.playersList.add(newPlayer);
 			this.playersMap.put(playerName, newPlayer);
 			this.playersIdMap.put(newPlayer.getId(), newPlayer);
-			return newPlayer;
+			return Player.toSafePlayer(newPlayer);
 		}
 	}
 
 	public void setLoggedIn(String username) {
-		synchronized (playersMapLock) {
+		synchronized (playersLock) {
+			int id = playersMap.get(username).getId();
 			playersMap.get(username).setLoggedIn(true);
+			playersIdMap.get(new Integer(id)).setLoggedIn(true);
+			playersList.get(id).setLoggedIn(true);
 		}
 	}
 
 	public void setLoggedOut(String username) {
-		synchronized (playersMapLock) {
+		synchronized (playersLock) {
+			int id = playersMap.get(username).getId();
 			playersMap.get(username).setLoggedIn(false);
+			playersIdMap.get(new Integer(id)).setLoggedIn(false);
+			playersList.get(id).setLoggedIn(false);
 		}
 	}
 
-	public Player getPlayerByName(String playerName) {
-
-		for (Player player : playersList) {
-			if (player.getName().equals(playerName)) {
-				return player;
-			}
+	public SafePlayer getPlayerByName(String playerName) {
+		synchronized (playersLock) {
+			return Player.toSafePlayer(playersMap.get(playerName));
 		}
-		return new Player(-1, null, null);
+	}
+
+	private int getNewId() {
+		synchronized (idLock) {
+			return currentId.incrementAndGet();
+		}
+	}
+
+	public void commitTransaction(String name, Double buyIn) {
+		synchronized (playersLock) {
+			int id = getPlayerByName(name).getId();
+			playersMap.get(name).commitTransaction(buyIn);
+			playersIdMap.get(id).commitTransaction(buyIn);
+			playersList.get(id).commitTransaction(buyIn);
+		}
 	}
 }

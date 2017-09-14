@@ -4,17 +4,28 @@ import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Observable;
 
+import entities.SafePlayer;
 import entities.gameplay.Board;
 import entities.gameplay.Card;
 import entities.gameplay.PlayerHand;
+import javafx.stage.Stage;
 import ui.Controller;
+import ui.lobby.LobbyView;
+import ui.login.LoginView;
 
 public final class GameplayController implements Controller {
 
 	private final GameplayModel model;
+	private final Stage primaryStage;
+	private final LoginView loginView;
+	private final LobbyView lobbyView;
 
-	public GameplayController(InetSocketAddress serverAdress) {
-		this.model = new GameplayModel(serverAdress);
+	public GameplayController(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw, Stage primaryStage,
+			LoginView loginView, LobbyView lobbyView) {
+		this.model = new GameplayModel(serverAdress, loggedInPlayer, pw);
+		this.primaryStage = primaryStage;
+		this.loginView = loginView;
+		this.lobbyView = lobbyView;
 	}
 
 	@Override
@@ -40,5 +51,17 @@ public final class GameplayController implements Controller {
 
 	public String[] passCardsForEvaluation(Board board, List<PlayerHand> hands) {
 		return model.evaluate(board, hands);
+	}
+
+	public Stage getPrimaryStage() {
+		return primaryStage;
+	}
+
+	public LoginView getLoginView() {
+		return loginView;
+	}
+
+	public LobbyView getLobbyView() {
+		return lobbyView;
 	}
 }

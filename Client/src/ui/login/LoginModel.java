@@ -3,6 +3,7 @@ package ui.login;
 import java.net.InetSocketAddress;
 
 import entities.Player;
+import entities.SafePlayer;
 import entities.query.PlayersQuery;
 import entities.query.PlayersQuery.Option;
 import ui.Model;
@@ -15,27 +16,33 @@ public class LoginModel extends Model {
 		super(serverAdress);
 	}
 
-	public Player checkLoginData(String nameProposal, String pwProposal) {
+	@Override
+	public SafePlayer getLoggedInPlayer() {
+		return Player.toSafePlayer(this.player);
+	}
+
+	public SafePlayer checkLoginData(String nameProposal, String pwProposal) {
 		sendObject(new PlayersQuery(nameProposal, pwProposal));
-		return (Player) receiveObject();
+		return (SafePlayer) receiveObject();
 
 	}
 
-	public Player isUserRegistered(String newUser) {
+	public SafePlayer isUserRegistered(String newUser) {
 		sendObject(new PlayersQuery(newUser));
-		return (Player) receiveObject();
+		return (SafePlayer) receiveObject();
 	}
 
-	public Player registerUser(String userName, String pw) {
+	public SafePlayer registerUser(String userName, String pw) {
 		sendObject(new PlayersQuery(Option.REGISTER, userName, pw));
-		return (Player) receiveObject();
+		return (SafePlayer) receiveObject();
 	}
-
-	// public void setLoggedIn(String name) {
-	// sendObject(new PlayersQuery(Option.LOGIN, name));
-	// }
 
 	public void setLoggedOut() {
 		sendObject(new PlayersQuery(Option.LOGOUT, player.getName()));
+	}
+
+	@Override
+	public String getPw() {
+		return player.getPw();
 	}
 }

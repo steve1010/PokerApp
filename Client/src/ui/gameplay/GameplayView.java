@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Optional;
 
+import entities.SafePlayer;
 import entities.gameplay.Card;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,7 +16,9 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import ui.lobby.LobbyView;
 import ui.login.LoginController;
+import ui.login.LoginView;
 
 public class GameplayView {
 
@@ -111,17 +114,14 @@ public class GameplayView {
 		Optional<ButtonType> result = confirm.showAndWait();
 		if (result.isPresent() && result.get().equals(ButtonType.OK)) {
 			loginController.logout();
+			// TODO: use this pattern in all mvc's.
 			loginController.repaint("login");
 		}
 		event.consume();
 	}
 
-	public void setData(Stage primaryStage, LoginController loginController, InetSocketAddress serverAdress,
-			String loggedInPlayer) {
-		// this.primaryStage = primaryStage;
-		this.loginController = loginController;
-		this.controller = new GameplayController(serverAdress);
-		// this.loggedInPlayer = loggedInPlayer;
-		playersPaneController.setPlayerName(0, loggedInPlayer);
+	public void setData(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw, Stage primaryStage,
+			LoginView loginView, LobbyView lobbyView) {
+		this.controller = new GameplayController(serverAdress, loggedInPlayer, pw, primaryStage, loginView, lobbyView);
 	}
 }

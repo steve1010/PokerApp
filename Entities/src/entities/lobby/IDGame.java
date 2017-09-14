@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import entities.Player;
+import entities.query.server.One23;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -12,7 +13,11 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class IDGame implements Serializable {
+/**
+ * Game representing the games int gui table (and in
+ * observableLists(=tableData))
+ */
+public final class IDGame implements Serializable {
 
 	private static final long serialVersionUID = 5533851077335308290L;
 	private final int id;
@@ -25,12 +30,21 @@ public class IDGame implements Serializable {
 
 	public IDGame(Game game, int id) {
 		this.id = id;
-		this.name = new SimpleStringProperty(game.getName());
-		this.buyIn = new SimpleDoubleProperty(game.getBuyIn());
-		this.startChips = new SimpleIntegerProperty(game.getStartChips());
-		this.maxPlayers = new SimpleIntegerProperty(game.getMaxPlayers());
-		this.paid = new SimpleIntegerProperty(game.getPaid());
-		this.signedUp = new SimpleIntegerProperty(game.getSignedUp());
+		if (game != null) {
+			this.name = new SimpleStringProperty(game.getName());
+			this.buyIn = new SimpleDoubleProperty(game.getBuyIn());
+			this.startChips = new SimpleIntegerProperty(game.getStartChips());
+			this.maxPlayers = new SimpleIntegerProperty(game.getMaxPlayers());
+			this.paid = new SimpleIntegerProperty(game.getPaid());
+			this.signedUp = new SimpleIntegerProperty(game.getSignedUp());
+		} else {
+			this.name = null;
+			this.buyIn = null;
+			this.startChips = null;
+			this.maxPlayers = null;
+			this.paid = null;
+			this.signedUp = null;
+		}
 	}
 
 	public int getId() {
@@ -57,14 +71,19 @@ public class IDGame implements Serializable {
 		return paid.get();
 	}
 
-	public boolean addPlayer(Player player) {
+	public One23 addPlayer(Player player) {
 		if (playersList.size() == maxPlayers.get()) {
-			return false;
+			return new One23(2);
+		} else if (playersList.size() == maxPlayers.get() - 1) {
+			this.playersList.add(player);
+			int newVal = signedUp.get() + 1;
+			this.signedUp = new SimpleIntegerProperty(newVal);
+			return new One23(4);
 		} else {
 			this.playersList.add(player);
 			int newVal = signedUp.get() + 1;
 			this.signedUp = new SimpleIntegerProperty(newVal);
-			return true;
+			return new One23(1);
 		}
 	}
 

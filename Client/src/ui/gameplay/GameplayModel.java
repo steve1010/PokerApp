@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
+import entities.SafePlayer;
 import entities.gameplay.Board;
 import entities.gameplay.Card;
 import entities.gameplay.PlayerHand;
@@ -14,8 +15,13 @@ import ui.Model;
 
 public class GameplayModel extends Model {
 
-	public GameplayModel(InetSocketAddress serverAdress) {
+	private final SafePlayer loggedInPlayer;
+	private final String pw;
+
+	public GameplayModel(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw) {
 		super(serverAdress);
+		this.loggedInPlayer = loggedInPlayer;
+		this.pw = pw;
 	}
 
 	public List<Card> deal() {
@@ -42,5 +48,15 @@ public class GameplayModel extends Model {
 			return (String[]) receiced;
 		}
 		return null;
+	}
+
+	@Override
+	public SafePlayer getLoggedInPlayer() {
+		return this.loggedInPlayer;
+	}
+
+	@Override
+	public String getPw() {
+		return this.pw;
 	}
 }

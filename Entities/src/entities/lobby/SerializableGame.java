@@ -2,7 +2,11 @@ package entities.lobby;
 
 import java.io.Serializable;
 
-public class SerializableGame implements Serializable {
+/**
+ * Game for sending/receiving from/to Server (as Properties aren't
+ * serializable..)
+ */
+public final class SerializableGame implements Serializable {
 
 	private static final long serialVersionUID = -2838713606186843691L;
 
@@ -11,14 +15,14 @@ public class SerializableGame implements Serializable {
 	private final double buyIn;
 
 	public SerializableGame(int id, int startChips, int maxPlayers, int paid, int signedUp, String name, double buyIn) {
-		super();
 		this.id = id;
+		this.name = name;
+		this.buyIn = buyIn;
 		this.startChips = startChips;
 		this.maxPlayers = maxPlayers;
 		this.paid = paid;
 		this.signedUp = signedUp;
-		this.name = name;
-		this.buyIn = buyIn;
+
 	}
 
 	public static long getSerialversionuid() {

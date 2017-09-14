@@ -11,6 +11,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -22,13 +23,14 @@ public class LoginView implements Initializable {
 	private LoginController controller;
 
 	@FXML
+	private Pane loginPane;
+
+	@FXML
 	private TextField nameTxtField;
 	@FXML
 	private PasswordField pwField;
 	@FXML
 	private Button loginBtn, signUpBtn;
-
-	private Stage primaryStage;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -62,17 +64,16 @@ public class LoginView implements Initializable {
 	}
 
 	public void setData(Stage primaryStage, InetSocketAddress serverAdress) {
-		this.primaryStage = primaryStage;
 		controller.setPrimaryStage(primaryStage);
 		controller.setSessionData(serverAdress);
-	}
-
-	public Stage getPrimaryStage() {
-		return primaryStage;
 	}
 
 	public void resetValues() {
 		nameTxtField.setText("");
 		pwField.setText("");
+	}
+
+	public Pane getLoginPane() {
+		return loginPane;
 	}
 }

@@ -2,6 +2,7 @@ package logic.container;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import entities.Player;
 import entities.lobby.Game;
@@ -17,9 +18,9 @@ public class GameContainer {
 	private final List<IDGame> gamesList;
 	private Object gamesListLock = new Object();
 
-	public GameContainer(Dealer dealer, PlayerContainer store) {
+	public GameContainer(Dealer dealer, PlayerContainer players) {
 		this.dealer = dealer;
-		this.playerStore = store;
+		this.playerStore = players;
 		this.gamesList = new ArrayList<>();
 	}
 
@@ -62,24 +63,13 @@ public class GameContainer {
 
 	public One23 addPlayerToGame(Player player, int gameId) {
 		synchronized (gamesListLock) {
-			List<Player> playersInGame = gamesList.get(gameId).getPlayersList();
-			boolean inGame = false;
-			for (Player plr : playersInGame) {
-				if (plr.getName().equals(player.getName())) {
-					inGame = true;
-				}
-			}
-			if (inGame) {
+			if (!(gamesList.get(gameId).getPlayersList().stream().filter(plr -> plr.getName().equals(player.getName()))
+					.collect(Collectors.toList()).isEmpty())) {
 				return new One23(3);
 			}
-
-			playerStore.getPlayerByName(player.getName()).commitTransaction(gamesList.get(gameId).getBuyIn());
-			player.commitTransaction(gamesList.get(gameId).getBuyIn());
-			if (gamesList.get(gameId).addPlayer(player)) {
-				return new One23(1);
-			} else {
-				return new One23(2);
-			}
+			playerStore.commitTransaction(player.getName(), gamesList.get(gameId).getBuyIn());
+			One23 result = gamesList.get(gameId).addPlayer(player);
+			return result;
 		}
 	}
 }

@@ -2,6 +2,10 @@ package entities.lobby;
 
 import java.io.Serializable;
 
+/**
+ * Basic but not super class of IDGame. IDGame can use this class in its
+ * constructor.
+ */
 public class Game implements Serializable {
 
 	private static final long serialVersionUID = 4745346719589341823L;
@@ -11,7 +15,6 @@ public class Game implements Serializable {
 	private final Integer startChips, maxPlayers, paid, signedUp;
 
 	public Game(String name, Double buyIn, Integer startChips, Integer maxPlayers, Integer paid, Integer signedUp) {
-		super();
 		this.name = name;
 		this.buyIn = buyIn;
 		this.startChips = startChips;

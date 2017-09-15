@@ -28,7 +28,6 @@ public abstract class Model extends Observable {
 		try (DatagramSocket clientSocket = new DatagramSocket(port);
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				ObjectOutputStream os = new ObjectOutputStream(bos)) {
-			// ask server for ticket
 			os.writeObject(object);
 			byte[] toSendData = bos.toByteArray();
 			DatagramPacket toSendPacket = new DatagramPacket(toSendData, toSendData.length, this.serverAdress);
@@ -42,7 +41,6 @@ public abstract class Model extends Observable {
 		try (DatagramSocket clientSocket = new DatagramSocket(portt);
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				ObjectOutputStream os = new ObjectOutputStream(bos)) {
-			// ask server for ticket
 			os.writeObject(object);
 			byte[] toSendData = bos.toByteArray();
 			DatagramPacket toSendPacket = new DatagramPacket(toSendData, toSendData.length, this.serverAdress);

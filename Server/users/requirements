@@ -5,7 +5,7 @@
 
 3.) Spieler meldet sich an und landet in der lobby wo er die verfügbaren Spiele sehen kann.
 
-4.)* Wenn die maximale Anzahl an Spielern eines Spiels erreicht ist, werden die angemeldeten Spieler zum
+4.) Wenn die maximale Anzahl an Spielern eines Spiels erreicht ist, werden die angemeldeten Spieler zum
 	ENTSPRECHENDEN Spiel weitergeleitet und das Spiel beginnt.
 
 5.) - Zunächst wird random ein "Button" bestimmt(delegiert davon dann SmallBlind, BigBlind links davon).
@@ -20,12 +20,15 @@
 	  beginnt die Bietrunde.(reihum..)
 	- Wenn alle Spieler bis auf einen gefoldet haben, wird die Runde beendet und der Pot an den Gewinner verteilt.
 	- Wenn mehrere Spieler bis zum Ende der letzten Bietrunde (nach River) in der Hand sind, evaluiere Ergebnis
-	  und verteile Pot an Gewinner.
-6.)
+	  und verteile Pot an Gewinner.***Split Pot mit einbeziehen***
+	  
+6.) Spieler mit Stack = 0 werden aus dem Turnier entfernt und werden zur Lobby zurückgeleitet.
+	(verlieren alle 'Player-Action'-Rechte und können per Button zur Lobby zurückkehren) 
+	Die 'bankroll' wird (bei Gewinn) geupdated.
 
-7.)
+7.) Chat Funktion.
 
-8.)
+8.) 
 
 9.)
 

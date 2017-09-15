@@ -1,4 +1,11 @@
 bin/
+
+.metadata/
+.recommenders/
 *.class
+
 *.txt
+
 *.metadata
+
+.recommenders

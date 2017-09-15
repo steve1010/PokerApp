@@ -9,6 +9,7 @@ import entities.query.GameQuery;
 import entities.query.PlayersActionQuery;
 import entities.query.PlayersQuery;
 import entities.query.Query;
+import entities.query.server.PoisonPill;
 import logic.container.GameContainer;
 
 public final class UdpClientHandler extends ClientHandler {
@@ -28,6 +29,9 @@ public final class UdpClientHandler extends ClientHandler {
 			if (received instanceof Query) {
 				switchQuery((Query) received);
 			} else {
+				if (received instanceof PoisonPill) {
+					return;
+				}
 				System.err.println("Unknown message.");
 			}
 		} catch (IOException | ClassNotFoundException e) {

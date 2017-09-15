@@ -9,6 +9,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 import entities.SafePlayer;
+import entities.lobby.IDGame;
+import entities.lobby.SerializableGame;
 import entities.query.PlayersQuery;
 import entities.query.Query;
 import entities.query.server.One23;
@@ -110,25 +112,27 @@ public class PlayersClientHandler extends ClientHandler {
 			break;
 
 		case ENROLL:
-			One23 result = gameContainer.addPlayerToGame(received.getPlayer(), received.getGameId());
+			One23 result = gameContainer.addPlayerToGame(received.getPlayer(),
+					IDGame.fromSerializableGame(received.getGame()));
+			answer(result);
+			SerializableGame game = received.getGame();
+			game.getPlayersList().add(received.getPlayer());
 			if (result.getI() == 1) {
-				answer(result);
-				triggerServerMsg(new ServerMsg(MsgType.NEW_PLAYER_ENROLLED, received.getGameId()));
+				triggerServerMsg(new ServerMsg(MsgType.NEW_PLAYER_ENROLLED, received.getPlayer(), game.getId()));
 				break;
 			}
 			if (result.getI() == 4) {
-				answer(result);
-				triggerServerMsg(new ServerMsg(MsgType.LAST_PLAYER_ENROLLED, received.getGameId()));
+				triggerServerMsg(new ServerMsg(MsgType.LAST_PLAYER_ENROLLED, received.getPlayer(), game.getId()));
 				break;
 			}
-			answer(result);
 			break;
 		default:
 			throw new IllegalStateException("-----------Illegal state!!-------------");
 		}
 	}
 
-	private void triggerServerMsg(ServerMsg serverMsg) {
+	@Override
+	public void triggerServerMsg(ServerMsg serverMsg) {
 		// inform all players
 		List<SafePlayer> players = gameContainer.getPlayerStore().getAll();
 		for (SafePlayer player : players) {

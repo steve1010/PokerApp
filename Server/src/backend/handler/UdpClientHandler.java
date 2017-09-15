@@ -10,6 +10,7 @@ import entities.query.PlayersActionQuery;
 import entities.query.PlayersQuery;
 import entities.query.Query;
 import entities.query.server.PoisonPill;
+import entities.query.server.ServerMsg;
 import logic.container.GameContainer;
 
 public final class UdpClientHandler extends ClientHandler {
@@ -50,5 +51,9 @@ public final class UdpClientHandler extends ClientHandler {
 		if (received instanceof PlayersActionQuery) {
 			new Thread(new PlayersActionClientHandler(received, getClientAdress())).start();
 		}
+	}
+
+	@Override
+	public void triggerServerMsg(ServerMsg serverMsg) {
 	}
 }

@@ -52,7 +52,7 @@ public abstract class Model extends Observable {
 
 	public Object receiveObject() {
 		try (DatagramSocket clientSocket = new DatagramSocket(port)) {
-			byte[] incomingData = new byte[1024];
+			byte[] incomingData = new byte[2024];
 			DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
 			// wait for server response
 			clientSocket.receive(incomingPacket);
@@ -70,7 +70,7 @@ public abstract class Model extends Observable {
 
 	public Object receiveObject(int portt) {
 		try (DatagramSocket clientSocket = new DatagramSocket(portt)) {
-			byte[] incomingData = new byte[1024];
+			byte[] incomingData = new byte[2024];
 			DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
 			// wait for server response
 			clientSocket.receive(incomingPacket);
@@ -88,7 +88,7 @@ public abstract class Model extends Observable {
 
 	public ServerMsg receiveObjectAsynchronous(int portt) {
 		try (DatagramSocket clientSocket = new DatagramSocket(portt + 1)) {
-			byte[] incomingData = new byte[1024];
+			byte[] incomingData = new byte[2024];
 			DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
 			clientSocket.receive(incomingPacket);
 			byte[] data = incomingPacket.getData();
@@ -100,7 +100,7 @@ public abstract class Model extends Observable {
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}
-		return null;
+		throw new IllegalStateException();
 	}
 
 	public int newRandomPort() {

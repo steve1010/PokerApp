@@ -51,6 +51,14 @@ public class ServerMsg implements Serializable {
 		this.game = null;
 	}
 
+	public ServerMsg(MsgType msgType, SafePlayer player, int gameID) {
+		this.msgType = msgType;
+		this.player = player;
+		this.username = player.getName();
+		this.id = gameID;
+		this.game = null;
+	}
+
 	public MsgType getMsgType() {
 		return msgType;
 	}
@@ -69,5 +77,11 @@ public class ServerMsg implements Serializable {
 
 	public SafePlayer getPlayer() {
 		return player;
+	}
+
+	@Override
+	public String toString() {
+		return "ServerMsg [msgType=" + msgType + ", id=" + id + ", game=" + game + ", username=" + username
+				+ ", player=" + player + "]";
 	}
 }

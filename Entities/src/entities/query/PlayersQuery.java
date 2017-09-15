@@ -1,6 +1,8 @@
 package entities.query;
 
 import entities.SafePlayer;
+import entities.lobby.IDGame;
+import entities.lobby.SerializableGame;
 
 public final class PlayersQuery extends Query {
 
@@ -14,7 +16,7 @@ public final class PlayersQuery extends Query {
 	private SafePlayer player;
 	private final String playerName;
 	private final String pw;
-	private int gameID;
+	private SerializableGame game;
 	private int playerID;
 
 	public PlayersQuery(Option option) {
@@ -47,9 +49,9 @@ public final class PlayersQuery extends Query {
 		this.pw = pw;
 	}
 
-	public PlayersQuery(int id, SafePlayer player) {
+	public PlayersQuery(IDGame game, SafePlayer player) {
 		this.option = Option.ENROLL;
-		this.gameID = id;
+		this.game = IDGame.toSerializableGame(game);
 		this.player = player;
 		this.pw = null;
 		this.playerName = player.getName();
@@ -67,8 +69,8 @@ public final class PlayersQuery extends Query {
 		return pw;
 	}
 
-	public int getGameId() {
-		return gameID;
+	public SerializableGame getGame() {
+		return game;
 	}
 
 	public int getPlayerID() {

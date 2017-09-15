@@ -24,7 +24,7 @@ public final class IDGame implements Serializable {
 	private final StringProperty name;
 	private final DoubleProperty buyIn;
 	private final IntegerProperty startChips, maxPlayers, paid;
-	private final List<SafePlayer> playersList = new ArrayList<>();
+	private final List<SafePlayer> playersList;
 
 	private IntegerProperty signedUp;
 
@@ -45,6 +45,12 @@ public final class IDGame implements Serializable {
 			this.paid = null;
 			this.signedUp = null;
 		}
+		this.playersList = new ArrayList<>();
+	}
+
+	public IDGame(Game game, int id, List<SafePlayer> playersList) {
+		this(game, id);
+		playersList.forEach(e -> this.playersList.add(e));
 	}
 
 	public int getId() {
@@ -76,13 +82,11 @@ public final class IDGame implements Serializable {
 			return new One23(2);
 		} else if (playersList.size() == maxPlayers.get() - 1) {
 			this.playersList.add(safePlayer);
-			int newVal = signedUp.get() + 1;
-			this.signedUp = new SimpleIntegerProperty(newVal);
+			incrementSignedUp();
 			return new One23(4);
 		} else {
 			this.playersList.add(safePlayer);
-			int newVal = signedUp.get() + 1;
-			this.signedUp = new SimpleIntegerProperty(newVal);
+			incrementSignedUp();
 			return new One23(1);
 		}
 	}
@@ -121,5 +125,33 @@ public final class IDGame implements Serializable {
 
 	public List<SafePlayer> getPlayersList() {
 		return playersList;
+	}
+
+	public static SerializableGame toSerializableGame(IDGame idGame) {
+		return new SerializableGame(idGame.getId(), idGame.getStartChips(), idGame.getMaxPlayers(), idGame.getPaid(),
+				idGame.getSignedUp(), idGame.getName(), idGame.getBuyIn(), idGame.getPlayersList());
+	}
+
+	public static IDGame fromSerializableGame(SerializableGame serializableGame) {
+		return new IDGame(
+				new Game(serializableGame.getName(), serializableGame.getBuyIn(), serializableGame.getStartChips(),
+						serializableGame.getMaxPlayers(), serializableGame.getPaid(), serializableGame.getSignedUp()),
+				serializableGame.getId(), serializableGame.getPlayersList());
+	}
+
+	public static List<IDGame> toIDGames(List<SerializableGame> receivedGames) {
+		List<IDGame> idgames = new ArrayList<>();
+		for (SerializableGame game : receivedGames) {
+			idgames.add(fromSerializableGame(game));
+		}
+		return idgames;
+	}
+
+	public static List<SerializableGame> fromIDGames(List<IDGame> receivedGames) {
+		List<SerializableGame> idgames = new ArrayList<>();
+		for (IDGame game : receivedGames) {
+			idgames.add(toSerializableGame(game));
+		}
+		return idgames;
 	}
 }

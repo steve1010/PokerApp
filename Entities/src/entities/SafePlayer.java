@@ -5,6 +5,8 @@ import java.net.InetSocketAddress;
 import java.util.List;
 
 import entities.gameplay.PlayerHand;
+import entities.lobby.IDGame;
+import entities.lobby.SerializableGame;
 
 public class SafePlayer implements Serializable {
 
@@ -15,12 +17,12 @@ public class SafePlayer implements Serializable {
 	private final InetSocketAddress adress, asyncAdress;
 	private boolean loggedIn = false;
 	private int stack;
-	private final List<Integer> gamesIdList;
+	private final List<SerializableGame> gamesList;
 	private PlayerHand hand;
 
-	private Double bankRoll;
+	private double bankRoll;
 
-	public SafePlayer(int id, String name, InetSocketAddress adress, List<Integer> gamesList) {
+	public SafePlayer(int id, String name, InetSocketAddress adress, List<IDGame> gamesList) {
 		this.id = id;
 		this.name = name;
 		this.adress = adress;
@@ -30,10 +32,30 @@ public class SafePlayer implements Serializable {
 		} else {
 			asyncAdress = null;
 		}
-		this.gamesIdList = gamesList;
+
+		if (gamesList != null) {
+			this.gamesList = IDGame.fromIDGames(gamesList);
+		} else {
+			this.gamesList = null;
+		}
+		// set initial bankroll:
+		this.bankRoll = 10000;
+	}
+
+	public SafePlayer(int id, String name, InetSocketAddress adress, List<SerializableGame> gamesList, boolean ignore) {
+		this.id = id;
+		this.name = name;
+		this.adress = adress;
+		if (adress != null) {
+			int asyncPort = adress.getPort() + 1;
+			this.asyncAdress = new InetSocketAddress(adress.getAddress(), asyncPort);
+		} else {
+			asyncAdress = null;
+		}
+		this.gamesList = gamesList;
 
 		// set initial bankroll:
-		this.bankRoll = new Double(10000);
+		this.bankRoll = 10000;
 	}
 
 	public String getName() {
@@ -72,11 +94,11 @@ public class SafePlayer implements Serializable {
 		this.hand = hand;
 	}
 
-	public Double getBankRoll() {
+	public double getBankRoll() {
 		return this.bankRoll;
 	}
 
-	private void setBankRoll(Double bankRoll) {
+	private void setBankRoll(double bankRoll) {
 		this.bankRoll = bankRoll;
 	}
 
@@ -84,12 +106,12 @@ public class SafePlayer implements Serializable {
 		return asyncAdress;
 	}
 
-	public void commitTransaction(int gameId, Double buyIn) {
+	public void commitTransaction(IDGame idGame, Double buyIn) {
 		setBankRoll(bankRoll - buyIn);
-		gamesIdList.add(gameId);
+		gamesList.add(IDGame.toSerializableGame(idGame));
 	}
 
-	public List<Integer> getGamesIdList() {
-		return gamesIdList;
+	public List<SerializableGame> getGamesList() {
+		return gamesList;
 	}
 }

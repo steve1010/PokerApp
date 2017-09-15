@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Observable;
 
+import entities.Player;
 import entities.SafePlayer;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,7 +20,7 @@ public class LoginController implements Controller {
 	private Parent loginNode;
 	private Parent registerNode;
 	private boolean isResiterViewLoaded = false;
-	private SafePlayer loggedInPlayer;
+	private Player loggedInPlayer;
 
 	public LoginController(LoginView loginView) {
 		this.loginView = loginView;
@@ -32,7 +33,7 @@ public class LoginController implements Controller {
 	public void loginRequest(final String name, final String pw) {
 		SafePlayer player = model.checkLoginData(name, pw);
 		if (player.isLoggedIn()) {
-			this.loggedInPlayer = player;
+			this.loggedInPlayer = new Player(player, pw);
 			openLobbyView(pw);
 		} else {
 			loginView.wrongLoginDataAlert();

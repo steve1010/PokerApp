@@ -36,20 +36,15 @@ public class GameContainer {
 		synchronized (gamesListLock) {
 			IDGame idGame = new IDGame(game, gamesList.size());
 			gamesList.add(idGame);
-			return toSerializableGame(idGame);
+			return IDGame.toSerializableGame(idGame);
 		}
-	}
-
-	private SerializableGame toSerializableGame(IDGame idGame) {
-		return new SerializableGame(idGame.getId(), idGame.getStartChips(), idGame.getMaxPlayers(), idGame.getPaid(),
-				idGame.getSignedUp(), idGame.getName(), idGame.getBuyIn(), idGame.getPlayersList());
 	}
 
 	public List<SerializableGame> getGamesListSerializable() {
 		synchronized (gamesListLock) {
 			List<SerializableGame> games = new ArrayList<>(gamesList.size());
 			for (IDGame game : gamesList) {
-				games.add(toSerializableGame(game));
+				games.add(IDGame.toSerializableGame(game));
 			}
 			return games;
 		}
@@ -61,15 +56,15 @@ public class GameContainer {
 		}
 	}
 
-	public One23 addPlayerToGame(SafePlayer safePlayer, int gameId) {
+	public One23 addPlayerToGame(SafePlayer safePlayer, IDGame idGame) {
 		synchronized (gamesListLock) {
-			if (!(gamesList.get(gameId).getPlayersList().stream()
+			if (!(gamesList.get(idGame.getId()).getPlayersList().stream()
 					.filter(plr -> plr.getName().equals(safePlayer.getName())).collect(Collectors.toList())
 					.isEmpty())) {
 				return new One23(3);
 			}
-			playerStore.commitTransaction(safePlayer, gameId,gamesList.get(gameId).getBuyIn());
-			One23 result = gamesList.get(gameId).addPlayer(safePlayer);
+			playerStore.commitTransaction(safePlayer, idGame, gamesList.get(idGame.getId()).getBuyIn());
+			One23 result = gamesList.get(idGame.getId()).addPlayer(safePlayer);
 			return result;
 		}
 	}

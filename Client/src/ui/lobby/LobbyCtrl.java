@@ -5,7 +5,7 @@ import java.net.InetSocketAddress;
 import java.util.Observable;
 import java.util.stream.Collectors;
 
-import entities.SafePlayer;
+import entities.Player;
 import entities.lobby.IDGame;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -24,7 +24,7 @@ public class LobbyCtrl extends Observable implements Controller {
 	private final LoginView loginView;
 	private final Stage primaryStage;
 
-	public LobbyCtrl(LobbyView lobbyView, InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw,
+	public LobbyCtrl(LobbyView lobbyView, InetSocketAddress serverAdress, Player loggedInPlayer, String pw,
 			Stage primaryStage, LoginView loginView) {
 		model = new LobbyModel(serverAdress, loggedInPlayer, pw);
 		this.lobbyView = lobbyView;

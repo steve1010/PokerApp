@@ -8,6 +8,7 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 
 import entities.query.Query;
+import entities.query.server.ServerMsg;
 
 public abstract class ClientHandler implements Runnable {
 
@@ -67,4 +68,6 @@ public abstract class ClientHandler implements Runnable {
 	public Query getReceived() {
 		return received;
 	}
+
+	public abstract void triggerServerMsg(ServerMsg serverMsg);
 }

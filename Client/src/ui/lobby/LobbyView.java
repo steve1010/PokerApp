@@ -6,9 +6,11 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
 
+import entities.Player;
 import entities.SafePlayer;
 import entities.lobby.IDGame;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,6 +19,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -89,14 +92,34 @@ public class LobbyView implements Controller, Initializable, Observer {
 		paidColumn.setCellValueFactory(paidColumnFactory);
 		signedUpColumnFactory = new PropertyValueFactory<IDGame, Integer>("signedUp");
 		signedUpColumn.setCellValueFactory(signedUpColumnFactory);
-		gamesTable.setRowFactory(tv -> new TableRow<IDGame>() {
-		});
 
 		allPlayersColumnFactory = new PropertyValueFactory<SafePlayer, String>("name");
 		allPlayersColumn.setCellValueFactory(allPlayersColumnFactory);
 
 		inGameColumnFactory = new PropertyValueFactory<SafePlayer, String>("name");
 		inGameColumn.setCellValueFactory(inGameColumnFactory);
+
+		gamesTable.setRowFactory(tv -> new TableRow<IDGame>() {
+			@Override
+			public void updateItem(IDGame game, boolean empty) {
+				super.updateItem(game, empty);
+				if (game == null) {
+					setStyle("");
+				} else if (game.getMaxPlayers().intValue() == game.getSignedUp().intValue()) {
+					setStyle("-fx-background-color: tomato;");
+				} else {
+					setStyle("-fx-background-color: palegreen;");
+				}
+			}
+		});
+		gamesTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+		gamesTable.getSelectionModel().selectedItemProperty().addListener((obs, oldGame, newGame) -> {
+			if (newGame != null) {
+				Platform.runLater(
+						() -> inGamePlayersTable.setItems(FXCollections.observableArrayList(newGame.getPlayersList())));
+			}
+		});
 	}
 
 	@SuppressWarnings("unchecked")
@@ -152,7 +175,7 @@ public class LobbyView implements Controller, Initializable, Observer {
 		new Alert(AlertType.ERROR);
 	}
 
-	public void setData(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw, Stage primaryStage,
+	public void setData(InetSocketAddress serverAdress, Player loggedInPlayer, String pw, Stage primaryStage,
 			LoginView loginView) {
 		this.controller = new LobbyCtrl(this, serverAdress, loggedInPlayer, pw, primaryStage, loginView);
 		this.playerNameLbl.setText(loggedInPlayer.getName());

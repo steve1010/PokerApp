@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import entities.Player;
 import entities.SafePlayer;
+import entities.lobby.IDGame;
 
 /**
  * ThreadSafeTicketStore
@@ -70,11 +71,11 @@ public final class PlayerContainer {
 		}
 	}
 
-	public void commitTransaction(SafePlayer safePlayer, int gameId, Double buyIn) {
+	public void commitTransaction(SafePlayer safePlayer, IDGame idGame, Double buyIn) {
 		synchronized (playersLock) {
-			playersMap.get(safePlayer.getName()).commitTransaction(gameId, buyIn);
-			playersIdMap.get(safePlayer.getId()).commitTransaction(gameId, buyIn);
-			playersList.get(safePlayer.getId()).commitTransaction(gameId, buyIn);
+			playersMap.get(safePlayer.getName()).commitTransaction(idGame, buyIn);
+			playersIdMap.get(safePlayer.getId()).commitTransaction(idGame, buyIn);
+			playersList.get(safePlayer.getId()).commitTransaction(idGame, buyIn);
 		}
 	}
 }

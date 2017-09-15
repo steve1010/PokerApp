@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import entities.Player;
 import entities.SafePlayer;
 import entities.lobby.Game;
 import entities.lobby.IDGame;
@@ -29,13 +30,13 @@ public class LobbyModel extends Model {
 	private static final String ERROR_MESSAGE_2 = "You already signed up to this game! Please wait for other players..";
 
 	private ObservableList<IDGame> gamesTableData;
-	private SafePlayer player;
+	private Player player;
 	private int playerPort;
 	private final String playerPw;
 	private ObservableList<SafePlayer> playersTableData;
 
 	@SuppressWarnings("unchecked")
-	public LobbyModel(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw) {
+	public LobbyModel(InetSocketAddress serverAdress, Player loggedInPlayer, String pw) {
 		super(serverAdress);
 		this.player = loggedInPlayer;
 		this.playerPort = loggedInPlayer.getAdress().getPort();
@@ -45,7 +46,7 @@ public class LobbyModel extends Model {
 		// fetch games
 		sendObject(new GameQuery(Option.GET_GAMES), playerPort);
 		this.gamesTableData = FXCollections
-				.observableArrayList(toIDGames((List<SerializableGame>) receiveObject(playerPort)));
+				.observableArrayList(IDGame.toIDGames((List<SerializableGame>) receiveObject(playerPort)));
 		// fetch loggedInPlayers
 		sendObject(new PlayersQuery(entities.query.PlayersQuery.Option.GETALL), playerPort);
 		this.playersTableData = FXCollections.observableArrayList((ArrayList<SafePlayer>) receiveObject(playerPort));
@@ -60,14 +61,11 @@ public class LobbyModel extends Model {
 
 				switch (msg.getMsgType()) {
 				case NEW_PLAYER_ENROLLED:
-					incrementSignedUp(msg.getId());
-					player.getGamesIdList().add(msg.getId());
+					newPlayerEnrolled(msg.getId(), msg.getPlayer());
 					break;
 				case NEW_GAME_OFFERED:
 					SerializableGame sg = msg.getGame();
-					if (!player.getName().equals("Admin")) {
-						addNewGameFromServer(toIDGame(sg));
-					}
+					addNewGameFromServer(toIDGame(sg));
 					break;
 
 				case PLAYER_LOGIN:
@@ -87,12 +85,11 @@ public class LobbyModel extends Model {
 					break;
 
 				case LAST_PLAYER_ENROLLED:
-					incrementSignedUp(msg.getId());
-					player.getGamesIdList().add(msg.getId());
-					List<Integer> games = player.getGamesIdList().stream()
-							.filter(gameId -> gameId.intValue() == msg.getId()).collect(Collectors.toList());
+					newPlayerEnrolled(msg.getId(), msg.getPlayer());
+					List<SerializableGame> games = player.getGamesList().stream()
+							.filter(gameId -> gameId.getId() == msg.getId()).collect(Collectors.toList());
 					if (!games.isEmpty()) {
-						triggerNotification(new ClientInterna(2, games.get(0).intValue()));
+						triggerNotification(new ClientInterna(2, games.get(0).getId()));
 					}
 					break;
 				default:
@@ -100,27 +97,17 @@ public class LobbyModel extends Model {
 				}
 			}
 		}).start();
-
 	}
 
 	private void addNewGameFromServer(IDGame game) {
+		player.getGamesList().add(IDGame.toSerializableGame(game));
 		Platform.runLater(() -> gamesTableData.add(game));
 		triggerNotification(gamesTableData);
-	}
-
-	private List<IDGame> toIDGames(List<SerializableGame> receivedGames) {
-		List<IDGame> idgames = new ArrayList<>();
-		for (SerializableGame game : receivedGames) {
-			idgames.add(toIDGame(game));
-		}
-		return idgames;
 	}
 
 	public void createGame(String name, double buyIn, int startChips, int maxPlayers, int paid) {
 		Game game = new Game(name, buyIn, startChips, maxPlayers, paid, 0);
 		sendObject(new GameQuery(game), playerPort);
-		gamesTableData.add(toIDGame((SerializableGame) receiveObject(playerPort)));
-		triggerNotification(gamesTableData);
 	}
 
 	private IDGame toIDGame(SerializableGame sg) {
@@ -130,22 +117,21 @@ public class LobbyModel extends Model {
 
 	public String enrollPlayerIn(IDGame selectedGame) {
 		if (selectedGame != null) {
-			if (this.player.getBankRoll().doubleValue() < selectedGame.getBuyIn().doubleValue()) {
+			if (this.player.getBankRoll() < selectedGame.getBuyIn().doubleValue()) {
 				return ERROR_MESSAGE_0;
 			} else {
-				System.out.println("trying to enroll in :" + selectedGame.getName());
-				sendObject(new PlayersQuery(selectedGame.getId(), player), playerPort);
+				sendObject(new PlayersQuery(selectedGame, player), playerPort);
 				One23 received = (One23) receiveObject(playerPort);
 				switch (received.getI()) {
 				case 1:
-					player.commitTransaction(selectedGame.getId(), selectedGame.getBuyIn());
+					player.commitTransaction(selectedGame, selectedGame.getBuyIn());
 					return createSuccessMsg(selectedGame);
 				case 2:
 					return ERROR_MESSAGE_1;
 				case 3:
 					return ERROR_MESSAGE_2;
 				case 4:
-					player.commitTransaction(selectedGame.getId(), selectedGame.getBuyIn());
+					player.commitTransaction(selectedGame, selectedGame.getBuyIn());
 					return SUCCESS_MSG_1;
 				default:
 					throw new IllegalStateException("---------------- Illegal State ! ------------------");
@@ -155,9 +141,12 @@ public class LobbyModel extends Model {
 		return "No game selected!";
 	}
 
-	private void incrementSignedUp(int gameID) {
+	private void newPlayerEnrolled(int gameID, SafePlayer player) {
+		List<IDGame> games = IDGame.toIDGames(this.player.getGamesList());
+		games.get(gameID).addPlayer(player);
+		this.player = new Player(player.getId(), player.getName(), playerPw, player.getAdress(), games);
 		IDGame game = gamesTableData.get(gameID);
-		game.incrementSignedUp();
+		game.addPlayer(player);
 		Platform.runLater(() -> {
 			gamesTableData.set(gameID, game);
 		});

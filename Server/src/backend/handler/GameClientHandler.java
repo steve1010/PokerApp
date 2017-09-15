@@ -41,10 +41,7 @@ public final class GameClientHandler extends ClientHandler {
 				break;
 			case NEW_GAME:
 				SerializableGame game = gameContainer.addGame(received.getGame());
-				for (SafePlayer player : gameContainer.getPlayerStore().getAll()) {
-					answer(new ServerMsg(MsgType.NEW_GAME_OFFERED, game.getId(), game), player.getAsyncAdress());
-				}
-				answer(game);
+				triggerServerMsg(new ServerMsg(MsgType.NEW_GAME_OFFERED, game.getId(), game));
 				break;
 			case EVALUATION:
 				Evaluation evaluation = (Evaluation) query;
@@ -53,6 +50,14 @@ public final class GameClientHandler extends ClientHandler {
 			default:
 				break;
 			}
+		}
+	}
+
+	@Override
+	public void triggerServerMsg(ServerMsg serverMsg) {
+		for (SafePlayer player : gameContainer.getPlayerStore().getAll()) {
+			int asyncClientPort = 1 + player.getAdress().getPort();
+			answer(serverMsg, new InetSocketAddress(player.getAdress().getAddress(), asyncClientPort));
 		}
 	}
 }

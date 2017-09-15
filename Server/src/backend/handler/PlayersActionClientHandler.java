@@ -3,6 +3,7 @@ package backend.handler;
 import java.net.InetSocketAddress;
 
 import entities.query.Query;
+import entities.query.server.ServerMsg;
 
 public class PlayersActionClientHandler extends ClientHandler {
 
@@ -20,4 +21,7 @@ public class PlayersActionClientHandler extends ClientHandler {
 
 	}
 
+	@Override
+	public void triggerServerMsg(ServerMsg serverMsg) {
+	}
 }

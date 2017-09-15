@@ -30,10 +30,6 @@ public final class SerializableGame implements Serializable {
 		this.playersList = players;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
 	public int getId() {
 		return id;
 	}
@@ -65,5 +61,4 @@ public final class SerializableGame implements Serializable {
 	public List<SafePlayer> getPlayersList() {
 		return playersList;
 	}
-
 }

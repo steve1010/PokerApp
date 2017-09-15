@@ -32,9 +32,9 @@ public class LoginModel extends Model {
 		return (SafePlayer) receiveObject();
 	}
 
-	public SafePlayer registerUser(String userName, String pw) {
+	public Player registerUser(String userName, String pw) {
 		sendObject(new PlayersQuery(Option.REGISTER, userName, pw));
-		return (SafePlayer) receiveObject();
+		return Player.fromSafePlayer((SafePlayer) receiveObject());
 	}
 
 	public void setLoggedOut() {

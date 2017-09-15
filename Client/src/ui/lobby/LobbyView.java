@@ -18,6 +18,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -88,6 +89,8 @@ public class LobbyView implements Controller, Initializable, Observer {
 		paidColumn.setCellValueFactory(paidColumnFactory);
 		signedUpColumnFactory = new PropertyValueFactory<IDGame, Integer>("signedUp");
 		signedUpColumn.setCellValueFactory(signedUpColumnFactory);
+		gamesTable.setRowFactory(tv -> new TableRow<IDGame>() {
+		});
 
 		allPlayersColumnFactory = new PropertyValueFactory<SafePlayer, String>("name");
 		allPlayersColumn.setCellValueFactory(allPlayersColumnFactory);

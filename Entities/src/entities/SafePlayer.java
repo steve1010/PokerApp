@@ -5,7 +5,6 @@ import java.net.InetSocketAddress;
 import java.util.List;
 
 import entities.gameplay.PlayerHand;
-import entities.lobby.IDGame;
 
 public class SafePlayer implements Serializable {
 
@@ -16,12 +15,12 @@ public class SafePlayer implements Serializable {
 	private final InetSocketAddress adress, asyncAdress;
 	private boolean loggedIn = false;
 	private int stack;
-	private final List<IDGame> gamesList;
+	private final List<Integer> gamesIdList;
 	private PlayerHand hand;
 
 	private Double bankRoll;
 
-	public SafePlayer(int id, String name, InetSocketAddress adress, List<IDGame> gamesList) {
+	public SafePlayer(int id, String name, InetSocketAddress adress, List<Integer> gamesList) {
 		this.id = id;
 		this.name = name;
 		this.adress = adress;
@@ -31,7 +30,7 @@ public class SafePlayer implements Serializable {
 		} else {
 			asyncAdress = null;
 		}
-		this.gamesList = gamesList;
+		this.gamesIdList = gamesList;
 
 		// set initial bankroll:
 		this.bankRoll = new Double(10000);
@@ -85,11 +84,12 @@ public class SafePlayer implements Serializable {
 		return asyncAdress;
 	}
 
-	public void commitTransaction(Double buyIn) {
+	public void commitTransaction(int gameId, Double buyIn) {
 		setBankRoll(bankRoll - buyIn);
+		gamesIdList.add(gameId);
 	}
 
-	public List<IDGame> getGamesList() {
-		return gamesList;
+	public List<Integer> getGamesIdList() {
+		return gamesIdList;
 	}
 }

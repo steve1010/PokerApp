@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import entities.Player;
+import entities.SafePlayer;
 import entities.query.server.One23;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -24,7 +24,7 @@ public final class IDGame implements Serializable {
 	private final StringProperty name;
 	private final DoubleProperty buyIn;
 	private final IntegerProperty startChips, maxPlayers, paid;
-	private final List<Player> playersList = new ArrayList<>();
+	private final List<SafePlayer> playersList = new ArrayList<>();
 
 	private IntegerProperty signedUp;
 
@@ -71,16 +71,16 @@ public final class IDGame implements Serializable {
 		return paid.get();
 	}
 
-	public One23 addPlayer(Player player) {
+	public One23 addPlayer(SafePlayer safePlayer) {
 		if (playersList.size() == maxPlayers.get()) {
 			return new One23(2);
 		} else if (playersList.size() == maxPlayers.get() - 1) {
-			this.playersList.add(player);
+			this.playersList.add(safePlayer);
 			int newVal = signedUp.get() + 1;
 			this.signedUp = new SimpleIntegerProperty(newVal);
 			return new One23(4);
 		} else {
-			this.playersList.add(player);
+			this.playersList.add(safePlayer);
 			int newVal = signedUp.get() + 1;
 			this.signedUp = new SimpleIntegerProperty(newVal);
 			return new One23(1);
@@ -119,7 +119,7 @@ public final class IDGame implements Serializable {
 		return signedUp;
 	}
 
-	public List<Player> getPlayersList() {
+	public List<SafePlayer> getPlayersList() {
 		return playersList;
 	}
 }

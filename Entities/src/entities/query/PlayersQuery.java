@@ -1,6 +1,5 @@
 package entities.query;
 
-import entities.Player;
 import entities.SafePlayer;
 
 public final class PlayersQuery extends Query {
@@ -12,7 +11,7 @@ public final class PlayersQuery extends Query {
 	}
 
 	private final Option option;
-	private Player player;
+	private SafePlayer player;
 	private final String playerName;
 	private final String pw;
 	private int gameID;
@@ -48,18 +47,11 @@ public final class PlayersQuery extends Query {
 		this.pw = pw;
 	}
 
-	public PlayersQuery(int gameID, Player player) {
-		this.option = Option.ENROLL;
-		this.gameID = gameID;
-		this.player = player;
-		this.playerName = player.getName();
-		this.pw = null;
-	}
-
 	public PlayersQuery(int id, SafePlayer player) {
 		this.option = Option.ENROLL;
-		this.player = new Player(id, player.getName(), "", player.getAdress(), player.getGamesList());
-		this.pw = this.player.getPw();
+		this.gameID = id;
+		this.player = player;
+		this.pw = null;
 		this.playerName = player.getName();
 	}
 
@@ -83,7 +75,7 @@ public final class PlayersQuery extends Query {
 		return playerID;
 	}
 
-	public Player getPlayer() {
+	public SafePlayer getPlayer() {
 		return this.player;
 	}
 }

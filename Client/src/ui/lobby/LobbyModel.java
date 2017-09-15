@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import entities.Player;
 import entities.SafePlayer;
 import entities.lobby.Game;
 import entities.lobby.IDGame;
@@ -49,7 +48,7 @@ public class LobbyModel extends Model {
 				.observableArrayList(toIDGames((List<SerializableGame>) receiveObject(playerPort)));
 		// fetch loggedInPlayers
 		sendObject(new PlayersQuery(entities.query.PlayersQuery.Option.GETALL), playerPort);
-		this.playersTableData = FXCollections.observableArrayList((ArrayList<Player>) receiveObject(playerPort));
+		this.playersTableData = FXCollections.observableArrayList((ArrayList<SafePlayer>) receiveObject(playerPort));
 
 	}
 
@@ -62,7 +61,7 @@ public class LobbyModel extends Model {
 				switch (msg.getMsgType()) {
 				case NEW_PLAYER_ENROLLED:
 					incrementSignedUp(msg.getId());
-					player.getGamesList().add(new IDGame(null, msg.getId()));
+					player.getGamesIdList().add(msg.getId());
 					break;
 				case NEW_GAME_OFFERED:
 					SerializableGame sg = msg.getGame();
@@ -89,11 +88,11 @@ public class LobbyModel extends Model {
 
 				case LAST_PLAYER_ENROLLED:
 					incrementSignedUp(msg.getId());
-					player.getGamesList().add(new IDGame(null, msg.getId()));
-					List<IDGame> games = player.getGamesList().stream().filter(game -> game.getId() == msg.getId())
-							.collect(Collectors.toList());
+					player.getGamesIdList().add(msg.getId());
+					List<Integer> games = player.getGamesIdList().stream()
+							.filter(gameId -> gameId.intValue() == msg.getId()).collect(Collectors.toList());
 					if (!games.isEmpty()) {
-						triggerNotification(new ClientInterna(2, games.get(0).getId()));
+						triggerNotification(new ClientInterna(2, games.get(0).intValue()));
 					}
 					break;
 				default:
@@ -134,18 +133,19 @@ public class LobbyModel extends Model {
 			if (this.player.getBankRoll().doubleValue() < selectedGame.getBuyIn().doubleValue()) {
 				return ERROR_MESSAGE_0;
 			} else {
+				System.out.println("trying to enroll in :" + selectedGame.getName());
 				sendObject(new PlayersQuery(selectedGame.getId(), player), playerPort);
 				One23 received = (One23) receiveObject(playerPort);
 				switch (received.getI()) {
 				case 1:
-					player.commitTransaction(selectedGame.getBuyIn());
+					player.commitTransaction(selectedGame.getId(), selectedGame.getBuyIn());
 					return createSuccessMsg(selectedGame);
 				case 2:
 					return ERROR_MESSAGE_1;
 				case 3:
 					return ERROR_MESSAGE_2;
 				case 4:
-					player.commitTransaction(selectedGame.getBuyIn());
+					player.commitTransaction(selectedGame.getId(), selectedGame.getBuyIn());
 					return SUCCESS_MSG_1;
 				default:
 					throw new IllegalStateException("---------------- Illegal State ! ------------------");

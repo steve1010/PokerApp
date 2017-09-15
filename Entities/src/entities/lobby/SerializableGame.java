@@ -1,6 +1,9 @@
 package entities.lobby;
 
 import java.io.Serializable;
+import java.util.List;
+
+import entities.SafePlayer;
 
 /**
  * Game for sending/receiving from/to Server (as Properties aren't
@@ -13,8 +16,10 @@ public final class SerializableGame implements Serializable {
 	private final int id, startChips, maxPlayers, paid, signedUp;
 	private final String name;
 	private final double buyIn;
+	private final List<SafePlayer> playersList;
 
-	public SerializableGame(int id, int startChips, int maxPlayers, int paid, int signedUp, String name, double buyIn) {
+	public SerializableGame(int id, int startChips, int maxPlayers, int paid, int signedUp, String name, double buyIn,
+			List<SafePlayer> players) {
 		this.id = id;
 		this.name = name;
 		this.buyIn = buyIn;
@@ -22,7 +27,7 @@ public final class SerializableGame implements Serializable {
 		this.maxPlayers = maxPlayers;
 		this.paid = paid;
 		this.signedUp = signedUp;
-
+		this.playersList = players;
 	}
 
 	public static long getSerialversionuid() {
@@ -55,6 +60,10 @@ public final class SerializableGame implements Serializable {
 
 	public double getBuyIn() {
 		return buyIn;
+	}
+
+	public List<SafePlayer> getPlayersList() {
+		return playersList;
 	}
 
 }

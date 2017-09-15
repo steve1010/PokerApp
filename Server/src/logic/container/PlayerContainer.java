@@ -70,12 +70,11 @@ public final class PlayerContainer {
 		}
 	}
 
-	public void commitTransaction(String name, Double buyIn) {
+	public void commitTransaction(SafePlayer safePlayer, int gameId, Double buyIn) {
 		synchronized (playersLock) {
-			int id = getPlayerByName(name).getId();
-			playersMap.get(name).commitTransaction(buyIn);
-			playersIdMap.get(id).commitTransaction(buyIn);
-			playersList.get(id).commitTransaction(buyIn);
+			playersMap.get(safePlayer.getName()).commitTransaction(gameId, buyIn);
+			playersIdMap.get(safePlayer.getId()).commitTransaction(gameId, buyIn);
+			playersList.get(safePlayer.getId()).commitTransaction(gameId, buyIn);
 		}
 	}
 }

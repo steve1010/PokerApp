@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import entities.Player;
+import entities.SafePlayer;
 import entities.lobby.Game;
 import entities.lobby.IDGame;
 import entities.lobby.SerializableGame;
@@ -42,7 +42,7 @@ public class GameContainer {
 
 	private SerializableGame toSerializableGame(IDGame idGame) {
 		return new SerializableGame(idGame.getId(), idGame.getStartChips(), idGame.getMaxPlayers(), idGame.getPaid(),
-				idGame.getSignedUp(), idGame.getName(), idGame.getBuyIn());
+				idGame.getSignedUp(), idGame.getName(), idGame.getBuyIn(), idGame.getPlayersList());
 	}
 
 	public List<SerializableGame> getGamesListSerializable() {
@@ -61,14 +61,15 @@ public class GameContainer {
 		}
 	}
 
-	public One23 addPlayerToGame(Player player, int gameId) {
+	public One23 addPlayerToGame(SafePlayer safePlayer, int gameId) {
 		synchronized (gamesListLock) {
-			if (!(gamesList.get(gameId).getPlayersList().stream().filter(plr -> plr.getName().equals(player.getName()))
-					.collect(Collectors.toList()).isEmpty())) {
+			if (!(gamesList.get(gameId).getPlayersList().stream()
+					.filter(plr -> plr.getName().equals(safePlayer.getName())).collect(Collectors.toList())
+					.isEmpty())) {
 				return new One23(3);
 			}
-			playerStore.commitTransaction(player.getName(), gamesList.get(gameId).getBuyIn());
-			One23 result = gamesList.get(gameId).addPlayer(player);
+			playerStore.commitTransaction(safePlayer, gameId,gamesList.get(gameId).getBuyIn());
+			One23 result = gamesList.get(gameId).addPlayer(safePlayer);
 			return result;
 		}
 	}

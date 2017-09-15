@@ -34,6 +34,7 @@ public class LoginController implements Controller {
 		SafePlayer player = model.checkLoginData(name, pw);
 		if (player.isLoggedIn()) {
 			this.loggedInPlayer = new Player(player, pw);
+			model.setPlayer(this.loggedInPlayer);
 			openLobbyView(pw);
 		} else {
 			loginView.wrongLoginDataAlert();
@@ -100,6 +101,7 @@ public class LoginController implements Controller {
 
 	public void logout() {
 		model.setLoggedOut();
+		repaint("login");
 	}
 
 	public void repaint(String view) {

@@ -66,4 +66,8 @@ public class GameplayModel extends Model {
 	public IDGame getGame() {
 		return game;
 	}
+
+	public void logout() {
+		
+	}
 }

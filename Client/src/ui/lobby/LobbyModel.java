@@ -1,5 +1,10 @@
 package ui.lobby;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +19,7 @@ import entities.query.GameQuery;
 import entities.query.GameQuery.Option;
 import entities.query.PlayersQuery;
 import entities.query.server.One23;
+import entities.query.server.PoisonPill;
 import entities.query.server.ServerMsg;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -41,7 +47,7 @@ public class LobbyModel extends Model {
 		this.player = loggedInPlayer;
 		this.playerPort = loggedInPlayer.getAdress().getPort();
 		this.playerPw = pw;
-		runAsyncListener(0);
+		runAsyncListener();
 
 		// fetch games
 		sendObject(new GameQuery(Option.GET_GAMES), playerPort);
@@ -53,12 +59,15 @@ public class LobbyModel extends Model {
 
 	}
 
-	private void runAsyncListener(int addition) {
+	private void runAsyncListener() {
 		new Thread(() -> {
 			boolean running = true;
 			while (running) {
-				ServerMsg msg = receiveObjectAsynchronous(playerPort + addition);
-
+				ServerMsg msg = receiveObjectAsynchronous(playerPort);
+				if (msg == null) {
+					running = false;
+					break;
+				}
 				switch (msg.getMsgType()) {
 				case NEW_PLAYER_ENROLLED:
 					newPlayerEnrolled(msg.getId(), msg.getPlayer());
@@ -119,6 +128,11 @@ public class LobbyModel extends Model {
 		if (selectedGame != null) {
 			if (this.player.getBankRoll() < selectedGame.getBuyIn().doubleValue()) {
 				return ERROR_MESSAGE_0;
+			}
+			IDGame cur = this.gamesTableData.stream().filter(g -> g.getId() == selectedGame.getId())
+					.collect(Collectors.toList()).get(0);
+			if (cur.getMaxPlayers() == cur.getSignedUp()) {
+				return ERROR_MESSAGE_1;
 			} else {
 				sendObject(new PlayersQuery(selectedGame, player), playerPort);
 				One23 received = (One23) receiveObject(playerPort);
@@ -165,6 +179,21 @@ public class LobbyModel extends Model {
 
 	public void logoutUser() {
 		sendObject(new PlayersQuery(entities.query.PlayersQuery.Option.LOGOUT, player.getName(), playerPw));
+		poisonPill();
+	}
+
+	private void poisonPill() {
+		try (DatagramSocket clientSocket = new DatagramSocket();
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				ObjectOutputStream os = new ObjectOutputStream(bos)) {
+			os.writeObject(new PoisonPill());
+			byte[] toSendData = bos.toByteArray();
+			DatagramPacket toSendPacket = new DatagramPacket(toSendData, toSendData.length,
+					new InetSocketAddress("localhost", playerPort + 1));
+			clientSocket.send(toSendPacket);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

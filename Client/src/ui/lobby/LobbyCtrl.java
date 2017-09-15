@@ -49,6 +49,7 @@ public class LobbyCtrl extends Observable implements Controller {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("../gameplay/Gameplay.fxml"));
 			Parent p = loader.load();
+
 			Platform.runLater(() -> {
 				Stage runningGameStage = new Stage();
 				runningGameStage.setScene(new Scene(p));
@@ -57,10 +58,14 @@ public class LobbyCtrl extends Observable implements Controller {
 				runningGameStage.setY(1);
 				runningGameStage.setTitle("Good Luck!");
 				runningGameStage.show();
+				runningGameStage.setOnHidden((e) -> {// TODO: remove if not
+														// needed.
+				});
+				((GameplayView) loader.getController()).setData(model.getServerAdress(), model.getLoggedInPlayer(),
+						model.getPw(), primaryStage, runningGameStage, loginView, lobbyView,
+						((LobbyModel) model).getGamesTableData().stream().filter(game -> game.getId() == i)
+								.collect(Collectors.toList()).get(0));
 			});
-			((GameplayView) loader.getController()).setData(model.getServerAdress(), model.getLoggedInPlayer(),
-					model.getPw(), primaryStage, loginView, lobbyView, ((LobbyModel) model).getGamesTableData().stream()
-							.filter(game -> game.getId() == i).collect(Collectors.toList()).get(0));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import entities.Player;
@@ -18,6 +19,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
@@ -156,8 +158,12 @@ public class LobbyView implements Controller, Initializable, Observer {
 
 	@FXML
 	void logoutClicked(ActionEvent event) {
-		controller.triggerLogout();
-
+		Alert confirm = new Alert(AlertType.CONFIRMATION, "Really log out and return to login?");
+		Optional<ButtonType> result = confirm.showAndWait();
+		if (result.isPresent() && result.get().equals(ButtonType.OK)) {
+			controller.triggerLogout();
+		}
+		event.consume();
 	}
 
 	@FXML

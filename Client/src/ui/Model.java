@@ -96,11 +96,13 @@ public abstract class Model extends Observable {
 				return (ServerMsg) ois.readObject();
 			} catch (IOException e) {
 				e.printStackTrace();
+			} catch (ClassCastException castEx) {
+				// ignore
 			}
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}
-		throw new IllegalStateException();
+		return null;
 	}
 
 	public int newRandomPort() {

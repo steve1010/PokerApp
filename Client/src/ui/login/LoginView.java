@@ -76,4 +76,8 @@ public class LoginView implements Initializable {
 	public Pane getLoginPane() {
 		return loginPane;
 	}
+
+	public LoginController getController() {
+		return controller;
+	}
 }

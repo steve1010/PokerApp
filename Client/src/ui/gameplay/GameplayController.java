@@ -65,4 +65,8 @@ public final class GameplayController implements Controller {
 	public LobbyView getLobbyView() {
 		return lobbyView;
 	}
+
+	public void triggerLogout() {
+model.logout();		
+	}
 }

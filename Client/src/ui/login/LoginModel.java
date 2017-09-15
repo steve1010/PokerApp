@@ -45,4 +45,8 @@ public class LoginModel extends Model {
 	public String getPw() {
 		return player.getPw();
 	}
+
+	public void setPlayer(Player loggedInPlayer) {
+		this.player = loggedInPlayer;
+	}
 }

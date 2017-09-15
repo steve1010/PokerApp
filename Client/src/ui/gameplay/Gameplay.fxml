@@ -8,50 +8,33 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<Pane layoutX="3.0" layoutY="1.0" maxHeight="-Infinity" maxWidth="-Infinity"
-	minHeight="-Infinity" minWidth="-Infinity" prefHeight="890.0"
-	prefWidth="1115.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/8.0.40"
-	xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.gameplay.GameplayView">
+<Pane layoutX="3.0" layoutY="1.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="890.0" prefWidth="1115.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.gameplay.GameplayView">
 	<children>
-		<ImageView fitHeight="612.0" fitWidth="1048.0" layoutX="20.0"
-			layoutY="120.0" pickOnBounds="true" preserveRatio="true">
+		<ImageView fitHeight="612.0" fitWidth="1048.0" layoutX="20.0" layoutY="120.0" pickOnBounds="true" preserveRatio="true">
 			<image>
 				<Image url="@png/pokertable.JPG" />
 			</image>
 		</ImageView>
-		<Button fx:id="logoutBtn" layoutX="1007.0" mnemonicParsing="false"
-			onAction="#logoutBtnClicked" prefHeight="68.0" prefWidth="108.0"
-			style="-fx-background-color: pink;" text="Logout" textFill="#792b2b" />
 		<Pane layoutX="97.0" layoutY="154.0">
 			<fx:include fx:id="playersPane" source="Players.fxml" />
 		</Pane>
-		<Pane fx:id="pActionPane" layoutX="251.0" layoutY="729.0"
-			prefHeight="156.0" prefWidth="706.0" visible="false">
+		<Pane fx:id="pActionPane" layoutX="251.0" layoutY="729.0" prefHeight="156.0" prefWidth="706.0" visible="false">
 			<children>
-				<HBox layoutY="37.0" prefHeight="105.0" prefWidth="718.0"
-					spacing="50.0">
+				<HBox layoutY="37.0" prefHeight="105.0" prefWidth="718.0" spacing="50.0">
 					<children>
-						<Button fx:id="checkBtn" mnemonicParsing="false" onAction="#checkBtnClicked"
-							prefHeight="105.0" prefWidth="143.0" text="Check" />
-						<Button fx:id="callBtn" layoutX="10.0" layoutY="10.0"
-							mnemonicParsing="false" onAction="#callBtnClicked" prefHeight="105.0"
-							prefWidth="144.0" text="Call " />
-						<Button fx:id="raiseBtn" mnemonicParsing="false" onAction="#raiseBtnClicked"
-							prefHeight="167.0" prefWidth="130.0" text="Raise" />
-						<Button fx:id="foldBtn" mnemonicParsing="false" onAction="#foldBtnClicked"
-							prefHeight="105.0" prefWidth="126.0" text="Fold" />
+						<Button fx:id="checkBtn" mnemonicParsing="false" onAction="#checkBtnClicked" prefHeight="105.0" prefWidth="143.0" text="Check" />
+						<Button fx:id="callBtn" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#callBtnClicked" prefHeight="105.0" prefWidth="144.0" text="Call " />
+						<Button fx:id="raiseBtn" mnemonicParsing="false" onAction="#raiseBtnClicked" prefHeight="167.0" prefWidth="130.0" text="Raise" />
+						<Button fx:id="foldBtn" mnemonicParsing="false" onAction="#foldBtnClicked" prefHeight="105.0" prefWidth="126.0" text="Fold" />
 					</children>
 				</HBox>
-				<Slider fx:id="raiseSlider" layoutX="359.0" majorTickUnit="1500.0"
-					max="1500.0" minorTickCount="0" prefHeight="51.0" prefWidth="183.0"
-					showTickLabels="true" showTickMarks="true" />
+				<Slider fx:id="raiseSlider" layoutX="359.0" majorTickUnit="1500.0" max="1500.0" minorTickCount="0" prefHeight="51.0" prefWidth="183.0" showTickLabels="true" showTickMarks="true" />
 			</children>
 		</Pane>
-		<Button fx:id="dealBtn" layoutX="770.0" layoutY="29.0"
-			mnemonicParsing="false" onAction="#dealBtnClicked" prefHeight="51.0"
-			prefWidth="73.0" text="deal" />
-		<Button fx:id="evalBtn" layoutX="633.0" layoutY="35.0"
-			mnemonicParsing="false" onAction="#evalBtnClicked" text="Eval" />
+		<Button fx:id="dealBtn" layoutX="705.0" layoutY="29.0" mnemonicParsing="false" onAction="#dealBtnClicked" prefHeight="51.0" prefWidth="73.0" text="deal" />
+		<Button fx:id="evalBtn" layoutX="633.0" layoutY="35.0" mnemonicParsing="false" onAction="#evalBtnClicked" text="Eval" />
+      <Button layoutX="418.0" layoutY="-92.0" mnemonicParsing="false" text="Button" />
+      <Button fx:id="returnToLobbyBtn" layoutX="957.0" layoutY="1.0" mnemonicParsing="false" onAction="#lobbyBtnClicked" prefHeight="68.0" prefWidth="154.0" style="-fx-background-color: pink;" text="Return to Lobby" textFill="#792b2b" />
 
 
 	</children>

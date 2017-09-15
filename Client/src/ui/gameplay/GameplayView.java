@@ -2,7 +2,6 @@ package ui.gameplay;
 
 import java.net.InetSocketAddress;
 import java.util.List;
-import java.util.Optional;
 
 import entities.SafePlayer;
 import entities.gameplay.Card;
@@ -10,22 +9,16 @@ import entities.lobby.IDGame;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import ui.lobby.LobbyView;
-import ui.login.LoginController;
 import ui.login.LoginView;
 
 public class GameplayView {
 
 	private GameplayController controller;
-	private LoginController loginController;
-	// private String loggedInPlayer;
 
 	@FXML
 	private Parent playersPane;
@@ -37,10 +30,11 @@ public class GameplayView {
 	private Pane pActionPane;
 
 	@FXML
-	private Button dealBtn, evalBtn, checkBtn, callBtn, raiseBtn, foldBtn, logoutBtn;
+	private Button dealBtn, evalBtn, checkBtn, callBtn, raiseBtn, foldBtn, returnToLobbyBtn;
 
 	@FXML
 	private Slider raiseSlider;
+	private Stage currentStage;
 
 	@FXML
 	void dealBtnClicked(ActionEvent event) {
@@ -110,21 +104,16 @@ public class GameplayView {
 	}
 
 	@FXML
-	void logoutBtnClicked(ActionEvent event) {
-		Alert confirm = new Alert(AlertType.CONFIRMATION, "Really log out and return to login?");
-		Optional<ButtonType> result = confirm.showAndWait();
-		if (result.isPresent() && result.get().equals(ButtonType.OK)) {
-			loginController.logout();
-			// TODO: use this pattern in all mvc's.
-			loginController.repaint("login");
-		}
+	void lobbyBtnClicked(ActionEvent event) {
+		currentStage.close();
 		event.consume();
 	}
 
 	public void setData(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw, Stage primaryStage,
-			LoginView loginView, LobbyView lobbyView, IDGame idGame) {
+			Stage runningGameStage, LoginView loginView, LobbyView lobbyView, IDGame idGame) {
 		this.controller = new GameplayController(serverAdress, loggedInPlayer, pw, primaryStage, loginView, lobbyView,
 				idGame);
+		this.currentStage = runningGameStage;
 		switch (idGame.getMaxPlayers()) {
 		case 1:
 			for (int i = 1; i < 10; i++) {

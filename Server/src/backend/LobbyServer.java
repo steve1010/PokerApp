@@ -6,23 +6,23 @@ import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 
 import backend.handler.UdpClientHandler;
 import entities.query.server.PoisonPill;
 import logic.container.GameContainer;
 import logic.container.PlayerContainer;
-import logic.gameplay.Dealer;
 
-public class LobbyServer implements Runnable {
+public class LobbyServer implements RemoteAccess {
 
 	private boolean running = true;
 
 	private final int port;
 	private final GameContainer game;
 
-	public LobbyServer(int port) {
+	public LobbyServer(int port, ArrayList<RemoteAccess> remoteAccesses) {
 		this.port = port;
-		this.game = new GameContainer(new Dealer(), new PlayerContainer());
+		this.game = new GameContainer(new PlayerContainer(), remoteAccesses);
 	}
 
 	@Override

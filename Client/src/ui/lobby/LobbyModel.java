@@ -134,7 +134,7 @@ public class LobbyModel extends Model {
 			if (cur.getMaxPlayers() == cur.getSignedUp()) {
 				return ERROR_MESSAGE_1;
 			} else {
-				sendObject(new PlayersQuery(selectedGame, player), playerPort);
+				sendObject(new PlayersQuery(selectedGame, Player.toSafePlayer(player)), playerPort);
 				One23 received = (One23) receiveObject(playerPort);
 				switch (received.getI()) {
 				case 1:

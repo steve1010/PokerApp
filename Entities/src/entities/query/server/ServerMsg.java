@@ -10,7 +10,7 @@ public class ServerMsg implements Serializable {
 	private static final long serialVersionUID = 2650348213355515896L;
 
 	public enum MsgType {
-		NEW_PLAYER_ENROLLED, NEW_GAME_OFFERED, PLAYER_LOGOUT, PLAYER_LOGIN, LAST_PLAYER_ENROLLED;
+		NEW_PLAYER_ENROLLED, NEW_GAME_OFFERED, PLAYER_LOGOUT, PLAYER_LOGIN, LAST_PLAYER_ENROLLED, GAMES_SERVER_MSG;
 	}
 
 	private final MsgType msgType;

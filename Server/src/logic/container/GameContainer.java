@@ -4,28 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import backend.GameServer;
+import backend.RemoteAccess;
 import entities.SafePlayer;
 import entities.lobby.Game;
 import entities.lobby.IDGame;
 import entities.lobby.SerializableGame;
 import entities.query.server.One23;
-import logic.gameplay.Dealer;
 
-public class GameContainer {
+public final class GameContainer {
 
-	private final Dealer dealer;
 	private final PlayerContainer playerStore;
 	private final List<IDGame> gamesList;
-	private Object gamesListLock = new Object();
+	private final Object gamesListLock = new Object();
+	private final ArrayList<RemoteAccess> remoteAccesses;
 
-	public GameContainer(Dealer dealer, PlayerContainer players) {
-		this.dealer = dealer;
+	public GameContainer(PlayerContainer players, ArrayList<RemoteAccess> remoteAccesses) {
 		this.playerStore = players;
 		this.gamesList = new ArrayList<>();
-	}
-
-	public Dealer getDealer() {
-		return dealer;
+		this.remoteAccesses = remoteAccesses;
 	}
 
 	public PlayerContainer getPlayerStore() {
@@ -65,7 +62,19 @@ public class GameContainer {
 			}
 			playerStore.commitTransaction(safePlayer, idGame, gamesList.get(idGame.getId()).getBuyIn());
 			One23 result = gamesList.get(idGame.getId()).addPlayer(safePlayer);
+			if (result.getI() == 4) {
+				idGame.addPlayer(safePlayer);
+				new Thread(() -> {
+					GameServer gameServer = new GameServer(idGame);
+					new Thread(gameServer).start();
+					remoteAccesses.add(gameServer);
+				}).start();
+			}
 			return result;
 		}
+	}
+
+	public ArrayList<RemoteAccess> getRemoteAccesses() {
+		return remoteAccesses;
 	}
 }

@@ -49,7 +49,7 @@ public final class UdpClientHandler extends ClientHandler {
 			new Thread(new GameClientHandler(received, getClientAdress(), gameContainer)).start();
 		}
 		if (received instanceof PlayersActionQuery) {
-			new Thread(new PlayersActionClientHandler(received, getClientAdress())).start();
+//			new Thread(new PlayersActionClientHandler(received, getClientAdress())).start();
 		}
 	}
 

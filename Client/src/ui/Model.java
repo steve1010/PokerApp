@@ -68,8 +68,8 @@ public abstract class Model extends Observable {
 		return null;
 	}
 
-	public Object receiveObject(int portt) {
-		try (DatagramSocket clientSocket = new DatagramSocket(portt)) {
+	public Object receiveObject(int port) {
+		try (DatagramSocket clientSocket = new DatagramSocket(port)) {
 			byte[] incomingData = new byte[2024];
 			DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
 			// wait for server response
@@ -86,18 +86,20 @@ public abstract class Model extends Observable {
 		return null;
 	}
 
-	public ServerMsg receiveObjectAsynchronous(int portt) {
-		try (DatagramSocket clientSocket = new DatagramSocket(portt + 1)) {
+	public ServerMsg receiveObjectAsynchronous(int port) {
+		try (DatagramSocket clientSocket = new DatagramSocket((port + 1))) {
 			byte[] incomingData = new byte[2024];
 			DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
+			System.out.println("waiting " + (port + 1) + "..");
 			clientSocket.receive(incomingPacket);
+			System.out.println("..received.");
 			byte[] data = incomingPacket.getData();
 			try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data))) {
 				return (ServerMsg) ois.readObject();
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (ClassCastException castEx) {
-				// ignore
+				castEx.printStackTrace();
 			}
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
@@ -106,7 +108,7 @@ public abstract class Model extends Observable {
 	}
 
 	public int newRandomPort() {
-		return (int) (20000 + Math.random() * 40000);
+		return (int) (21000 + Math.random() * 52000);
 	}
 
 	public InetSocketAddress getServerAdress() {

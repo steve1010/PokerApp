@@ -2,12 +2,14 @@ package ui.gameplay;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import entities.gameplay.Board;
 import entities.gameplay.Card;
+import entities.gameplay.Card.Color;
 import entities.gameplay.LocatedImage;
 import entities.gameplay.PlayerHand;
-import entities.gameplay.Card.Color;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -15,8 +17,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import ui.gameplay.GameplayClientInterna.Position;
 
-public class PlayersView {
+public class PlayersView implements Observer {
 
 	@FXML
 	private Pane playersPane, cards0Pane, cards1Pane, cards2Pane, cards3Pane, cards4Pane, cards5Pane, cards6Pane,
@@ -26,8 +29,9 @@ public class PlayersView {
 	private VBox potVbox, vBox0, vBox1, vBox2, vBox3, vBox4, vBox5, vBox6, vBox7, vBox8, vBox9;
 
 	@FXML
-	private Label potValue, bet0Lbl, name0Lbl, bet1Lbl, name1Lbl, bet2Lbl, name2Lbl, bet3Lbl, name3Lbl, bet4Lbl,
-			name4Lbl, bet5Lbl, name5Lbl, bet6Lbl, name6Lbl, bet7Lbl, name7Lbl, bet8Lbl, name8Lbl, bet9Lbl, name9Lbl;
+	private Label playersAmountLbl, potValue, bet0Lbl, name0Lbl, bet1Lbl, name1Lbl, bet2Lbl, name2Lbl, bet3Lbl,
+			name3Lbl, bet4Lbl, name4Lbl, bet5Lbl, name5Lbl, bet6Lbl, name6Lbl, bet7Lbl, name7Lbl, bet8Lbl, name8Lbl,
+			bet9Lbl, name9Lbl;
 
 	@FXML
 	private ImageView card10Imv, card20Imv, card11Imv, card21Imv, card12Imv, card22Imv, card13Imv, card23Imv, card14Imv,
@@ -37,6 +41,57 @@ public class PlayersView {
 	@FXML
 	private HBox boardHbox, pActionHbox, cards1Hbox, cards2Hbox, cards3Hbox, cards4Hbox, cards5Hbox, cards6Hbox,
 			cards7Hbox, cards8Hbox, cards9Hbox;
+
+	@Override
+	public void update(Observable obs, Object o) {
+		if (o instanceof ui.ClientInterna) {
+			GameplayClientInterna clientInterna = (GameplayClientInterna) o;
+			switch (clientInterna.getType()) {
+			case POSITION:
+				switchPosition(clientInterna.getPosition());
+				break;
+			case YOUR_TURN:
+				displayPlayerActions();
+			case ACTION:
+				break;
+			case ROUND_END:
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	private void displayPlayerActions() {
+		pActionHbox.setVisible(true);
+	}
+
+	private void switchPosition(Position position) {
+		switch (position) {
+		case BUTTON:
+			break;
+		case SMALL_BLIND:
+			break;
+		case BIG_BLIND:
+			break;
+		case UTG:
+			break;
+		case EARLY_POSITION_1:
+			break;
+		case EARLY_POSITION_2:
+			break;
+		case MIDDLE_POSITION_1:
+			break;
+		case MIDDLE_POSITION_2:
+			break;
+		case LATE_POSITION:
+			break;
+		case CUTOFF:
+			break;
+		default:
+			break;
+		}
+	}
 
 	public void setPlayerName(int id, String name) {
 		System.out.println("Player " + id + " Hand: " + name);
@@ -74,6 +129,10 @@ public class PlayersView {
 		default:
 			break;
 		}
+	}
+
+	public void setPlayersAmount(String amount) {
+		playersAmountLbl.setText(amount);
 	}
 
 	public void setCard(int playerID, boolean card1, Card card) {
@@ -228,7 +287,7 @@ public class PlayersView {
 	}
 
 	public PlayerHand getCards(int playerID) {
-		return new PlayerHand(getCard1(playerID), getCard2(playerID));
+		return new PlayerHand(playerID, getCard1(playerID), getCard2(playerID));
 	}
 
 	public List<PlayerHand> getAllCards() {
@@ -417,6 +476,43 @@ public class PlayersView {
 				imageToCard((LocatedImage) boardCard4Imv.getImage()));
 	}
 
+	public void setPlayerBet(int playerID, double value) {
+		switch (playerID) {
+		case 0:
+			bet0Lbl.setText(String.valueOf(value));
+			break;
+		case 1:
+			bet1Lbl.setText(String.valueOf(value));
+			break;
+		case 2:
+			bet2Lbl.setText(String.valueOf(value));
+			break;
+		case 3:
+			bet3Lbl.setText(String.valueOf(value));
+			break;
+		case 4:
+			bet4Lbl.setText(String.valueOf(value));
+			break;
+		case 5:
+			bet5Lbl.setText(String.valueOf(value));
+			break;
+		case 6:
+			bet6Lbl.setText(String.valueOf(value));
+			break;
+		case 7:
+			bet7Lbl.setText(String.valueOf(value));
+			break;
+		case 8:
+			bet8Lbl.setText(String.valueOf(value));
+			break;
+		case 9:
+			bet9Lbl.setText(String.valueOf(value));
+			break;
+		default:
+			throw new IllegalArgumentException("Player with id: " + playerID + " doesn't exist.");
+		}
+	}
+
 	public void disablePlayerSlot(int slot) {
 		switch (slot) {
 		case 0:
@@ -453,5 +549,4 @@ public class PlayersView {
 			break;
 		}
 	}
-
 }

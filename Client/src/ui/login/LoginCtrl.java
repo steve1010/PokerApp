@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 import ui.Controller;
 import ui.lobby.LobbyView;
 
-public class LoginController implements Controller {
+public class LoginCtrl implements Controller {
 
 	private LoginModel model;
 	private Stage primaryStage;
@@ -22,7 +22,7 @@ public class LoginController implements Controller {
 	private boolean isResiterViewLoaded = false;
 	private Player loggedInPlayer;
 
-	public LoginController(LoginView loginView) {
+	public LoginCtrl(LoginView loginView) {
 		this.loginView = loginView;
 	}
 

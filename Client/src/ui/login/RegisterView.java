@@ -19,7 +19,7 @@ public class RegisterView {
 	@FXML
 	private Button signUpBtn, backBtn;
 
-	private LoginController loginController;
+	private LoginCtrl loginController;
 
 	@FXML
 	void signUpBtnClicked(ActionEvent event) {
@@ -47,7 +47,7 @@ public class RegisterView {
 		event.consume();
 	}
 
-	public void setController(LoginController loginController) {
+	public void setController(LoginCtrl loginController) {
 		this.loginController = loginController;
 	}
 

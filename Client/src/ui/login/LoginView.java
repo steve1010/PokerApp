@@ -9,18 +9,18 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class LoginView implements Initializable {
 
 	@FXML
-	private LoginController controller;
+	private LoginCtrl controller;
 
 	@FXML
 	private Pane loginPane;
@@ -34,7 +34,7 @@ public class LoginView implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		controller = new LoginController(this);
+		controller = new LoginCtrl(this);
 	}
 
 	@FXML
@@ -77,7 +77,7 @@ public class LoginView implements Initializable {
 		return loginPane;
 	}
 
-	public LoginController getController() {
+	public LoginCtrl getController() {
 		return controller;
 	}
 }

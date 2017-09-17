@@ -90,7 +90,7 @@ public class LobbyModel extends Model {
 						playersTableData.remove(playersTableData.stream().filter(e -> e.getId() == msg.getId())
 								.collect(Collectors.toList()).get(0));
 					});
-					triggerNotification(new ClientInterna(1, playersTableData));
+					triggerNotification(new LobbyClientInterna(1, playersTableData));
 					break;
 
 				case LAST_PLAYER_ENROLLED:
@@ -98,7 +98,7 @@ public class LobbyModel extends Model {
 					List<SerializableGame> games = player.getGamesList().stream()
 							.filter(gameId -> gameId.getId() == msg.getId()).collect(Collectors.toList());
 					if (!games.isEmpty()) {
-						triggerNotification(new ClientInterna(2, games.get(0).getId()));
+						triggerNotification(new LobbyClientInterna(2, games.get(0).getId()));
 					}
 					break;
 				default:
@@ -173,8 +173,8 @@ public class LobbyModel extends Model {
 	}
 
 	public void init() {
-		triggerNotification(new ClientInterna(0, gamesTableData));
-		triggerNotification(new ClientInterna(1, playersTableData));
+		triggerNotification(new LobbyClientInterna(0, gamesTableData));
+		triggerNotification(new LobbyClientInterna(1, playersTableData));
 	}
 
 	public void logoutUser() {

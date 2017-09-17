@@ -2,6 +2,8 @@ package ui.gameplay;
 
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import entities.SafePlayer;
 import entities.gameplay.Card;
@@ -9,16 +11,18 @@ import entities.lobby.IDGame;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import ui.lobby.LobbyView;
 import ui.login.LoginView;
 
-public class GameplayView {
+public class GameplayView implements Observer {
 
-	private GameplayController controller;
+	private GameplayCtrl controller;
 
 	@FXML
 	private Parent playersPane;
@@ -35,6 +39,26 @@ public class GameplayView {
 	@FXML
 	private Slider raiseSlider;
 	private Stage currentStage;
+
+	@Override
+	public void update(Observable obs, Object o) {
+		if (o instanceof GameplayClientInterna) {
+			GameplayClientInterna clientInterna = (GameplayClientInterna) o;
+			switch (clientInterna.getType()) {
+			case POSITION:
+				break;// ignore
+			case YOUR_TURN:
+				pActionPane.setVisible(true);
+				break;
+			case ACTION:
+				break;
+			case ROUND_END: 
+				break;
+			default:
+				throw new IllegalArgumentException("unknown msg.");
+			}
+		}
+	}
 
 	@FXML
 	void dealBtnClicked(ActionEvent event) {
@@ -80,18 +104,21 @@ public class GameplayView {
 	@FXML
 	void callBtnClicked(ActionEvent event) {
 		controller.userCalls();
+		pActionPane.setVisible(false);
 		event.consume();
 	}
 
 	@FXML
 	void checkBtnClicked(ActionEvent event) {
 		controller.userChecks();
+		pActionPane.setVisible(false);
 		event.consume();
 	}
 
 	@FXML
 	void foldBtnClicked(ActionEvent event) {
 		controller.userFolds();
+		pActionPane.setVisible(false);
 		event.consume();
 	}
 
@@ -99,6 +126,9 @@ public class GameplayView {
 	void raiseBtnClicked(ActionEvent event) {
 		if (raiseSlider.getValue() != 0.0) {
 			controller.userRaises(raiseSlider.getValue());
+			pActionPane.setVisible(false);
+		} else {
+			new Alert(AlertType.WARNING, "Bitte einen gültigen Raise-Betrag eingeben.").show();
 		}
 		event.consume();
 	}
@@ -111,9 +141,11 @@ public class GameplayView {
 
 	public void setData(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw, Stage primaryStage,
 			Stage runningGameStage, LoginView loginView, LobbyView lobbyView, IDGame idGame) {
-		this.controller = new GameplayController(serverAdress, loggedInPlayer, pw, primaryStage, loginView, lobbyView,
-				idGame);
+		this.controller = new GameplayCtrl(serverAdress, loggedInPlayer, pw, primaryStage, playersPaneController,
+				loginView, lobbyView, idGame);
+		controller.addObserver(this);
 		this.currentStage = runningGameStage;
+		playersPaneController.setPlayersAmount(String.valueOf(idGame.getMaxPlayers()));
 		switch (idGame.getMaxPlayers()) {
 		case 1:
 			for (int i = 1; i < 10; i++) {
@@ -175,6 +207,5 @@ public class GameplayView {
 		default:
 			break;
 		}
-
 	}
 }

@@ -128,15 +128,15 @@ public class LobbyView implements Controller, Initializable, Observer {
 	@Override
 	public void update(Observable observable, Object o) {
 
-		if (o instanceof ClientInterna) {
+		if (o instanceof LobbyClientInterna) {
 			Platform.runLater(() -> {
-				int type = ((ClientInterna) o).getType();
+				int type = ((LobbyClientInterna) o).getType();
 				if (type == 0) {
-					gamesTable.setItems((ObservableList<IDGame>) ((ClientInterna) o).getTableData());
+					gamesTable.setItems((ObservableList<IDGame>) ((LobbyClientInterna) o).getTableData());
 					gamesTable.refresh();
 				}
 				if (type == 1) {
-					allPlayersTable.setItems((ObservableList<SafePlayer>) ((ClientInterna) o).getTableData());
+					allPlayersTable.setItems((ObservableList<SafePlayer>) ((LobbyClientInterna) o).getTableData());
 					allPlayersTable.refresh();
 				}
 			});

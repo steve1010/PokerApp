@@ -15,7 +15,7 @@ public final class Dealer {
 
 	public Dealer() {
 		this.cardsList = new LinkedList<Card>();
-		shuffle();
+		fill();
 		this.evaluator = new Evaluator();
 	}
 
@@ -28,8 +28,8 @@ public final class Dealer {
 
 	public synchronized void shuffle() {
 		fill();
-		for (int i = 51; i >= 0; i--) {
-			int rand = (int) (Math.random() * (i + 1));
+		for (int i = 0; i < 52; i++) {
+			int rand = (int) (Math.random() * (51 - i));
 			Card temp = cardsList.get(i);
 			cardsList.add(i, cardsList.get(rand));
 			cardsList.remove(i + 1);
@@ -51,5 +51,4 @@ public final class Dealer {
 		shuffle();
 		return evaluator.evaluate(board, hands);
 	}
-
 }

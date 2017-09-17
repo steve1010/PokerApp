@@ -1,20 +1,21 @@
 package ui.lobby;
 
 import javafx.collections.ObservableList;
+import ui.ClientInterna;
 
-public class ClientInterna {
+public class LobbyClientInterna implements ClientInterna {
 
 	private final ObservableList<?> tableData;
 	private final int type;
 	private int id;
 
-	public ClientInterna(int type, ObservableList<?> tableData) {
+	public LobbyClientInterna(int type, ObservableList<?> tableData) {
 		validate(type);
 		this.type = type;
 		this.tableData = tableData;
 	}
 
-	public ClientInterna(int type, int id) {
+	public LobbyClientInterna(int type, int id) {
 		validate(type);
 		this.type = type;
 		this.tableData = null;

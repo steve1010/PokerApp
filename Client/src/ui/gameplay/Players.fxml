@@ -6,28 +6,36 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane fx:id="playersPane" prefHeight="558.0" prefWidth="863.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.gameplay.PlayersView">
+<Pane fx:id="playersPane" prefHeight="558.0" prefWidth="863.0"
+	xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="ui.gameplay.PlayersView">
 	<children>
-		<VBox fx:id="vBox0" layoutX="348.0" layoutY="364.0" prefHeight="163.0" prefWidth="128.0" spacing="4.0" style="-fx-border-color: blue; -fx-border-radius: 40px;">
+		<VBox fx:id="vBox0" layoutX="348.0" layoutY="364.0" prefHeight="163.0"
+			prefWidth="128.0" spacing="4.0"
+			style="-fx-border-color: blue; -fx-border-radius: 40px;">
 			<children>
-				<Label fx:id="bet0Lbl" alignment="CENTER" prefHeight="37.0" prefWidth="149.0" text="\$$$Bet$$$" textFill="#fffef8">
+				<Label fx:id="bet0Lbl" alignment="CENTER" prefHeight="37.0"
+					prefWidth="149.0" text="\$$$Bet$$$" textFill="#fffef8">
 					<padding>
 						<Insets left="15.0" top="10.0" />
 					</padding>
 				</Label>
-				<Label fx:id="name0Lbl" prefHeight="27.0" prefWidth="132.0" text="Player_Name">
+				<Label fx:id="name0Lbl" prefHeight="27.0" prefWidth="132.0"
+					text="Player_Name">
 					<padding>
 						<Insets left="10.0" />
 					</padding>
 				</Label>
 				<Pane fx:id="cards0Pane" prefHeight="92.0" prefWidth="126.0">
 					<children>
-						<ImageView fx:id="card20Imv" fitHeight="80.0" fitWidth="50.0" layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card20Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
 						</ImageView>
-						<ImageView fx:id="card10Imv" fitHeight="80.0" fitWidth="50.0" layoutX="18.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card10Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="18.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
@@ -36,55 +44,71 @@
 				</Pane>
 			</children>
 		</VBox>
-		<HBox fx:id="boardHbox" layoutX="299.0" layoutY="264.0" prefHeight="73.0" prefWidth="271.0" spacing="15.0">
+		<HBox fx:id="boardHbox" layoutX="299.0" layoutY="264.0"
+			prefHeight="73.0" prefWidth="271.0" spacing="15.0">
 			<children>
-				<ImageView fx:id="boardCard0Imv" fitHeight="80.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+				<ImageView fx:id="boardCard0Imv" fitHeight="80.0"
+					fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
 					<image>
 						<Image url="@png/back.jpg" />
 					</image>
 				</ImageView>
-				<ImageView fx:id="boardCard1Imv" fitHeight="80.0" fitWidth="50.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+				<ImageView fx:id="boardCard1Imv" fitHeight="80.0"
+					fitWidth="50.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true"
+					preserveRatio="true">
 					<image>
 						<Image url="@png/back.jpg" />
 					</image>
 				</ImageView>
-				<ImageView fx:id="boardCard2Imv" fitHeight="80.0" fitWidth="50.0" layoutX="60.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+				<ImageView fx:id="boardCard2Imv" fitHeight="80.0"
+					fitWidth="50.0" layoutX="60.0" layoutY="10.0" pickOnBounds="true"
+					preserveRatio="true">
 					<image>
 						<Image url="@png/back.jpg" />
 					</image>
 				</ImageView>
-				<ImageView fx:id="boardCard3Imv" fitHeight="80.0" fitWidth="50.0" layoutX="110.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+				<ImageView fx:id="boardCard3Imv" fitHeight="80.0"
+					fitWidth="50.0" layoutX="110.0" layoutY="10.0" pickOnBounds="true"
+					preserveRatio="true">
 					<image>
 						<Image url="@png/back.jpg" />
 					</image>
 				</ImageView>
-				<ImageView fx:id="boardCard4Imv" fitHeight="80.0" fitWidth="50.0" layoutX="160.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+				<ImageView fx:id="boardCard4Imv" fitHeight="80.0"
+					fitWidth="50.0" layoutX="160.0" layoutY="10.0" pickOnBounds="true"
+					preserveRatio="true">
 					<image>
 						<Image url="@png/back.jpg" />
 					</image>
 				</ImageView>
 			</children>
 		</HBox>
-		<VBox fx:id="vBox1" layoutX="157.0" layoutY="364.0" prefHeight="163.0" prefWidth="128.0" spacing="4.0" style="-fx-border-color: blue; -fx-border-radius: 40px;">
+		<VBox fx:id="vBox1" layoutX="157.0" layoutY="364.0" prefHeight="163.0"
+			prefWidth="128.0" spacing="4.0"
+			style="-fx-border-color: blue; -fx-border-radius: 40px;">
 			<children>
-				<Label fx:id="bet1Lbl" alignment="CENTER" prefHeight="37.0" prefWidth="131.0" text="\$$$Bet$$$" textFill="#2aab37">
+				<Label fx:id="bet1Lbl" alignment="CENTER" prefHeight="37.0"
+					prefWidth="131.0" text="\$$$Bet$$$" textFill="#2aab37">
 					<padding>
 						<Insets left="15.0" top="10.0" />
 					</padding>
 				</Label>
-				<Label fx:id="name1Lbl" prefHeight="27.0" prefWidth="148.0" text="Player_Name">
+				<Label fx:id="name1Lbl" prefHeight="27.0" prefWidth="148.0"
+					text="Player_Name">
 					<padding>
 						<Insets left="10.0" />
 					</padding>
 				</Label>
 				<Pane fx:id="cards1Pane" prefHeight="92.0" prefWidth="126.0">
 					<children>
-						<ImageView fx:id="card21Imv" fitHeight="80.0" fitWidth="50.0" layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card21Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
 						</ImageView>
-						<ImageView fx:id="card11Imv" fitHeight="80.0" fitWidth="50.0" layoutX="18.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card11Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="18.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
@@ -93,26 +117,32 @@
 				</Pane>
 			</children>
 		</VBox>
-		<VBox fx:id="vBox2" layoutX="20.0" layoutY="294.0" prefHeight="163.0" prefWidth="128.0" spacing="4.0" style="-fx-border-color: blue; -fx-border-radius: 40px;">
+		<VBox fx:id="vBox2" layoutX="20.0" layoutY="294.0" prefHeight="163.0"
+			prefWidth="128.0" spacing="4.0"
+			style="-fx-border-color: blue; -fx-border-radius: 40px;">
 			<children>
-				<Label fx:id="bet2Lbl" alignment="CENTER" prefHeight="37.0" prefWidth="119.0" text="\$$$Bet$$$" textFill="#2aab37">
+				<Label fx:id="bet2Lbl" alignment="CENTER" prefHeight="37.0"
+					prefWidth="119.0" text="\$$$Bet$$$" textFill="#2aab37">
 					<padding>
 						<Insets left="15.0" top="10.0" />
 					</padding>
 				</Label>
-				<Label fx:id="name2Lbl" prefHeight="27.0" prefWidth="131.0" text="Player_Name">
+				<Label fx:id="name2Lbl" prefHeight="27.0" prefWidth="131.0"
+					text="Player_Name">
 					<padding>
 						<Insets left="10.0" />
 					</padding>
 				</Label>
 				<Pane fx:id="cards2Pane" prefHeight="92.0" prefWidth="126.0">
 					<children>
-						<ImageView fx:id="card22Imv" fitHeight="80.0" fitWidth="50.0" layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card22Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
 						</ImageView>
-						<ImageView fx:id="card12Imv" fitHeight="80.0" fitWidth="50.0" layoutX="18.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card12Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="18.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
@@ -121,16 +151,20 @@
 				</Pane>
 			</children>
 		</VBox>
-		<VBox fx:id="vBox3" layoutX="18.0" layoutY="111.0" prefHeight="163.0" prefWidth="128.0" spacing="4.0" style="-fx-border-color: blue; -fx-border-radius: 40px;">
+		<VBox fx:id="vBox3" layoutX="18.0" layoutY="111.0" prefHeight="163.0"
+			prefWidth="128.0" spacing="4.0"
+			style="-fx-border-color: blue; -fx-border-radius: 40px;">
 			<children>
 				<Pane fx:id="cards3Pane" prefHeight="92.0" prefWidth="126.0">
 					<children>
-						<ImageView fx:id="card23Imv" fitHeight="80.0" fitWidth="50.0" layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card23Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
 						</ImageView>
-						<ImageView fx:id="card13Imv" fitHeight="80.0" fitWidth="50.0" layoutX="18.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card13Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="18.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
@@ -142,145 +176,176 @@
 						<Insets left="10.0" />
 					</padding>
 				</Label>
-				<Label fx:id="bet3Lbl" alignment="CENTER" prefHeight="37.0" prefWidth="120.0" text="\$$$Bet$$$" textFill="#2aab37">
+				<Label fx:id="bet3Lbl" alignment="CENTER" prefHeight="37.0"
+					prefWidth="120.0" text="\$$$Bet$$$" textFill="#2aab37">
 					<padding>
 						<Insets left="15.0" top="10.0" />
 					</padding>
 				</Label>
 			</children>
 		</VBox>
-		<VBox fx:id="vBox4" layoutX="164.0" layoutY="44.0" prefHeight="163.0" prefWidth="128.0" spacing="4.0" style="-fx-border-color: blue; -fx-border-radius: 40px;">
+		<VBox fx:id="vBox4" layoutX="164.0" layoutY="44.0" prefHeight="163.0"
+			prefWidth="128.0" spacing="4.0"
+			style="-fx-border-color: blue; -fx-border-radius: 40px;">
 			<children>
 				<Pane fx:id="cards4Pane" prefHeight="92.0" prefWidth="126.0">
 					<children>
-						<ImageView fx:id="card24Imv" fitHeight="80.0" fitWidth="50.0" layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card24Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
 						</ImageView>
-						<ImageView fx:id="card14Imv" fitHeight="80.0" fitWidth="50.0" layoutX="18.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card14Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="18.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
 						</ImageView>
 					</children>
 				</Pane>
-				<Label fx:id="name4Lbl" prefHeight="27.0" prefWidth="133.0" text="Player_Name">
+				<Label fx:id="name4Lbl" prefHeight="27.0" prefWidth="133.0"
+					text="Player_Name">
 					<padding>
 						<Insets left="10.0" />
 					</padding>
 				</Label>
-				<Label fx:id="bet4Lbl" alignment="CENTER" prefHeight="37.0" prefWidth="120.0" text="\$$$Bet$$$" textFill="#2aab37">
+				<Label fx:id="bet4Lbl" alignment="CENTER" prefHeight="37.0"
+					prefWidth="120.0" text="\$$$Bet$$$" textFill="#2aab37">
 					<padding>
 						<Insets left="15.0" top="10.0" />
 					</padding>
 				</Label>
 			</children>
 		</VBox>
-		<VBox fx:id="vBox5" layoutX="337.0" layoutY="44.0" prefHeight="163.0" prefWidth="128.0" spacing="4.0" style="-fx-border-color: blue; -fx-border-radius: 40px;">
+		<VBox fx:id="vBox5" layoutX="337.0" layoutY="44.0" prefHeight="163.0"
+			prefWidth="128.0" spacing="4.0"
+			style="-fx-border-color: blue; -fx-border-radius: 40px;">
 			<children>
 				<Pane fx:id="cards5Pane" prefHeight="92.0" prefWidth="126.0">
 					<children>
-						<ImageView fx:id="card25Imv" fitHeight="80.0" fitWidth="50.0" layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card25Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
 						</ImageView>
-						<ImageView fx:id="card15Imv" fitHeight="80.0" fitWidth="50.0" layoutX="18.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card15Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="18.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
 						</ImageView>
 					</children>
 				</Pane>
-				<Label fx:id="name5Lbl" prefHeight="27.0" prefWidth="130.0" text="Player_Name">
+				<Label fx:id="name5Lbl" prefHeight="27.0" prefWidth="130.0"
+					text="Player_Name">
 					<padding>
 						<Insets left="10.0" />
 					</padding>
 				</Label>
-				<Label fx:id="bet5Lbl" alignment="CENTER" prefHeight="37.0" prefWidth="117.0" text="\$$$Bet$$$" textFill="#2aab37">
+				<Label fx:id="bet5Lbl" alignment="CENTER" prefHeight="37.0"
+					prefWidth="117.0" text="\$$$Bet$$$" textFill="#2aab37">
 					<padding>
 						<Insets left="15.0" top="10.0" />
 					</padding>
 				</Label>
 			</children>
 		</VBox>
-		<VBox fx:id="vBox6" layoutX="572.0" layoutY="60.0" prefHeight="163.0" prefWidth="128.0" spacing="4.0" style="-fx-border-color: blue; -fx-border-radius: 40px;">
+		<VBox fx:id="vBox6" layoutX="572.0" layoutY="60.0" prefHeight="163.0"
+			prefWidth="128.0" spacing="4.0"
+			style="-fx-border-color: blue; -fx-border-radius: 40px;">
 			<children>
 				<Pane fx:id="cards6Pane" prefHeight="92.0" prefWidth="126.0">
 					<children>
-						<ImageView fx:id="card26Imv" fitHeight="80.0" fitWidth="50.0" layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card26Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
 						</ImageView>
-						<ImageView fx:id="card16Imv" fitHeight="80.0" fitWidth="50.0" layoutX="18.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card16Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="18.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
 						</ImageView>
 					</children>
 				</Pane>
-				<Label fx:id="name6Lbl" prefHeight="27.0" prefWidth="125.0" text="Player_Name">
+				<Label fx:id="name6Lbl" prefHeight="27.0" prefWidth="125.0"
+					text="Player_Name">
 					<padding>
 						<Insets left="10.0" />
 					</padding>
 				</Label>
-				<Label fx:id="bet6Lbl" alignment="CENTER" prefHeight="37.0" prefWidth="119.0" text="\$$$Bet$$$" textFill="#2aab37">
+				<Label fx:id="bet6Lbl" alignment="CENTER" prefHeight="37.0"
+					prefWidth="119.0" text="\$$$Bet$$$" textFill="#2aab37">
 					<padding>
 						<Insets left="15.0" top="10.0" />
 					</padding>
 				</Label>
 			</children>
 		</VBox>
-		<VBox fx:id="vBox7" layoutX="715.0" layoutY="99.0" prefHeight="163.0" prefWidth="128.0" spacing="4.0" style="-fx-border-color: blue; -fx-border-radius: 40px;">
+		<VBox fx:id="vBox7" layoutX="715.0" layoutY="99.0" prefHeight="163.0"
+			prefWidth="128.0" spacing="4.0"
+			style="-fx-border-color: blue; -fx-border-radius: 40px;">
 			<children>
 				<Pane fx:id="cards7Pane" prefHeight="92.0" prefWidth="126.0">
 					<children>
-						<ImageView fx:id="card27Imv" fitHeight="80.0" fitWidth="50.0" layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card27Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
 						</ImageView>
-						<ImageView fx:id="card17Imv" fitHeight="80.0" fitWidth="50.0" layoutX="18.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card17Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="18.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
 						</ImageView>
 					</children>
 				</Pane>
-				<Label fx:id="name7Lbl" prefHeight="27.0" prefWidth="130.0" text="Player_Name">
+				<Label fx:id="name7Lbl" prefHeight="27.0" prefWidth="130.0"
+					text="Player_Name">
 					<padding>
 						<Insets left="10.0" />
 					</padding>
 				</Label>
-				<Label fx:id="bet7Lbl" alignment="CENTER" prefHeight="37.0" prefWidth="160.0" text="\$$$Bet$$$" textFill="#2aab37">
+				<Label fx:id="bet7Lbl" alignment="CENTER" prefHeight="37.0"
+					prefWidth="160.0" text="\$$$Bet$$$" textFill="#2aab37">
 					<padding>
 						<Insets left="15.0" top="10.0" />
 					</padding>
 				</Label>
 			</children>
 		</VBox>
-		<VBox fx:id="vBox8" layoutX="718.0" layoutY="284.0" prefHeight="163.0" prefWidth="128.0" spacing="4.0" style="-fx-border-color: blue; -fx-border-radius: 40px;">
+		<VBox fx:id="vBox8" layoutX="718.0" layoutY="284.0" prefHeight="163.0"
+			prefWidth="128.0" spacing="4.0"
+			style="-fx-border-color: blue; -fx-border-radius: 40px;">
 			<children>
-				<Label fx:id="bet8Lbl" alignment="CENTER" prefHeight="37.0" prefWidth="157.0" text="\$$$Bet$$$" textFill="#2aab37">
+				<Label fx:id="bet8Lbl" alignment="CENTER" prefHeight="37.0"
+					prefWidth="157.0" text="\$$$Bet$$$" textFill="#2aab37">
 					<padding>
 						<Insets left="15.0" top="10.0" />
 					</padding>
 				</Label>
-				<Label fx:id="name8Lbl" prefHeight="27.0" prefWidth="132.0" text="Player_Name">
+				<Label fx:id="name8Lbl" prefHeight="27.0" prefWidth="132.0"
+					text="Player_Name">
 					<padding>
 						<Insets left="10.0" />
 					</padding>
 				</Label>
 				<Pane fx:id="cards8Pane" prefHeight="92.0" prefWidth="126.0">
 					<children>
-						<ImageView fx:id="card28Imv" fitHeight="80.0" fitWidth="50.0" layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card28Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
 						</ImageView>
-						<ImageView fx:id="card18Imv" fitHeight="80.0" fitWidth="50.0" layoutX="18.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card18Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="18.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
@@ -289,26 +354,32 @@
 				</Pane>
 			</children>
 		</VBox>
-		<VBox fx:id="vBox9" layoutX="559.0" layoutY="364.0" prefHeight="163.0" prefWidth="128.0" spacing="4.0" style="-fx-border-color: blue; -fx-border-radius: 40px;">
+		<VBox fx:id="vBox9" layoutX="559.0" layoutY="364.0" prefHeight="163.0"
+			prefWidth="128.0" spacing="4.0"
+			style="-fx-border-color: blue; -fx-border-radius: 40px;">
 			<children>
-				<Label fx:id="bet9Lbl" alignment="CENTER" prefHeight="37.0" prefWidth="122.0" text="\$$$Bet$$$" textFill="#2aab37">
+				<Label fx:id="bet9Lbl" alignment="CENTER" prefHeight="37.0"
+					prefWidth="122.0" text="\$$$Bet$$$" textFill="#2aab37">
 					<padding>
 						<Insets left="15.0" top="10.0" />
 					</padding>
 				</Label>
-				<Label fx:id="name9Lbl" prefHeight="27.0" prefWidth="133.0" text="Player_Name">
+				<Label fx:id="name9Lbl" prefHeight="27.0" prefWidth="133.0"
+					text="Player_Name">
 					<padding>
 						<Insets left="10.0" />
 					</padding>
 				</Label>
 				<Pane fx:id="cards9Pane" prefHeight="92.0" prefWidth="126.0">
 					<children>
-						<ImageView fx:id="card29Imv" fitHeight="80.0" fitWidth="50.0" layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card29Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="43.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
 						</ImageView>
-						<ImageView fx:id="card19Imv" fitHeight="80.0" fitWidth="50.0" layoutX="18.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="card19Imv" fitHeight="80.0" fitWidth="50.0"
+							layoutX="18.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@png/back.jpg" />
 							</image>
@@ -317,6 +388,14 @@
 				</Pane>
 			</children>
 		</VBox>
-		<Label fx:id="potValue" layoutX="358.0" layoutY="213.0" text="\$$$ Pot_Value $$$" textFill="#681855" />
+		<Label fx:id="potValue" layoutX="358.0" layoutY="213.0"
+			text="\$$$ Pot_Value $$$" textFill="#681855" />
+		<HBox layoutX="718.0" layoutY="1.0" prefHeight="20.0" prefWidth="140.0"
+			spacing="10.0">
+			<children>
+				<Label fx:id="playersAmountLbl" text="0" />
+				<Label text="Players ingame" />
+			</children>
+		</HBox>
 	</children>
 </Pane>

@@ -14,35 +14,47 @@ import ui.Controller;
 import ui.lobby.LobbyView;
 import ui.login.LoginView;
 
-public final class GameplayController implements Controller {
+public final class GameplayCtrl extends Observable implements Controller {
 
 	private final GameplayModel model;
 	private final Stage primaryStage;
 	private final LoginView loginView;
 	private final LobbyView lobbyView;
 
-	public GameplayController(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw, Stage primaryStage,
-			LoginView loginView, LobbyView lobbyView, IDGame idGame) {
+	public GameplayCtrl(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw, Stage primaryStage,
+			PlayersView playersView, LoginView loginView, LobbyView lobbyView, IDGame idGame) {
 		this.model = new GameplayModel(serverAdress, loggedInPlayer, pw, idGame);
 		this.primaryStage = primaryStage;
 		this.loginView = loginView;
+		this.addObserver(playersView);
+		model.addObserver(this);
 		this.lobbyView = lobbyView;
 	}
 
 	@Override
-	public void update(Observable arg0, Object arg1) {
+	public void update(Observable arg0, Object o) {
+		triggerNotification(o);
+	}
+
+	private void triggerNotification(Object o) {
+		setChanged();
+		notifyObservers(o);
 	}
 
 	public void userCalls() {
+		model.userCalled();
 	}
 
 	public void userChecks() {
+		model.userChecked();
 	}
 
 	public void userFolds() {
+		model.userFolded();
 	}
 
 	public void userRaises(double value) {
+		model.userRaised(value);
 	}
 
 	public List<Card> adminDeals() {
@@ -66,7 +78,4 @@ public final class GameplayController implements Controller {
 		return lobbyView;
 	}
 
-	public void triggerLogout() {
-model.logout();		
-	}
 }

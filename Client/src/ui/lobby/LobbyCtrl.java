@@ -37,9 +37,9 @@ public class LobbyCtrl extends Observable implements Controller {
 
 	@Override
 	public void update(Observable observable, Object o) {
-		if (o instanceof ClientInterna && (((ClientInterna) o).getType() == 2)) {
+		if (o instanceof LobbyClientInterna && (((LobbyClientInterna) o).getType() == 2)) {
 			// trigger for game starting ..
-			openGameplayView(((ClientInterna) o).getId());
+			openGameplayView(((LobbyClientInterna) o).getId());
 		}
 		this.setChanged();
 		this.notifyObservers(o);

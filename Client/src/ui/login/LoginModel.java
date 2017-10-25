@@ -24,7 +24,6 @@ public class LoginModel extends Model {
 	public SafePlayer checkLoginData(String nameProposal, String pwProposal) {
 		sendObject(new PlayersQuery(nameProposal, pwProposal));
 		return (SafePlayer) receiveObject();
-
 	}
 
 	public SafePlayer isUserRegistered(String newUser) {

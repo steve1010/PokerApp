@@ -6,6 +6,7 @@ import java.util.List;
 
 import entities.SafePlayer;
 import entities.query.server.One23;
+import entities.query.server.One23.Bool;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -77,17 +78,24 @@ public final class IDGame implements Serializable {
 		return paid.get();
 	}
 
+	/**
+	 * Evaluates whether a new player can join the game or not.
+	 * 
+	 * @param safePlayer
+	 * @return a {@link One23} representation of the result.
+	 * @see One23
+	 */
 	public One23 addPlayer(SafePlayer safePlayer) {
 		if (playersList.size() == maxPlayers.get()) {
-			return new One23(2);
+			return new One23(2, Bool.ERROR);
 		} else if (playersList.size() == maxPlayers.get() - 1) {
 			this.playersList.add(safePlayer);
 			incrementSignedUp();
-			return new One23(4);
+			return new One23(4, Bool.SUCCESS);
 		} else {
 			this.playersList.add(safePlayer);
 			incrementSignedUp();
-			return new One23(1);
+			return new One23(1, Bool.SUCCESS);
 		}
 	}
 

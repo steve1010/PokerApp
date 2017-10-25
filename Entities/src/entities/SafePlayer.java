@@ -54,7 +54,7 @@ public class SafePlayer implements Serializable {
 		}
 		this.gamesList = gamesList;
 
-		// set initial bankroll:
+		// TODO: set initial bankroll dynamically
 		this.bankRoll = 10000;
 	}
 

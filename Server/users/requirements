@@ -1,14 +1,12 @@
 
 1.) Admin drückt auf Deal und die Karten werden durch den Server random(zeitangabe) an die (validen )Spieler verteilt.
-
 2.) Admin drückt auf Eval und die Spielernamen werden zu den jeweiligen Händen.
-
 3.) Spieler meldet sich an und landet in der lobby wo er die verfügbaren Spiele sehen kann.
-
 4.) Wenn die maximale Anzahl an Spielern eines Spiels erreicht ist, werden die angemeldeten Spieler zum
 	ENTSPRECHENDEN Spiel weitergeleitet und das Spiel beginnt.
 
-5.) - Zunächst wird random ein "Button" bestimmt(delegiert davon dann SmallBlind, BigBlind links davon).
+
+5.)*** - Zunächst wird random ein "Dealer-Button-Position-Spieler" bestimmt(delegiert davon dann SmallBlind, BigBlind links davon).
 	- Die Blinds werden von den Spielern in den Blinds abgezogen & visuell 'gesetzt'.
 	- Der SmallBlind bekommt zuerst eine Karte, dann rundum alle Spieler, das ganze bis jeder Spieler 
 	  2 Karten hat.
@@ -21,85 +19,34 @@
 	- Wenn alle Spieler bis auf einen gefoldet haben, wird die Runde beendet und der Pot an den Gewinner verteilt.
 	- Wenn mehrere Spieler bis zum Ende der letzten Bietrunde (nach River) in der Hand sind, evaluiere Ergebnis
 	  und verteile Pot an Gewinner.***Split Pot mit einbeziehen***
-	  
-6.) Spieler mit Stack = 0 werden aus dem Turnier entfernt und werden zur Lobby zurückgeleitet.
-	(verlieren alle 'Player-Action'-Rechte und können per Button zur Lobby zurückkehren) 
-	Die 'bankroll' wird (bei Gewinn) geupdated.
 
 7.) Chat Funktion.
-
-8.) 
-
-9.)
-
+8.) Muss weg: burn cards
+9.) Requirements: 
+	- Spieler können in jedem Game genau 1x teilnehmen.
+	- Games starten automatisch wenn sie voll sind und es wird bei jedem Spieler ein Game-Fenster geöffnet.
+	- Spieler können Basic-Actions durchführen wie Check, Call, Raise und die jeweiligen Beträge werden gesetzt.(Angezeigt)
+	- Spieler die Folden, werden disabled(farblich markiert)
+	- Evaluation funktioniert, aber nur soweit bringen, dass der/die jeweilige/n Gewinner gehighlighted wird.
+	- Der Pot wird an den Gewinner ausgeschüttet & seinem Stack auf Client und Server hinzugefühgt.
+	- Alle anderen Spieler bekommen davon Meldung.
+	- Danach werden die Karten neu verteilt & die Runde beginnt von neuem.
+	- Spieler können maximal ihren aktuellen Stack setzen.
+	- Spieler, deren Stack auf 0 fällt, werden vom Tisch entfernt und können weiterhin zuschauen(bekommen alle push-nachrichten)
+	- Sobald ein entfernter Spieler das Game-Fenster schließt kann er nicht mehr dort hin zurückkehren und wird auch nicht mehr vom aktuellen Game berücksichtigt.
+	- Ein entfernter Spieler erhält eine Benachrichtigung mit einem Dank für das Spiel und Glückwünschen/Guten Wünschen für das nächste Spiel.
+	- Alle Ergebnisse werden vom Server in einer Txt geloggt.
 10.)
-
 11.)
-
-12.)
-
+12.)				
 13.)
-
 14.)
-
 15.)
-
 16.)
-
 17.)
-
 18.)
-
 19.)
-
 20.)
-
 21.)
-
 22.)
-
 23.)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -19,11 +19,11 @@ import entities.query.server.ServerMsg.MsgType;
 import logic.container.GameContainer;
 import logic.container.PlayerContainer;
 
-public class PlayersClientHandler extends ClientHandler {
+public class LoginLobbyClientHandler extends ClientHandler {
 
 	private final GameContainer gameContainer;
 
-	public PlayersClientHandler(Query received, InetSocketAddress clientAdress, GameContainer game) {
+	public LoginLobbyClientHandler(Query received, InetSocketAddress clientAdress, GameContainer game) {
 		super(received, clientAdress);
 		this.gameContainer = game;
 	}
@@ -114,9 +114,9 @@ public class PlayersClientHandler extends ClientHandler {
 		case ENROLL:
 			One23 result = gameContainer.addPlayerToGame(received.getPlayer(),
 					IDGame.fromSerializableGame(received.getGame()));
-			answer(result);
+			answer(result);//TODO: may crush on multiple threads (lost update)
 			SerializableGame game = received.getGame();
-			game.getPlayersList().add(received.getPlayer());
+			game.addPlayer(received.getPlayer());
 			if (result.getI() == 1) {
 				triggerServerMsg(new ServerMsg(MsgType.NEW_PLAYER_ENROLLED, received.getPlayer(), game.getId()));
 				break;
@@ -135,11 +135,12 @@ public class PlayersClientHandler extends ClientHandler {
 	public void triggerServerMsg(ServerMsg serverMsg) {
 		// inform all players
 		List<SafePlayer> players = gameContainer.getPlayerStore().getAll();
-		for (SafePlayer player : players) {
+		players.forEach(pl -> {
 			// Convention: clients are listening on sending port+1 on a
 			// extra thread for server infos.
-			int asyncClientPort = 1 + player.getAdress().getPort();
-			answer(serverMsg, new InetSocketAddress(player.getAdress().getAddress(), asyncClientPort));
-		}
+			int asyncClientPort = 1 + pl.getAdress().getPort();
+			answer(serverMsg, new InetSocketAddress(pl.getAdress().getAddress(), asyncClientPort));
+		});
+
 	}
 }

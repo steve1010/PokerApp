@@ -21,6 +21,7 @@ import entities.query.PlayersQuery;
 import entities.query.server.One23;
 import entities.query.server.PoisonPill;
 import entities.query.server.ServerMsg;
+import entities.query.server.ServerMsgObject;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -63,7 +64,13 @@ public class LobbyModel extends Model {
 		new Thread(() -> {
 			boolean running = true;
 			while (running) {
-				ServerMsg msg = receiveObjectAsynchronous(playerPort);
+				ServerMsgObject msgObj = receiveObjectAsynchronous(playerPort);
+				ServerMsg msg;
+				if (msgObj instanceof PoisonPill) {
+					msg = null;
+				} else {
+					msg = (ServerMsg) msgObj;
+				}
 				if (msg == null) {
 					running = false;
 					break;

@@ -46,7 +46,6 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 		// game starting..
 		game.getPlayersList()
 				.forEach(p -> System.out.println("Player: " + p.getName() + " joined game: " + game.getName() + ".\n"));
-
 		while (running) {
 
 			List<SafePlayer> orderedPlayers = chooseBtnPlayerRandomly();
@@ -119,7 +118,6 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 	private void triggerPlayerHands() {
 		int playerID = 0;
 		for (SafePlayer player : game.getPlayersList()) {
-
 			InetSocketAddress asyncGameplayPlayerAddress = new InetSocketAddress(player.getAdress().getAddress(),
 					player.getAdress().getPort() + 2);
 			answer(new GamesServerMsg(MsgType.GAMES_SERVER_MSG, -5, GameMsgType.YOUR_HAND,
@@ -163,5 +161,4 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 	public void triggerServerMsg(ServerMsg serverMsg) {
 		// ignored
 	}
-
 }

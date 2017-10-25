@@ -11,6 +11,7 @@ import entities.lobby.Game;
 import entities.lobby.IDGame;
 import entities.lobby.SerializableGame;
 import entities.query.server.One23;
+import entities.query.server.One23.Bool;
 
 public final class GameContainer {
 
@@ -47,28 +48,32 @@ public final class GameContainer {
 		}
 	}
 
-	public List<IDGame> getGamesList() {
+	/**
+	 * Evaluates whether a new player can be added to a given game.
+	 * 
+	 * @param player
+	 * @param game
+	 * @return A {@link One23} representing the result.
+	 */
+	public One23 addPlayerToGame(SafePlayer player, IDGame game) {
 		synchronized (gamesListLock) {
-			return gamesList;
-		}
-	}
-
-	public One23 addPlayerToGame(SafePlayer safePlayer, IDGame idGame) {
-		synchronized (gamesListLock) {
-			if (!(gamesList.get(idGame.getId()).getPlayersList().stream()
-					.filter(plr -> plr.getName().equals(safePlayer.getName())).collect(Collectors.toList())
-					.isEmpty())) {
-				return new One23(3);
+			/**
+			 * If there is a player in the game's playersList named exactly
+			 * equal to the given player, return a 3 (already ingame)
+			 */
+			if (!(gamesList.get(game.getId()).getPlayersList().stream()
+					.filter(plr -> plr.getName().equals(player.getName())).collect(Collectors.toList()).isEmpty())) {
+				return new One23(3, Bool.ERROR);
 			}
-			playerStore.commitTransaction(safePlayer, idGame, gamesList.get(idGame.getId()).getBuyIn());
-			One23 result = gamesList.get(idGame.getId()).addPlayer(safePlayer);
+			One23 result = gamesList.get(game.getId()).addPlayer(player);
 			if (result.getI() == 4) {
-				idGame.addPlayer(safePlayer);
-				new Thread(() -> {
-					GameServer gameServer = new GameServer(idGame);
-					new Thread(gameServer).start();
-					remoteAccesses.add(gameServer);
-				}).start();
+				game.addPlayer(player);
+				GameServer gameServer = new GameServer(game);
+				new Thread(gameServer).start();
+				remoteAccesses.add(gameServer);
+			}
+			if (result.getB().equals(Bool.SUCCESS)) {
+				playerStore.commitTransaction(player, game, gamesList.get(game.getId()).getBuyIn());
 			}
 			return result;
 		}

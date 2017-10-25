@@ -43,7 +43,7 @@ public final class UdpClientHandler extends ClientHandler {
 	@Override
 	public void switchQuery(Query received) {
 		if (received instanceof PlayersQuery) {
-			new Thread(new PlayersClientHandler(received, getClientAdress(), gameContainer)).start();
+			new Thread(new LoginLobbyClientHandler(received, getClientAdress(), gameContainer)).start();
 		}
 		if (received instanceof GameQuery) {
 			new Thread(new GameClientHandler(received, getClientAdress(), gameContainer)).start();

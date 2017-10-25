@@ -2,6 +2,7 @@ package entities.lobby;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import entities.SafePlayer;
 
@@ -16,7 +17,7 @@ public final class SerializableGame implements Serializable {
 	private final int id, startChips, maxPlayers, paid, signedUp;
 	private final String name;
 	private final double buyIn;
-	private final List<SafePlayer> playersList;
+	private List<SafePlayer> playersList;
 
 	public SerializableGame(int id, int startChips, int maxPlayers, int paid, int signedUp, String name, double buyIn,
 			List<SafePlayer> players) {
@@ -60,5 +61,13 @@ public final class SerializableGame implements Serializable {
 
 	public List<SafePlayer> getPlayersList() {
 		return playersList;
+	}
+
+	public synchronized void addPlayer(SafePlayer player) {
+		playersList.add(player);
+	}
+
+	public synchronized void removePlayer(int id) {
+		playersList = playersList.stream().filter(p -> p.getId() == id).collect(Collectors.toList());
 	}
 }

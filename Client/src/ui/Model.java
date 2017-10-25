@@ -11,12 +11,11 @@ import java.net.InetSocketAddress;
 import java.util.Observable;
 
 import entities.SafePlayer;
-import entities.query.server.ServerMsg;
+import entities.query.server.ServerMsgObject;
 
 public abstract class Model extends Observable {
 
 	protected final InetSocketAddress serverAdress;
-
 	private final int port;
 
 	public Model(InetSocketAddress serverAdress) {
@@ -37,8 +36,8 @@ public abstract class Model extends Observable {
 		}
 	}
 
-	public void sendObject(Object object, int portt) {
-		try (DatagramSocket clientSocket = new DatagramSocket(portt);
+	public void sendObject(Object object, int port) {
+		try (DatagramSocket clientSocket = new DatagramSocket(port);
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				ObjectOutputStream os = new ObjectOutputStream(bos)) {
 			os.writeObject(object);
@@ -52,7 +51,7 @@ public abstract class Model extends Observable {
 
 	public Object receiveObject() {
 		try (DatagramSocket clientSocket = new DatagramSocket(port)) {
-			byte[] incomingData = new byte[2024];
+			byte[] incomingData = new byte[3024];
 			DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
 			// wait for server response
 			clientSocket.receive(incomingPacket);
@@ -70,7 +69,7 @@ public abstract class Model extends Observable {
 
 	public Object receiveObject(int port) {
 		try (DatagramSocket clientSocket = new DatagramSocket(port)) {
-			byte[] incomingData = new byte[2024];
+			byte[] incomingData = new byte[3024];
 			DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
 			// wait for server response
 			clientSocket.receive(incomingPacket);
@@ -86,29 +85,30 @@ public abstract class Model extends Observable {
 		return null;
 	}
 
-	public ServerMsg receiveObjectAsynchronous(int port) {
+	public ServerMsgObject receiveObjectAsynchronous(int port) {
 		try (DatagramSocket clientSocket = new DatagramSocket((port + 1))) {
-			byte[] incomingData = new byte[2024];
+			byte[] incomingData = new byte[3024];
 			DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
 			System.out.println("waiting " + (port + 1) + "..");
 			clientSocket.receive(incomingPacket);
 			System.out.println("..received.");
 			byte[] data = incomingPacket.getData();
 			try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data))) {
-				return (ServerMsg) ois.readObject();
+				return (ServerMsgObject) ois.readObject();
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (ClassCastException castEx) {
 				castEx.printStackTrace();
 			}
 		} catch (ClassNotFoundException | IOException e) {
+			System.err.println("Concurrent port: " + (port + 1));
 			e.printStackTrace();
 		}
 		return null;
 	}
 
 	public int newRandomPort() {
-		return (int) (21000 + Math.random() * 52000);
+		return (int) (12000 + Math.random() * 42000);
 	}
 
 	public InetSocketAddress getServerAdress() {

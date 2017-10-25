@@ -1,10 +1,8 @@
 package entities.query.server;
 
-import java.io.Serializable;
-
 import entities.gameplay.PlayerHand;
 
-public class GamesServerMsg extends ServerMsg implements Serializable {
+public class GamesServerMsg extends ServerMsg implements ServerMsgObject {
 
 	private static final long serialVersionUID = -8683652218666171970L;
 

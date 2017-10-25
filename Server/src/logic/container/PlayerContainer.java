@@ -71,6 +71,14 @@ public final class PlayerContainer {
 		}
 	}
 
+	/**
+	 * Updates the player's current bankroll according to the buyIn he did
+	 * transact.
+	 * 
+	 * @param safePlayer
+	 * @param idGame
+	 * @param buyIn
+	 */
 	public void commitTransaction(SafePlayer safePlayer, IDGame idGame, Double buyIn) {
 		synchronized (playersLock) {
 			playersMap.get(safePlayer.getName()).commitTransaction(idGame, buyIn);

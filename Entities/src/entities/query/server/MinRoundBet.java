@@ -1,8 +1,6 @@
 package entities.query.server;
 
-import java.io.Serializable;
-
-public class MinRoundBet implements Serializable {
+public class MinRoundBet implements ServerMsgObject {
 
 	private static final long serialVersionUID = -2033576749613000390L;
 

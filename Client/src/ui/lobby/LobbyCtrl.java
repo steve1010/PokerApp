@@ -2,10 +2,12 @@ package ui.lobby;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.Objects;
 import java.util.Observable;
 import java.util.stream.Collectors;
 
 import entities.Player;
+import entities.lobby.Game;
 import entities.lobby.IDGame;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -72,6 +74,31 @@ public class LobbyCtrl extends Observable implements Controller {
 	}
 
 	public void requestCreation(String name, String buyIn, String startChips, String maxPlayers, String paid) {
+		Game game = check(name, buyIn, startChips, maxPlayers, paid);
+		if (game.getSignedUp() == -3) {
+			return;
+		} else {
+			((LobbyModel) model).createGame(name, game.getBuyIn(), game.getStartChips(), game.getMaxPlayers(),
+					game.getPaid());
+		}
+	}
+
+	/**
+	 * Checks the input on its validity.<br>
+	 * <br>
+	 * <i> (According to internal semantics)
+	 * 
+	 * @return Game whose signedUpPlayers-attribute is set to
+	 *         <ul>
+	 *         <li>-2, iff a valid game was created
+	 *         <li>-3, iff something was wrong
+	 *         </ul>
+	 */
+	private Game check(String name, String buyIn, String startChips, String maxPlayers, String paid) {
+		if (Objects.isNull(name) || Objects.isNull(buyIn) || Objects.isNull(startChips) || Objects.isNull(maxPlayers)
+				|| Objects.isNull(paid)) {
+			lobbyView.wrongInputAlert();
+		}
 		double buy_in = 0;
 		int start_chips = 0;
 		int max_players = 0;
@@ -85,7 +112,11 @@ public class LobbyCtrl extends Observable implements Controller {
 			lobbyView.wrongInputAlert();
 			e.printStackTrace();
 		}
-		((LobbyModel) model).createGame(name, buy_in, start_chips, max_players, p4id);
+		if (buy_in <= 0 || buy_in > 10000 || start_chips < 0 || start_chips > 10000 || max_players > 10
+				|| max_players <= 0 || p4id <= 0 || p4id > 3) {
+			lobbyView.wrongInputAlert();
+		}
+		return new Game(name, buy_in, start_chips, max_players, p4id, 0);
 	}
 
 	public void enrollRequest(IDGame selectedGame) {

@@ -28,7 +28,7 @@ public class LobbyServer implements RemoteAccess {
 	@Override
 	public void run() {
 		try (DatagramSocket socket = new DatagramSocket(port)) {
-			byte[] incomingData = new byte[2048];
+			byte[] incomingData = new byte[3048];
 			while (this.running) {
 				DatagramPacket incPacket = new DatagramPacket(incomingData, incomingData.length);
 				socket.receive(incPacket);
@@ -58,5 +58,4 @@ public class LobbyServer implements RemoteAccess {
 			e.printStackTrace();
 		}
 	}
-
 }

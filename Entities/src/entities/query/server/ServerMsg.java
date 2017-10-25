@@ -1,11 +1,9 @@
 package entities.query.server;
 
-import java.io.Serializable;
-
 import entities.SafePlayer;
 import entities.lobby.SerializableGame;
 
-public class ServerMsg implements Serializable {
+public class ServerMsg implements ServerMsgObject {
 
 	private static final long serialVersionUID = 2650348213355515896L;
 

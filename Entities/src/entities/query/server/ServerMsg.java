@@ -1,7 +1,7 @@
 package entities.query.server;
 
+import entities.Game;
 import entities.SafePlayer;
-import entities.lobby.SerializableGame;
 
 public class ServerMsg implements ServerMsgObject {
 
@@ -13,7 +13,7 @@ public class ServerMsg implements ServerMsgObject {
 
 	private final MsgType msgType;
 	private final int id;
-	private final SerializableGame game;
+	private final Game game;
 	private final String username;
 	private final SafePlayer player;
 
@@ -25,7 +25,7 @@ public class ServerMsg implements ServerMsgObject {
 		this.player = null;
 	}
 
-	public ServerMsg(MsgType msgType, int id, SerializableGame game) {
+	public ServerMsg(MsgType msgType, int id, Game game) {
 		this.msgType = msgType;
 		this.id = id;
 		this.game = game;
@@ -65,7 +65,7 @@ public class ServerMsg implements ServerMsgObject {
 		return id;
 	}
 
-	public SerializableGame getGame() {
+	public Game getGame() {
 		return this.game;
 	}
 

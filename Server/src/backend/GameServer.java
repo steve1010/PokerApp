@@ -8,15 +8,17 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import backend.handler.ClientHandler;
 import backend.handler.PlayersActionClientHandler;
+import entities.Game;
 import entities.SafePlayer;
 import entities.gameplay.Board;
 import entities.gameplay.PlayerHand;
-import entities.lobby.Game;
-import entities.lobby.IDGame;
 import entities.query.PlayersActionQuery;
+import entities.query.PlayersActionQuery.Option;
 import entities.query.Query;
 import entities.query.server.GamesServerMsg;
 import entities.query.server.GamesServerMsg.GameMsgType;
@@ -28,17 +30,20 @@ import logic.gameplay.Dealer;
 public class GameServer extends ClientHandler implements RemoteAccess {
 
 	private boolean running = true;
-	private IDGame game;
+	private Game game;
 	private final Dealer dealer;
 	private final List<PlayerHand> playerHandsList;
 	private Board board;
-	private int gamesServerPort;
+	private final int port;
+	private AtomicInteger readyCounter;
+	private boolean notAllPlayersReady;
 
-	public GameServer(IDGame idGame) {
+	public GameServer(Game idGame, int port) {
 		super(new byte[] {}, idGame.getPlayersList().get(0).getAdress());
 		this.game = idGame;
 		this.dealer = new Dealer();
 		this.playerHandsList = new ArrayList<>();
+		this.port = port;
 	}
 
 	@Override
@@ -49,11 +54,13 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 		while (running) {
 
 			List<SafePlayer> orderedPlayers = chooseBtnPlayerRandomly();
-			game = new IDGame(new Game(game.getName(), game.getBuyIn(), game.getStartChips(), game.getMaxPlayers(),
-					game.getPaid(), game.getSignedUp()), game.getId(), orderedPlayers);
+			game = new Game(game.getName(), game.getId(), game.getBuyIn(), game.getStartChips(), game.getMaxPlayers(),
+					game.getPaid(), game.getSignedUp(), orderedPlayers);
 
-			orderedPlayers.forEach(
-					player -> playerHandsList.add(new PlayerHand(player.getId(), dealer.newCard(), dealer.newCard())));
+			orderedPlayers.forEach(player -> {
+				PlayerHand playerHand = new PlayerHand(player.getId(), dealer.newCard(), dealer.newCard());
+				playerHandsList.add(playerHand);
+			});
 			triggerPlayerHands();
 			setBoard(new Board(dealer.newCard(), dealer.newCard(), dealer.newCard(), dealer.newCard(),
 					dealer.newCard()));
@@ -85,15 +92,18 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 	}
 
 	private PlayersActionQuery receiveObject() {
-		try (DatagramSocket socket = new DatagramSocket(gamesServerPort)) {
-			byte[] incomingData = new byte[2048];
+		try (DatagramSocket socket = new DatagramSocket(port)) {
+			byte[] incomingData = new byte[3048];
 			DatagramPacket incPacket = new DatagramPacket(incomingData, incomingData.length);
 			socket.receive(incPacket);
-			// process received data
 			try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(incPacket.getData()))) {
 				Object received = ois.readObject();
 				if (received instanceof PlayersActionQuery) {
 					return (PlayersActionQuery) received;
+				}
+				if (received instanceof ServerMsg) {
+					// 30s later
+					setNotAllPlayersReady(false);
 				}
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
@@ -104,26 +114,61 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 		return null;
 	}
 
+	/**
+	 * Returns the re-ordered playersList with the Btn player at index 0.
+	 */
 	private List<SafePlayer> chooseBtnPlayerRandomly() {
 		List<SafePlayer> players = new ArrayList<>();
-		for (int i = game.getPlayersList().size(); i > 0; i--) {
+		int size = game.getPlayersList().size() - 1;
+		for (int i = size; i >= 0; i--) {
 			int random = (int) (Math.random() * i);
 			players.add(game.getPlayersList().get(random));
-			System.out.println("playwe added.....");
+			System.out.println("player added..");
 			game.getPlayersList().remove(random);
 		}
 		return players;
 	}
 
 	private void triggerPlayerHands() {
+		notAllPlayersReady = true;
+		/**
+		 * timer functionality: Games should start on last player registered plus
+		 * 30seconds or on all players clicking 'im ready'
+		 */
+		new Thread(() -> {
+			try {// 30 seconds
+				Thread.sleep(30000);
+				answer(new ServerMsg(null, port), new InetSocketAddress("localhost", port));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}).start();
+		while (notAllPlayersReady) {
+			PlayersActionQuery playerQuery = receiveObject();
+			if (Objects.nonNull(playerQuery)) {
+				playerQuery.getOption();
+				if (playerQuery.getOption().equals(Option.READY)) {
+					readyCounter.incrementAndGet();
+					if (readyCounter.get() == game.getPlayersList().size()) {
+						break;
+					}
+				}
+			}
+		}
+
 		int playerID = 0;
 		for (SafePlayer player : game.getPlayersList()) {
 			InetSocketAddress asyncGameplayPlayerAddress = new InetSocketAddress(player.getAdress().getAddress(),
-					player.getAdress().getPort() + 2);
+					(player.getAdress().getPort() + 2));
 			answer(new GamesServerMsg(MsgType.GAMES_SERVER_MSG, -5, GameMsgType.YOUR_HAND,
 					playerHandsList.get(playerID)), asyncGameplayPlayerAddress);
-			System.out.println("answered to: " + asyncGameplayPlayerAddress.getPort());
+			System.err.println("GameServer answered to client-port: " + asyncGameplayPlayerAddress.toString());
 			playerID++;
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -132,7 +177,7 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 		this.running = false;
 	}
 
-	public IDGame getGame() {
+	public Game getGame() {
 		return game;
 	}
 
@@ -160,5 +205,13 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 	@Override
 	public void triggerServerMsg(ServerMsg serverMsg) {
 		// ignored
+	}
+
+	public boolean isNotAllPlayersReady() {
+		return notAllPlayersReady;
+	}
+
+	public void setNotAllPlayersReady(boolean notAllPlayersReady) {
+		this.notAllPlayersReady = notAllPlayersReady;
 	}
 }

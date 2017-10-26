@@ -7,9 +7,9 @@ import java.util.Observer;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import entities.Game;
 import entities.Player;
 import entities.SafePlayer;
-import entities.lobby.IDGame;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,21 +37,21 @@ public class LobbyView implements Controller, Initializable, Observer {
 
 	private LobbyCtrl controller;
 
-	private PropertyValueFactory<IDGame, Integer> idColumnFactory, startChipsColumnFactory, playersMaxColumnFactory,
+	private PropertyValueFactory<Game, Integer> idColumnFactory, startChipsColumnFactory, playersMaxColumnFactory,
 			paidColumnFactory, signedUpColumnFactory;
-	private PropertyValueFactory<IDGame, Double> buyInColumnFactory;
-	private PropertyValueFactory<IDGame, String> nameColumnFactory;
+	private PropertyValueFactory<Game, Double> buyInColumnFactory;
+	private PropertyValueFactory<Game, String> nameColumnFactory;
 
 	@FXML
-	private TableView<IDGame> gamesTable;
+	private TableView<Game> gamesTable;
 	@FXML
-	private TableColumn<IDGame, Integer> iDColumn, startChipsColumn, paidColumn, playersMaxColumn, signedUpColumn;
+	private TableColumn<Game, Integer> iDColumn, startChipsColumn, paidColumn, playersMaxColumn, signedUpColumn;
 
 	@FXML
-	private TableColumn<IDGame, String> nameColumn;
+	private TableColumn<Game, String> nameColumn;
 
 	@FXML
-	private TableColumn<IDGame, Double> buyInColumn;
+	private TableColumn<Game, Double> buyInColumn;
 
 	@FXML
 	private TableView<SafePlayer> allPlayersTable, inGamePlayersTable;
@@ -74,7 +74,7 @@ public class LobbyView implements Controller, Initializable, Observer {
 	@FXML
 	private VBox createVBox, signedInVbox;
 
-	private IDGame currentlySelectedItem;
+	private Game currentlySelectedItem;
 
 	private PropertyValueFactory<SafePlayer, String> allPlayersColumnFactory, inGameColumnFactory;
 
@@ -92,7 +92,7 @@ public class LobbyView implements Controller, Initializable, Observer {
 		playersMaxColumn.setCellValueFactory(playersMaxColumnFactory);
 		paidColumnFactory = new PropertyValueFactory<>("paid");
 		paidColumn.setCellValueFactory(paidColumnFactory);
-		signedUpColumnFactory = new PropertyValueFactory<IDGame, Integer>("signedUp");
+		signedUpColumnFactory = new PropertyValueFactory<Game, Integer>("signedUp");
 		signedUpColumn.setCellValueFactory(signedUpColumnFactory);
 
 		allPlayersColumnFactory = new PropertyValueFactory<SafePlayer, String>("name");
@@ -101,9 +101,9 @@ public class LobbyView implements Controller, Initializable, Observer {
 		inGameColumnFactory = new PropertyValueFactory<SafePlayer, String>("name");
 		inGameColumn.setCellValueFactory(inGameColumnFactory);
 
-		gamesTable.setRowFactory(tv -> new TableRow<IDGame>() {
+		gamesTable.setRowFactory(tv -> new TableRow<Game>() {
 			@Override
-			public void updateItem(IDGame game, boolean empty) {
+			public void updateItem(Game game, boolean empty) {
 				super.updateItem(game, empty);
 				if (game == null) {
 					setStyle("");
@@ -132,7 +132,7 @@ public class LobbyView implements Controller, Initializable, Observer {
 			Platform.runLater(() -> {
 				int type = ((LobbyClientInterna) o).getType();
 				if (type == 0) {
-					gamesTable.setItems((ObservableList<IDGame>) ((LobbyClientInterna) o).getTableData());
+					gamesTable.setItems((ObservableList<Game>) ((LobbyClientInterna) o).getTableData());
 					gamesTable.refresh();
 				}
 				if (type == 1) {
@@ -202,6 +202,9 @@ public class LobbyView implements Controller, Initializable, Observer {
 				double newValue = Double.parseDouble(bankrollLbl.getText()) - currentlySelectedItem.getBuyIn();
 				bankrollLbl.setText(String.valueOf(newValue));
 			}
+			/**
+			 * TODO: implement trigger to model here. Game should start on clicking ok.
+			 */
 		}
 	}
 

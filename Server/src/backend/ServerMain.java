@@ -10,7 +10,14 @@ public class ServerMain {
 	private static ArrayList<RemoteAccess> remoteAccesses;
 
 	/**
-	 * args[0]: server port
+	 * <ul>
+	 * <li>args[0]: server port <br>
+	 * <br>
+	 * <br>
+	 * <i>
+	 * <li>admin: GameServers ports: <b>serverPort</b>+<b>100 <br>
+	 * <br>
+	 * <br>
 	 */
 	public static void main(String[] args) throws IOException {
 
@@ -25,7 +32,6 @@ public class ServerMain {
 
 		// Shuttung down all remote access implementations
 		remoteAccesses.forEach(remoteAccess -> remoteAccess.shutdown());
-
 		System.out.println("completed. Bye!");
 	}
 }

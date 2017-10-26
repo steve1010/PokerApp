@@ -4,11 +4,11 @@ import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Observable;
 
+import entities.Game;
 import entities.SafePlayer;
 import entities.gameplay.Board;
 import entities.gameplay.Card;
 import entities.gameplay.PlayerHand;
-import entities.lobby.IDGame;
 import javafx.stage.Stage;
 import ui.Controller;
 import ui.lobby.LobbyView;
@@ -22,7 +22,7 @@ public final class GameplayCtrl extends Observable implements Controller {
 	private final LobbyView lobbyView;
 
 	public GameplayCtrl(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw, Stage primaryStage,
-			PlayersView playersView, LoginView loginView, LobbyView lobbyView, IDGame idGame) {
+			PlayersView playersView, LoginView loginView, LobbyView lobbyView, Game idGame) {
 		this.model = new GameplayModel(serverAdress, loggedInPlayer, pw, idGame);
 		this.primaryStage = primaryStage;
 		this.loginView = loginView;

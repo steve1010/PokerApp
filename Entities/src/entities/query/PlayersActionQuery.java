@@ -8,7 +8,7 @@ public class PlayersActionQuery extends Query {
 	private final double amount;
 
 	public enum Option {
-		CHECK, FOLD, CALL, RAISE;
+		CHECK, FOLD, CALL, RAISE, READY;
 	}
 
 	public PlayersActionQuery(int playerID, Option option) {

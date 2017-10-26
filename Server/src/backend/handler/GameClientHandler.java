@@ -3,8 +3,8 @@ package backend.handler;
 import java.net.InetSocketAddress;
 
 import backend.GameServer;
+import entities.Game;
 import entities.SafePlayer;
-import entities.lobby.SerializableGame;
 import entities.query.Evaluation;
 import entities.query.GameQuery;
 import entities.query.Query;
@@ -32,7 +32,7 @@ public final class GameClientHandler extends ClientHandler {
 			GameQuery received = (GameQuery) query;
 			switch (received.getOption()) {
 			case GET_GAMES:
-				answer(gameContainer.getGamesListSerializable());
+				answer(gameContainer.getGamesList());
 				break;
 			case NEW_CARD:
 				answer(((GameServer) gameContainer.getRemoteAccesses().get(1)).getDealer().newCard());
@@ -41,7 +41,7 @@ public final class GameClientHandler extends ClientHandler {
 				((GameServer) gameContainer.getRemoteAccesses().get(1)).getDealer().shuffle();
 				break;
 			case NEW_GAME:
-				SerializableGame game = gameContainer.addGame(received.getGame());
+				Game game = gameContainer.addGame(received.getGame());
 				triggerServerMsg(new ServerMsg(MsgType.NEW_GAME_OFFERED, game.getId(), game));
 				break;
 			case EVALUATION:

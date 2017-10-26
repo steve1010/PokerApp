@@ -8,9 +8,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
+import entities.Game;
 import entities.SafePlayer;
-import entities.lobby.IDGame;
-import entities.lobby.SerializableGame;
 import entities.query.PlayersQuery;
 import entities.query.Query;
 import entities.query.server.One23;
@@ -112,10 +111,9 @@ public class LoginLobbyClientHandler extends ClientHandler {
 			break;
 
 		case ENROLL:
-			One23 result = gameContainer.addPlayerToGame(received.getPlayer(),
-					IDGame.fromSerializableGame(received.getGame()));
-			answer(result);//TODO: may crush on multiple threads (lost update)
-			SerializableGame game = received.getGame();
+			One23 result = gameContainer.addPlayerToGame(received.getPlayer(), received.getGame());
+			answer(result);// TODO: may crush on multiple threads (lost update)
+			Game game = received.getGame();
 			game.addPlayer(received.getPlayer());
 			if (result.getI() == 1) {
 				triggerServerMsg(new ServerMsg(MsgType.NEW_PLAYER_ENROLLED, received.getPlayer(), game.getId()));

@@ -22,7 +22,7 @@ public class LobbyServer implements RemoteAccess {
 
 	public LobbyServer(int port, ArrayList<RemoteAccess> remoteAccesses) {
 		this.port = port;
-		this.game = new GameContainer(new PlayerContainer(), remoteAccesses);
+		this.game = new GameContainer(new PlayerContainer(), remoteAccesses,port);
 	}
 
 	@Override

@@ -10,11 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import entities.Game;
 import entities.Player;
 import entities.SafePlayer;
-import entities.lobby.Game;
-import entities.lobby.IDGame;
-import entities.lobby.SerializableGame;
 import entities.query.GameQuery;
 import entities.query.GameQuery.Option;
 import entities.query.PlayersQuery;
@@ -36,7 +34,7 @@ public class LobbyModel extends Model {
 	private static final String ERROR_MESSAGE_1 = "Registration closed. Please choose another one!";
 	private static final String ERROR_MESSAGE_2 = "You already signed up to this game! Please wait for other players..";
 
-	private ObservableList<IDGame> gamesTableData;
+	private ObservableList<Game> gamesTableData;
 	private Player player;
 	private int playerPort;
 	private final String playerPw;
@@ -52,8 +50,7 @@ public class LobbyModel extends Model {
 
 		// fetch games
 		sendObject(new GameQuery(Option.GET_GAMES), playerPort);
-		this.gamesTableData = FXCollections
-				.observableArrayList(IDGame.toIDGames((List<SerializableGame>) receiveObject(playerPort)));
+		this.gamesTableData = FXCollections.observableArrayList((List<Game>) receiveObject(playerPort));
 		// fetch loggedInPlayers
 		sendObject(new PlayersQuery(entities.query.PlayersQuery.Option.GETALL), playerPort);
 		this.playersTableData = FXCollections.observableArrayList((ArrayList<SafePlayer>) receiveObject(playerPort));
@@ -80,8 +77,8 @@ public class LobbyModel extends Model {
 					newPlayerEnrolled(msg.getId(), msg.getPlayer());
 					break;
 				case NEW_GAME_OFFERED:
-					SerializableGame sg = msg.getGame();
-					addNewGameFromServer(toIDGame(sg));
+					Game sg = msg.getGame();
+					addNewGameFromServer(sg);
 					break;
 
 				case PLAYER_LOGIN:
@@ -102,8 +99,8 @@ public class LobbyModel extends Model {
 
 				case LAST_PLAYER_ENROLLED:
 					newPlayerEnrolled(msg.getId(), msg.getPlayer());
-					List<SerializableGame> games = player.getGamesList().stream()
-							.filter(gameId -> gameId.getId() == msg.getId()).collect(Collectors.toList());
+					List<Game> games = player.getGamesList().stream().filter(game -> game.getId() == msg.getId())
+							.collect(Collectors.toList());
 					if (!games.isEmpty()) {
 						triggerNotification(new LobbyClientInterna(2, games.get(0).getId()));
 					}
@@ -115,28 +112,23 @@ public class LobbyModel extends Model {
 		}).start();
 	}
 
-	private void addNewGameFromServer(IDGame game) {
-		player.getGamesList().add(IDGame.toSerializableGame(game));
+	private void addNewGameFromServer(Game game) {
+		player.getGamesList().add(game);
 		Platform.runLater(() -> gamesTableData.add(game));
 		triggerNotification(gamesTableData);
 	}
 
 	public void createGame(String name, double buyIn, int startChips, int maxPlayers, int paid) {
-		Game game = new Game(name, buyIn, startChips, maxPlayers, paid, 0);
+		Game game = new Game(name, gamesTableData.size(), buyIn, startChips, maxPlayers, paid, 0);
 		sendObject(new GameQuery(game), playerPort);
 	}
 
-	private IDGame toIDGame(SerializableGame sg) {
-		return new IDGame(new Game(sg.getName(), sg.getBuyIn(), sg.getStartChips(), sg.getMaxPlayers(), sg.getPaid(),
-				sg.getSignedUp()), sg.getId());
-	}
-
-	public String enrollPlayerIn(IDGame selectedGame) {
+	public String enrollPlayerIn(Game selectedGame) {
 		if (selectedGame != null) {
 			if (this.player.getBankRoll() < selectedGame.getBuyIn().doubleValue()) {
 				return ERROR_MESSAGE_0;
 			}
-			IDGame cur = this.gamesTableData.stream().filter(g -> g.getId() == selectedGame.getId())
+			Game cur = this.gamesTableData.stream().filter(g -> g.getId() == selectedGame.getId())
 					.collect(Collectors.toList()).get(0);
 			if (cur.getMaxPlayers() == cur.getSignedUp()) {
 				return ERROR_MESSAGE_1;
@@ -163,10 +155,10 @@ public class LobbyModel extends Model {
 	}
 
 	private void newPlayerEnrolled(int gameID, SafePlayer player) {
-		List<IDGame> games = IDGame.toIDGames(this.player.getGamesList());
+		List<Game> games = this.player.getGamesList();
 		games.get(gameID).addPlayer(player);
 		this.player = new Player(player.getId(), player.getName(), playerPw, player.getAdress(), games);
-		IDGame game = gamesTableData.get(gameID);
+		Game game = gamesTableData.get(gameID);
 		game.addPlayer(player);
 		Platform.runLater(() -> {
 			gamesTableData.set(gameID, game);
@@ -174,7 +166,7 @@ public class LobbyModel extends Model {
 		triggerNotification(gamesTableData);
 	}
 
-	private String createSuccessMsg(IDGame selectedGame) {
+	private String createSuccessMsg(Game selectedGame) {
 		return SUCCESS_MSG_0_BEGIN + selectedGame.getMaxPlayers() + SUCCESS_MSG_0_END;
 
 	}
@@ -213,7 +205,7 @@ public class LobbyModel extends Model {
 		return this.playerPw;
 	}
 
-	public ObservableList<IDGame> getGamesTableData() {
+	public ObservableList<Game> getGamesTableData() {
 		return gamesTableData;
 	}
 }

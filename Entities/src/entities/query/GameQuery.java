@@ -1,6 +1,6 @@
 package entities.query;
 
-import entities.lobby.Game;
+import entities.Game;
 
 public class GameQuery extends Query {
 

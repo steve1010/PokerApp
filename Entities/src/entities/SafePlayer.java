@@ -5,8 +5,6 @@ import java.net.InetSocketAddress;
 import java.util.List;
 
 import entities.gameplay.PlayerHand;
-import entities.lobby.IDGame;
-import entities.lobby.SerializableGame;
 
 public class SafePlayer implements Serializable {
 
@@ -17,12 +15,12 @@ public class SafePlayer implements Serializable {
 	private final InetSocketAddress adress, asyncAdress;
 	private boolean loggedIn = false;
 	private int stack;
-	private final List<SerializableGame> gamesList;
+	private final List<Game> gamesList;
 	private PlayerHand hand;
 
 	private double bankRoll;
 
-	public SafePlayer(int id, String name, InetSocketAddress adress, List<IDGame> gamesList) {
+	public SafePlayer(int id, String name, InetSocketAddress adress, List<Game> gamesList) {
 		this.id = id;
 		this.name = name;
 		this.adress = adress;
@@ -34,7 +32,7 @@ public class SafePlayer implements Serializable {
 		}
 
 		if (gamesList != null) {
-			this.gamesList = IDGame.fromIDGames(gamesList);
+			this.gamesList = gamesList;
 		} else {
 			this.gamesList = null;
 		}
@@ -42,7 +40,7 @@ public class SafePlayer implements Serializable {
 		this.bankRoll = 10000;
 	}
 
-	public SafePlayer(int id, String name, InetSocketAddress adress, List<SerializableGame> gamesList, boolean ignore) {
+	public SafePlayer(int id, String name, InetSocketAddress adress, List<Game> gamesList, boolean ignore) {
 		this.id = id;
 		this.name = name;
 		this.adress = adress;
@@ -106,12 +104,12 @@ public class SafePlayer implements Serializable {
 		return asyncAdress;
 	}
 
-	public void commitTransaction(IDGame idGame, Double buyIn) {
+	public void commitTransaction(Game idGame, Double buyIn) {
 		setBankRoll(bankRoll - buyIn);
-		gamesList.add(IDGame.toSerializableGame(idGame));
+		gamesList.add(idGame);
 	}
 
-	public List<SerializableGame> getGamesList() {
+	public List<Game> getGamesList() {
 		return gamesList;
 	}
 }

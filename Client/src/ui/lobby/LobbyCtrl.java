@@ -6,9 +6,8 @@ import java.util.Objects;
 import java.util.Observable;
 import java.util.stream.Collectors;
 
+import entities.Game;
 import entities.Player;
-import entities.lobby.Game;
-import entities.lobby.IDGame;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -116,10 +115,11 @@ public class LobbyCtrl extends Observable implements Controller {
 				|| max_players <= 0 || p4id <= 0 || p4id > 3) {
 			lobbyView.wrongInputAlert();
 		}
-		return new Game(name, buy_in, start_chips, max_players, p4id, 0);
+		return new Game(name, ((LobbyModel) model).getGamesTableData().size(), buy_in, start_chips, max_players, p4id,
+				0);
 	}
 
-	public void enrollRequest(IDGame selectedGame) {
+	public void enrollRequest(Game selectedGame) {
 		lobbyView.showEnrollAlert(((LobbyModel) model).enrollPlayerIn(selectedGame));
 	}
 

@@ -38,6 +38,10 @@ public class PlayersActionClientHandler extends ClientHandler {
 	public void switchQuery(Query received) {
 		PlayersActionQuery query = (PlayersActionQuery) received;
 		switch (query.getOption()) {
+
+		case READY:
+				
+			break;
 		case CHECK:
 			triggerServerMsg(new GamesServerMsg(MsgType.GAMES_SERVER_MSG, -5, GameMsgType.USER_CHECKS));
 			break;

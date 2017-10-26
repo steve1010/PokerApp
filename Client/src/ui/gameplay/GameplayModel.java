@@ -4,11 +4,11 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
+import entities.Game;
 import entities.SafePlayer;
 import entities.gameplay.Board;
 import entities.gameplay.Card;
 import entities.gameplay.PlayerHand;
-import entities.lobby.IDGame;
 import entities.query.Evaluation;
 import entities.query.GameQuery;
 import entities.query.PlayersActionQuery;
@@ -22,9 +22,9 @@ public class GameplayModel extends Model {
 
 	private final SafePlayer loggedInPlayer;
 	private final String pw;
-	private final IDGame game;
+	private final Game game;
 
-	public GameplayModel(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw, IDGame game) {
+	public GameplayModel(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw, Game game) {
 		super(serverAdress);
 		this.loggedInPlayer = loggedInPlayer;
 		this.pw = pw;
@@ -36,9 +36,10 @@ public class GameplayModel extends Model {
 		new Thread(() -> {
 			boolean running = true;
 			while (running) {
-				System.out.println("Listening on Port: " + (loggedInPlayer.getAdress().getPort() + 2));
+				System.err.println("Gameplay-Client listening on port: " + (loggedInPlayer.getAdress().getPort() + 2));
 				GamesServerMsg msg = (GamesServerMsg) receiveObjectAsynchronous(
-						loggedInPlayer.getAdress().getPort() + 1);System.out.println("received.");
+						loggedInPlayer.getAdress().getPort() + 1);
+				System.err.println("Gameplay-Client received.");
 				if (msg == null) {
 					running = false;
 					break;
@@ -110,7 +111,7 @@ public class GameplayModel extends Model {
 		return this.pw;
 	}
 
-	public IDGame getGame() {
+	public Game getGame() {
 		return game;
 	}
 

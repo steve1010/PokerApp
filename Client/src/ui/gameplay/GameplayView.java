@@ -5,16 +5,16 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import entities.Game;
 import entities.SafePlayer;
 import entities.gameplay.Card;
-import entities.lobby.IDGame;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import ui.lobby.LobbyView;
@@ -52,7 +52,7 @@ public class GameplayView implements Observer {
 				break;
 			case ACTION:
 				break;
-			case ROUND_END: 
+			case ROUND_END:
 				break;
 			default:
 				throw new IllegalArgumentException("unknown msg.");
@@ -140,7 +140,7 @@ public class GameplayView implements Observer {
 	}
 
 	public void setData(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw, Stage primaryStage,
-			Stage runningGameStage, LoginView loginView, LobbyView lobbyView, IDGame idGame) {
+			Stage runningGameStage, LoginView loginView, LobbyView lobbyView, Game idGame) {
 		this.controller = new GameplayCtrl(serverAdress, loggedInPlayer, pw, primaryStage, playersPaneController,
 				loginView, lobbyView, idGame);
 		controller.addObserver(this);

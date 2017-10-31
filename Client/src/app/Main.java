@@ -26,7 +26,7 @@ public class Main extends Application {
 
 	private void loadLoginView(Stage ps) throws IOException {
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(getClass().getResource("../ui/login/Login.fxml"));
+		loader.setLocation(getClass().getResource("login/Login.fxml"));
 		Parent root = loader.load();
 		ps.setScene(new Scene(root));
 		ps.setTitle("Login - Enter username & password - or SIGN UP !");
@@ -34,25 +34,3 @@ public class Main extends Application {
 		ps.show();
 	}
 }
-/**
- * HandController: currentHand.setMinBetValueToBigBlind(getBigBlind()); /**
- * WHILE (verbleibendeSpielerAnzahl > 1) { Hand hand =
- * Dealer.newHand(verbleibendeSpielerAnzahl WHILE(Hand
- */
-
-// 8.) Dealer den Button auswählen lassen (Zufall), Spielerpositionen
-// bestimmen/ändern, Small- & Big Blind setzen
-
-// 9.) Aktiviere GameAction-GUI bei UTG-Player
-
-/**
- * Algorithmus:Spieler UTG beginnt zu handeln -> 1 min Zeitbank, nach 20s
- * Warnung, dass Zeitbank aktiviert wird. { wenn Zeit>20s aktiviere
- * Zeitbank(Spieler). wenn Zeit(Zeitbank(Spieler))>60s führe PlayerAction.FOLD
- * automatisch aus.} 10.) ;;; SWITCH(Player.getAction()){ CASE
- * playerAction.FOLD: handcontroller.fold(ruft auf model
- * removeFromCurrentHand(currentPlayer); CASE playerAction.CHECK:
- * handcontroller.check(currentPlayer); CASE playerAction.RAISE:
- * handController.raise(currentPlayer, toValue(a_valid_value)); CASE
- * playerAction.CALL: handController.call(currentPlayer);
- */

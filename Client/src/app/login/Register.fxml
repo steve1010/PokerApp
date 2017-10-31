@@ -11,7 +11,7 @@
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
 	minWidth="-Infinity" prefHeight="250.0" prefWidth="381.0"
 	xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="ui.login.RegisterView">
+	fx:controller="app.login.RegisterView">
 	<children>
 		<HBox layoutX="13.0" layoutY="14.0" prefHeight="219.0" prefWidth="358.0"
 			spacing="20.0">

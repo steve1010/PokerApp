@@ -3,6 +3,7 @@ package backend.handler;
 import java.net.InetSocketAddress;
 
 import backend.GameServer;
+import backend.gameplay.container.GameContainer;
 import entities.Game;
 import entities.SafePlayer;
 import entities.query.Evaluation;
@@ -10,7 +11,6 @@ import entities.query.GameQuery;
 import entities.query.Query;
 import entities.query.server.ServerMsg;
 import entities.query.server.ServerMsg.MsgType;
-import logic.container.GameContainer;
 
 public final class GameClientHandler extends ClientHandler {
 

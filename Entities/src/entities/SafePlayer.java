@@ -6,6 +6,10 @@ import java.util.List;
 
 import entities.gameplay.PlayerHand;
 
+/**
+ * A {@link Player} with no pw.<br>
+ * Used to serialize players in a secure way.
+ */
 public class SafePlayer implements Serializable {
 
 	private static final long serialVersionUID = 6942923641868073010L;

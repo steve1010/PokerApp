@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import backend.gameplay.Dealer;
 import backend.handler.ClientHandler;
 import backend.handler.PlayersActionClientHandler;
 import entities.Game;
@@ -25,7 +26,6 @@ import entities.query.server.GamesServerMsg.GameMsgType;
 import entities.query.server.MinRoundBet;
 import entities.query.server.ServerMsg;
 import entities.query.server.ServerMsg.MsgType;
-import logic.gameplay.Dealer;
 
 public class GameServer extends ClientHandler implements RemoteAccess {
 

@@ -8,10 +8,10 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 
+import backend.gameplay.container.GameContainer;
+import backend.gameplay.container.PlayerContainer;
 import backend.handler.UdpClientHandler;
 import entities.query.server.PoisonPill;
-import logic.container.GameContainer;
-import logic.container.PlayerContainer;
 
 public class LobbyServer implements RemoteAccess {
 

@@ -1,4 +1,2 @@
 Last player registered message should wait for ok click and then open the gameplay view.
 Gameplay view wasn't opened on logouted Admin and signInd sitDown at sitDown's client. --> fix-
-
-change packet structure: delete ui. folder and let all the subfolders be root.

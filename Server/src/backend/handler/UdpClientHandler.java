@@ -5,13 +5,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.InetSocketAddress;
 
+import backend.gameplay.container.GameContainer;
 import entities.query.GameQuery;
 import entities.query.PlayersActionQuery;
 import entities.query.PlayersQuery;
 import entities.query.Query;
 import entities.query.server.PoisonPill;
 import entities.query.server.ServerMsg;
-import logic.container.GameContainer;
 
 public final class UdpClientHandler extends ClientHandler {
 

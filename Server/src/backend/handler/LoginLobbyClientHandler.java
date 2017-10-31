@@ -8,6 +8,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
+import backend.gameplay.container.GameContainer;
+import backend.gameplay.container.PlayerContainer;
 import entities.Game;
 import entities.SafePlayer;
 import entities.query.PlayersQuery;
@@ -15,8 +17,6 @@ import entities.query.Query;
 import entities.query.server.One23;
 import entities.query.server.ServerMsg;
 import entities.query.server.ServerMsg.MsgType;
-import logic.container.GameContainer;
-import logic.container.PlayerContainer;
 
 public class LoginLobbyClientHandler extends ClientHandler {
 

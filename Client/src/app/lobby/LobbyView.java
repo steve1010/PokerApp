@@ -7,6 +7,7 @@ import java.util.Observer;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import app.lobby.LobbyClientInterna.Type;
 import app.login.LoginView;
 import app.ui.Controller;
 import entities.Game;
@@ -130,12 +131,12 @@ public class LobbyView implements Controller, Initializable, Observer {
 
 		if (o instanceof LobbyClientInterna) {
 			Platform.runLater(() -> {
-				int type = ((LobbyClientInterna) o).getType();
-				if (type == 0) {
+				Type type = ((LobbyClientInterna) o).getType();
+				if (type.equals(Type.UPDATE_GAMES)) {
 					gamesTable.setItems((ObservableList<Game>) ((LobbyClientInterna) o).getTableData());
 					gamesTable.refresh();
 				}
-				if (type == 1) {
+				if (type.equals(Type.UPDATE_PLAYERS)) {
 					allPlayersTable.setItems((ObservableList<SafePlayer>) ((LobbyClientInterna) o).getTableData());
 					allPlayersTable.refresh();
 				}

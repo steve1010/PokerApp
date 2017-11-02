@@ -7,20 +7,20 @@ import entities.SafePlayer;
 import entities.gameplay.PlayerHand;
 import entities.query.PlayersActionQuery;
 import entities.query.Query;
-import entities.query.server.GamesServerMsg;
-import entities.query.server.GamesServerMsg.GameMsgType;
+import entities.query.server.GameServerMsg;
+import entities.query.server.GameServerMsg.GameMsgType;
 import entities.query.server.MinRoundBet;
 import entities.query.server.ServerMsg;
 import entities.query.server.ServerMsg.MsgType;
 
-public class PlayersActionClientHandler extends ClientHandler {
+public class PlayerActionClientHandler extends ClientHandler {
 
 	private final PlayersActionQuery playerQuery;
 	private final List<SafePlayer> playersList;
 	private final List<PlayerHand> playerHandsList;
 	private final MinRoundBet minRoundBet;
 
-	public PlayersActionClientHandler(PlayersActionQuery playersActionQuery, List<SafePlayer> list,
+	public PlayerActionClientHandler(PlayersActionQuery playersActionQuery, List<SafePlayer> list,
 			List<PlayerHand> playerHandsList, MinRoundBet minRoundBet) {
 		super(new byte[1], list.get(0).getAdress());
 		this.playerQuery = playersActionQuery;
@@ -43,22 +43,22 @@ public class PlayersActionClientHandler extends ClientHandler {
 				
 			break;
 		case CHECK:
-			triggerServerMsg(new GamesServerMsg(MsgType.GAMES_SERVER_MSG, -5, GameMsgType.USER_CHECKS));
+			triggerServerMsg(new GameServerMsg(MsgType.GAMES_SERVER_MSG, -5, GameMsgType.USER_CHECKS));
 			break;
 		case FOLD:
 			playerHandsList.remove(query.getId());
 			if (playerHandsList.size() == 1) {
-				triggerServerMsg(new GamesServerMsg(MsgType.GAMES_SERVER_MSG, -5, GameMsgType.ROUND_END,
+				triggerServerMsg(new GameServerMsg(MsgType.GAMES_SERVER_MSG, -5, GameMsgType.ROUND_END,
 						playerHandsList.get(0).getId()));
 			}
-			triggerServerMsg(new GamesServerMsg(MsgType.GAMES_SERVER_MSG, -5, GameMsgType.USER_FOLDS));
+			triggerServerMsg(new GameServerMsg(MsgType.GAMES_SERVER_MSG, -5, GameMsgType.USER_FOLDS));
 			break;
 		case CALL:
-			triggerServerMsg(new GamesServerMsg(MsgType.GAMES_SERVER_MSG, -5, GameMsgType.USER_CALLS));
+			triggerServerMsg(new GameServerMsg(MsgType.GAMES_SERVER_MSG, -5, GameMsgType.USER_CALLS));
 			break;
 		case RAISE:
 			this.minRoundBet.setMinRoundBet(query.getAmount());
-			triggerServerMsg(new GamesServerMsg(MsgType.GAMES_SERVER_MSG, -5, GameMsgType.USER_RAISES,
+			triggerServerMsg(new GameServerMsg(MsgType.GAMES_SERVER_MSG, -5, GameMsgType.USER_RAISES,
 					new MinRoundBet(query.getAmount())));
 			break;
 		default:

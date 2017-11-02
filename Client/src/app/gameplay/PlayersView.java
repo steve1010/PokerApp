@@ -39,8 +39,8 @@ public class PlayersView implements Observer {
 			card19Imv, card29Imv, boardCard0Imv, boardCard1Imv, boardCard2Imv, boardCard3Imv, boardCard4Imv;
 
 	@FXML
-	private HBox boardHbox, pActionHbox, cards1Hbox, cards2Hbox, cards3Hbox, cards4Hbox, cards5Hbox, cards6Hbox,
-			cards7Hbox, cards8Hbox, cards9Hbox;
+	private HBox boardHbox, cards1Hbox, cards2Hbox, cards3Hbox, cards4Hbox, cards5Hbox, cards6Hbox, cards7Hbox,
+			cards8Hbox, cards9Hbox;
 
 	@Override
 	public void update(Observable obs, Object o) {
@@ -50,8 +50,6 @@ public class PlayersView implements Observer {
 			case POSITION:
 				switchPosition(clientInterna.getPosition());
 				break;
-			case YOUR_TURN:
-				displayPlayerActions();
 			case ACTION:
 				break;
 			case ROUND_END:
@@ -60,10 +58,6 @@ public class PlayersView implements Observer {
 				break;
 			}
 		}
-	}
-
-	private void displayPlayerActions() {
-		pActionHbox.setVisible(true);
 	}
 
 	private void switchPosition(Position position) {

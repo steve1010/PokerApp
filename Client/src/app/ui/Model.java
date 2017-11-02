@@ -71,7 +71,6 @@ public abstract class Model extends Observable {
 		try (DatagramSocket clientSocket = new DatagramSocket(port)) {
 			byte[] incomingData = new byte[3024];
 			DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
-			// wait for server response
 			clientSocket.receive(incomingPacket);
 			byte[] data = incomingPacket.getData();
 			try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data))) {
@@ -89,9 +88,9 @@ public abstract class Model extends Observable {
 		try (DatagramSocket clientSocket = new DatagramSocket((port + 1))) {
 			byte[] incomingData = new byte[3024];
 			DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
-			System.out.println("waiting " + (port + 1) + "..");
+			System.out.println("waiting on " + (port + 1));
 			clientSocket.receive(incomingPacket);
-			System.out.println("..received.");
+			System.out.print("received on " + (port + 1));
 			byte[] data = incomingPacket.getData();
 			try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data))) {
 				return (ServerMsgObject) ois.readObject();
@@ -115,7 +114,7 @@ public abstract class Model extends Observable {
 		return serverAdress;
 	}
 
-	public void triggerNotification(Object o) {
+	public void triggerNotification(ClientInterna o) {
 		this.setChanged();
 		this.notifyObservers(o);
 	}

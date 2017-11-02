@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import backend.gameplay.Dealer;
 import backend.handler.ClientHandler;
-import backend.handler.PlayersActionClientHandler;
+import backend.handler.PlayerActionClientHandler;
 import entities.Game;
 import entities.SafePlayer;
 import entities.gameplay.Board;
@@ -21,8 +21,8 @@ import entities.gameplay.PlayerHand;
 import entities.query.PlayersActionQuery;
 import entities.query.PlayersActionQuery.Option;
 import entities.query.Query;
-import entities.query.server.GamesServerMsg;
-import entities.query.server.GamesServerMsg.GameMsgType;
+import entities.query.server.GameServerMsg;
+import entities.query.server.GameServerMsg.GameMsgType;
 import entities.query.server.MinRoundBet;
 import entities.query.server.ServerMsg;
 import entities.query.server.ServerMsg.MsgType;
@@ -48,9 +48,7 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 
 	@Override
 	public void run() {
-
 		printPlayers();
-
 		while (running) {
 			List<SafePlayer> orderedPlayers = distributeCards();
 
@@ -61,7 +59,7 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 					InetSocketAddress asyncGameClientAddress = getClientAdress(orderedPlayers.get(player));
 					if (roundCounter == 0) {
 						/** pre-pre-flop */
-						answer(new GamesServerMsg(null, player, GameMsgType.YOUR_POSITION), asyncGameClientAddress);
+						answer(new GameServerMsg(null, player, GameMsgType.YOUR_POSITION), asyncGameClientAddress);
 					} else {
 						/**
 						 * r=1:pre-flop<br>
@@ -69,11 +67,13 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 						 * r=3:turn<br>
 						 * r=4:river
 						 */
-						answer(new GamesServerMsg(null, -5, GameMsgType.YOUR_TURN, minRoundBet),
-								asyncGameClientAddress);
-						new Thread(new PlayersActionClientHandler(receiveObject(), game.getPlayersList(),
+						answer(new GameServerMsg(null, -5, GameMsgType.YOUR_TURN, minRoundBet), asyncGameClientAddress);
+						new Thread(new PlayerActionClientHandler(receiveObject(), game.getPlayersList(),
 								playerHandsList, minRoundBet)).start();
 					}
+				}
+				if (roundCounter == 0) {
+					triggerPlayerHands();
 				}
 			}
 			running = false;
@@ -88,7 +88,6 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 
 	private List<SafePlayer> distributeCards() {
 		List<SafePlayer> orderedPlayers = distributePlayerCardsServerside();
-		triggerPlayerHands();
 		setBoard(new Board(dealer.newCard(), dealer.newCard(), dealer.newCard(), dealer.newCard(), dealer.newCard()));
 		return orderedPlayers;
 	}
@@ -109,17 +108,14 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 		for (SafePlayer player : game.getPlayersList()) {
 			InetSocketAddress asyncGameplayPlayerAddress = new InetSocketAddress(player.getAdress().getAddress(),
 					(player.getAdress().getPort() + 2));
-			answer(new GamesServerMsg(MsgType.GAMES_SERVER_MSG, -5, GameMsgType.YOUR_HAND,
+			answer(new GameServerMsg(MsgType.GAMES_SERVER_MSG, -5, GameMsgType.YOUR_HAND,
 					playerHandsList.get(playerID)), asyncGameplayPlayerAddress);
 
-			System.err.println("GameServer answered to client-port: " + asyncGameplayPlayerAddress.toString());
+			System.err.println("GameServer answered to client-port: " + asyncGameplayPlayerAddress.toString()
+					+ "\nMessageType: YOUR_HAND");
 
 			playerID++;
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			sleep(500);
 		}
 	}
 
@@ -132,7 +128,7 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 				if (playerQuery.getOption().equals(Option.READY)) {
 					readyCounter.incrementAndGet();
 					if (readyCounter.get() == game.getPlayersList().size()) {
-						break;
+						notAllPlayersReady = false;
 					}
 				}
 			}
@@ -141,12 +137,9 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 
 	private void runCountingThread() {
 		new Thread(() -> {
-			try {/** 30 seconds */
-				Thread.sleep(30000);
-				answer(new ServerMsg(null, port), new InetSocketAddress("localhost", port));
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			sleep(6000);
+			// TODO: add one digit after testing.
+			answer(new ServerMsg(null, port), new InetSocketAddress("localhost", port));
 		}).start();
 	}
 
@@ -163,7 +156,8 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 	}
 
 	/**
-	 * Returns the re-ordered playersList with the Btn player at index 0.
+	 * TODO: outsource: Returns the re-ordered playersList with the Btn player at
+	 * index 0.
 	 */
 	private List<SafePlayer> chooseBtnPlayerRandomly() {
 		List<SafePlayer> players = new ArrayList<>();
@@ -171,7 +165,6 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 		for (int i = size; i >= 0; i--) {
 			int random = (int) (Math.random() * i);
 			players.add(game.getPlayersList().get(random));
-			System.out.println("player added..");
 			game.getPlayersList().remove(random);
 		}
 		return players;
@@ -203,6 +196,14 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 	private void printPlayers() {
 		game.getPlayersList()
 				.forEach(p -> System.out.println("Player: " + p.getName() + " joined game: " + game.getName() + ".\n"));
+	}
+
+	private void sleep(int i) {
+		try {
+			Thread.sleep(i);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

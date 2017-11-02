@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import app.lobby.LobbyClientInterna.Type;
 import app.ui.Model;
 import entities.Game;
 import entities.Player;
@@ -61,6 +62,7 @@ public class LobbyModel extends Model {
 		new Thread(() -> {
 			boolean running = true;
 			while (running) {
+				System.err.print("LobbyModel ");
 				ServerMsgObject msgObj = receiveObjectAsynchronous(playerPort);
 				ServerMsg msg;
 				if (msgObj instanceof PoisonPill) {
@@ -72,6 +74,7 @@ public class LobbyModel extends Model {
 					running = false;
 					break;
 				}
+				System.err.println("\nLobbyModel: " + msg.getMsgType().toString());
 				switch (msg.getMsgType()) {
 				case NEW_PLAYER_ENROLLED:
 					newPlayerEnrolled(msg.getId(), msg.getPlayer());
@@ -85,7 +88,7 @@ public class LobbyModel extends Model {
 					Platform.runLater(() -> {
 						playersTableData.add((msg.getPlayer()));
 					});
-					triggerNotification(playersTableData);
+					triggerNotification(new LobbyClientInterna(Type.UPDATE_PLAYERS, playersTableData));
 					break;
 
 				case PLAYER_LOGOUT:
@@ -94,15 +97,16 @@ public class LobbyModel extends Model {
 						playersTableData.remove(playersTableData.stream().filter(e -> e.getId() == msg.getId())
 								.collect(Collectors.toList()).get(0));
 					});
-					triggerNotification(new LobbyClientInterna(1, playersTableData));
+					triggerNotification(new LobbyClientInterna(Type.UPDATE_PLAYERS, playersTableData));
 					break;
 
 				case LAST_PLAYER_ENROLLED:
-					newPlayerEnrolled(msg.getId(), msg.getPlayer());
+					newPlayerEnrolled(msg.getId(),
+							msg.getPlayer());/** TODO: extract method into Game: game.filter(cond) */
 					List<Game> games = player.getGamesList().stream().filter(game -> game.getId() == msg.getId())
 							.collect(Collectors.toList());
 					if (!games.isEmpty()) {
-						triggerNotification(new LobbyClientInterna(2, games.get(0).getId()));
+						triggerNotification(new LobbyClientInterna(Type.GAME_START, games.get(0).getId()));
 					}
 					break;
 				default:
@@ -115,7 +119,7 @@ public class LobbyModel extends Model {
 	private void addNewGameFromServer(Game game) {
 		player.getGamesList().add(game);
 		Platform.runLater(() -> gamesTableData.add(game));
-		triggerNotification(gamesTableData);
+		triggerNotification(new LobbyClientInterna(Type.UPDATE_GAMES, gamesTableData));
 	}
 
 	public void createGame(String name, double buyIn, int startChips, int maxPlayers, int paid) {
@@ -123,28 +127,26 @@ public class LobbyModel extends Model {
 		sendObject(new GameQuery(game), playerPort);
 	}
 
-	public String enrollPlayerIn(Game selectedGame) {
-		if (selectedGame != null) {
-			if (this.player.getBankRoll() < selectedGame.getBuyIn().doubleValue()) {
+	public String enrollPlayerIn(Game selected) {
+		if (selected != null) {
+			if (this.player.getBankRoll() < selected.getBuyIn().doubleValue()) {
 				return ERROR_MESSAGE_0;
 			}
-			Game cur = this.gamesTableData.stream().filter(g -> g.getId() == selectedGame.getId())
-					.collect(Collectors.toList()).get(0);
-			if (cur.getMaxPlayers() == cur.getSignedUp()) {
+			if (selected.getMaxPlayers() == selected.getSignedUp()) {
 				return ERROR_MESSAGE_1;
 			} else {
-				sendObject(new PlayersQuery(selectedGame, Player.toSafePlayer(player)), playerPort);
+				sendObject(new PlayersQuery(selected, Player.toSafePlayer(player)), playerPort);
 				One23 received = (One23) receiveObject(playerPort);
 				switch (received.getI()) {
 				case 1:
-					player.commitTransaction(selectedGame, selectedGame.getBuyIn());
-					return createSuccessMsg(selectedGame);
+					player.commitTransaction(selected, selected.getBuyIn());
+					return createSuccessMsg(selected);
 				case 2:
 					return ERROR_MESSAGE_1;
 				case 3:
 					return ERROR_MESSAGE_2;
 				case 4:
-					player.commitTransaction(selectedGame, selectedGame.getBuyIn());
+					player.commitTransaction(selected, selected.getBuyIn());
 					return SUCCESS_MSG_1;
 				default:
 					throw new IllegalStateException("---------------- Illegal State ! ------------------");
@@ -155,15 +157,13 @@ public class LobbyModel extends Model {
 	}
 
 	private void newPlayerEnrolled(int gameID, SafePlayer player) {
-		List<Game> games = this.player.getGamesList();
-		games.get(gameID).addPlayer(player);
-		this.player = new Player(player.getId(), player.getName(), playerPw, player.getAdress(), games);
-		Game game = gamesTableData.get(gameID);
-		game.addPlayer(player);
-		Platform.runLater(() -> {
-			gamesTableData.set(gameID, game);
-		});
-		triggerNotification(gamesTableData);
+		this.gamesTableData.get(gameID).addPlayer(player);
+//		Game game = gamesTableData.get(gameID);
+//		game.addPlayer(player);
+//		Platform.runLater(() -> {
+//			gamesTableData.set(gameID, game);
+//		});
+		triggerNotification(new LobbyClientInterna(Type.UPDATE_GAMES, gamesTableData));
 	}
 
 	private String createSuccessMsg(Game selectedGame) {
@@ -172,8 +172,8 @@ public class LobbyModel extends Model {
 	}
 
 	public void init() {
-		triggerNotification(new LobbyClientInterna(0, gamesTableData));
-		triggerNotification(new LobbyClientInterna(1, playersTableData));
+		triggerNotification(new LobbyClientInterna(Type.UPDATE_GAMES, gamesTableData));
+		triggerNotification(new LobbyClientInterna(Type.UPDATE_PLAYERS, playersTableData));
 	}
 
 	public void logoutUser() {

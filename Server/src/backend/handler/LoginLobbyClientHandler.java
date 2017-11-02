@@ -112,7 +112,7 @@ public class LoginLobbyClientHandler extends ClientHandler {
 
 		case ENROLL:
 			One23 result = gameContainer.addPlayerToGame(received.getPlayer(), received.getGame());
-			answer(result);// TODO: may crush on multiple threads (lost update)
+			answer(result);// TODO: may crush on multiple threads (lost update)-why?!!!
 			Game game = received.getGame();
 			game.addPlayer(received.getPlayer());
 			if (result.getI() == 1) {

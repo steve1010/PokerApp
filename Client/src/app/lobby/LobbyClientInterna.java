@@ -5,18 +5,20 @@ import javafx.collections.ObservableList;
 
 public class LobbyClientInterna implements ClientInterna {
 
+	public enum Type {
+		UPDATE_GAMES, UPDATE_PLAYERS, GAME_START;
+	}
+
 	private final ObservableList<?> tableData;
-	private final int type;
+	private final Type type;
 	private int id;
 
-	public LobbyClientInterna(int type, ObservableList<?> tableData) {
-		validate(type);
+	public LobbyClientInterna(Type type, ObservableList<?> tableData) {
 		this.type = type;
 		this.tableData = tableData;
 	}
 
-	public LobbyClientInterna(int type, int id) {
-		validate(type);
+	public LobbyClientInterna(Type type, int id) {
 		this.type = type;
 		this.tableData = null;
 		this.id = id;
@@ -26,14 +28,8 @@ public class LobbyClientInterna implements ClientInterna {
 		return tableData;
 	}
 
-	public int getType() {
+	public Type getType() {
 		return type;
-	}
-
-	private void validate(int type) {
-		if (type < 0 || type > 3) {
-			throw new IllegalArgumentException();
-		}
 	}
 
 	public int getId() {

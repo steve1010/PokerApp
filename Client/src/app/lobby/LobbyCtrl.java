@@ -7,6 +7,7 @@ import java.util.Observable;
 import java.util.stream.Collectors;
 
 import app.gameplay.GameplayView;
+import app.lobby.LobbyClientInterna.Type;
 import app.login.LoginView;
 import app.ui.Controller;
 import app.ui.Model;
@@ -38,8 +39,7 @@ public class LobbyCtrl extends Observable implements Controller {
 
 	@Override
 	public void update(Observable observable, Object o) {
-		if (o instanceof LobbyClientInterna && (((LobbyClientInterna) o).getType() == 2)) {
-			// trigger for game starting ..
+		if (o instanceof LobbyClientInterna && (((LobbyClientInterna) o).getType().equals(Type.GAME_START))) {
 			openGameplayView(((LobbyClientInterna) o).getId());
 		}
 		this.setChanged();
@@ -59,8 +59,7 @@ public class LobbyCtrl extends Observable implements Controller {
 				runningGameStage.setY(1);
 				runningGameStage.setTitle("Good Luck!");
 				runningGameStage.show();
-				runningGameStage.setOnHidden((e) -> {// TODO: remove if not
-														// needed.
+				runningGameStage.setOnCloseRequest((e) -> {// TODO: remove from server on disconnecting/leaving page
 				});
 				((GameplayView) loader.getController()).setData(model.getServerAdress(), model.getLoggedInPlayer(),
 						model.getPw(), primaryStage, runningGameStage, loginView, lobbyView,

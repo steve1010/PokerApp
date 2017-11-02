@@ -2,7 +2,7 @@ package entities.query.server;
 
 import entities.gameplay.PlayerHand;
 
-public class GamesServerMsg extends ServerMsg implements ServerMsgObject {
+public class GameServerMsg extends ServerMsg implements ServerMsgObject {
 
 	private static final long serialVersionUID = -8683652218666171970L;
 
@@ -15,22 +15,22 @@ public class GamesServerMsg extends ServerMsg implements ServerMsgObject {
 	private int winnerID;
 	private PlayerHand playerHand;
 
-	public GamesServerMsg(MsgType msgType, int id, GameMsgType gameMsgType) {
+	public GameServerMsg(MsgType msgType, int id, GameMsgType gameMsgType) {
 		super(MsgType.GAMES_SERVER_MSG, id);
 		this.gameMsgType = gameMsgType;
 	}
 
-	public GamesServerMsg(MsgType msgType, int id, GameMsgType gamesMsgType, MinRoundBet minRoundBet) {
+	public GameServerMsg(MsgType msgType, int id, GameMsgType gamesMsgType, MinRoundBet minRoundBet) {
 		this(msgType, id, gamesMsgType);
 		this.minRoundBet = minRoundBet;
 	}
 
-	public GamesServerMsg(MsgType msgType, int id, GameMsgType gamesMsgType, int winnerID) {
+	public GameServerMsg(MsgType msgType, int id, GameMsgType gamesMsgType, int winnerID) {
 		this(msgType, id, gamesMsgType);
 		this.winnerID = winnerID;
 	}
 
-	public GamesServerMsg(MsgType gamesServerMsg, int i, GameMsgType yourHand, PlayerHand playerHand) {
+	public GameServerMsg(MsgType gamesServerMsg, int i, GameMsgType yourHand, PlayerHand playerHand) {
 		super(gamesServerMsg, i);
 		this.gameMsgType = yourHand;
 		this.playerHand = playerHand;

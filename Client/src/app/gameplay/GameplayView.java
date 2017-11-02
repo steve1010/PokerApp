@@ -46,7 +46,8 @@ public class GameplayView implements Observer {
 			GameplayClientInterna clientInterna = (GameplayClientInterna) o;
 			switch (clientInterna.getType()) {
 			case POSITION:
-				break;// ignore
+				break;
+
 			case YOUR_TURN:
 				pActionPane.setVisible(true);
 				break;
@@ -141,6 +142,7 @@ public class GameplayView implements Observer {
 
 	public void setData(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw, Stage primaryStage,
 			Stage runningGameStage, LoginView loginView, LobbyView lobbyView, Game idGame) {
+		
 		this.controller = new GameplayCtrl(serverAdress, loggedInPlayer, pw, primaryStage, playersPaneController,
 				loginView, lobbyView, idGame);
 		controller.addObserver(this);

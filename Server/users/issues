@@ -1,2 +1,7 @@
 Last player registered message should wait for ok click and then open the gameplay view.
-Gameplay view wasn't opened on logouted Admin and signInd sitDown at sitDown's client. --> fix-
+
+[Implement port distribution equivalent to DHCP]
+
+are clients using same port(s) on logging out and in again? -> if yes: maybe sequrity issue..
+
+still port conflicts to handle: random ports could cause BindException!

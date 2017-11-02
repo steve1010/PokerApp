@@ -16,7 +16,7 @@ import entities.query.Evaluation;
 import entities.query.GameQuery;
 import entities.query.PlayersActionQuery;
 import entities.query.PlayersActionQuery.Option;
-import entities.query.server.GamesServerMsg;
+import entities.query.server.GameServerMsg;
 
 public class GameplayModel extends Model {
 
@@ -36,14 +36,14 @@ public class GameplayModel extends Model {
 		new Thread(() -> {
 			boolean running = true;
 			while (running) {
-				System.err.println("Gameplay-Client listening on port: " + (loggedInPlayer.getAdress().getPort() + 2));
-				GamesServerMsg msg = (GamesServerMsg) receiveObjectAsynchronous(
-						loggedInPlayer.getAdress().getPort() + 1);
-				System.err.println("Gameplay-Client received.");
+				System.err.print("GameplayModel ");
+				GameServerMsg msg = (GameServerMsg) receiveObjectAsynchronous(loggedInPlayer.getAdress().getPort() + 1);
 				if (msg == null) {
 					running = false;
 					break;
 				}
+				System.err.println("\nGameplayModel: type='" + msg.getGameMsgType() + "'");
+
 				switch (msg.getGameMsgType()) {
 
 				case YOUR_TURN:

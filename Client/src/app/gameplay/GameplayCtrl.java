@@ -7,11 +7,11 @@ import java.util.Observable;
 import app.lobby.LobbyView;
 import app.login.LoginView;
 import app.ui.Controller;
-import entities.Game;
-import entities.SafePlayer;
-import entities.gameplay.Board;
-import entities.gameplay.Card;
-import entities.gameplay.PlayerHand;
+import entities.game.Game;
+import entities.game.SafePlayer;
+import entities.game.play.Board;
+import entities.game.play.Card;
+import entities.game.play.PlayerHand;
 import javafx.stage.Stage;
 
 public final class GameplayCtrl extends Observable implements Controller {

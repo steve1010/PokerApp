@@ -5,3 +5,85 @@ Last player registered message should wait for ok click and then open the gamepl
 are clients using same port(s) on logging out and in again? -> if yes: maybe sequrity issue..
 
 still port conflicts to handle: random ports could cause BindException!
+
+
+ingame table shows users not correctly.
+
+- implement robbin - hood - principle
+
+
+loq:client: ~3100
+loq:server: ~1300
+loq:entities: ~1600
+------------------
+             5000 LOQ so far..
+
+      ------------------------------------------------------------------------------------------    
+           
+             ÄNDERUNGEN : 
+             ------------
+             
+             alle MODELs schicken Msgs
+             Das CLIENTmodel setzt die Absender- und ZielAdressen.
+				---             alles ANDERE schickt KEINE ADDRESSen!	---
+             SENDERRECEIVER nimmt nur QUERYs als PARAMETER an!
+             SERVER fragt Daten nun von DB an und reicht sie als ServerMsg weiter.
+             
+          
+             
+      ------------------------------------------------------------------------------------------ 
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      Möglichkeit 1:  3 builder bauen, für jede query einen, 
+      	dann:
+      	
+  			es kommen (SimpleQuery) Querys ohne Adressen im CM an.
+  			dann evluieren was für query : 
+  							
+  											1-> GameZeugs
+  											2-> PlayerZeugs
+  											3-> ActionZeugs
+  									
+  							das zeugs muss dann alles geupdated werden
+  							sprich
+  							NEUE QUERY MIT BUILDER UND ALTE WERTE 'RAUSFROSCHEN'  	---> MIIIES!!!!!!!!			
+  								
+  	Oder: 		
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      

@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import entities.Game;
-import entities.Player;
-import entities.SafePlayer;
+import entities.game.Game;
+import entities.game.Player;
+import entities.game.SafePlayer;
 
 /**
  * ThreadSafeTicketStore

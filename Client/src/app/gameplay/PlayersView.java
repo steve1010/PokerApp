@@ -6,11 +6,11 @@ import java.util.Observable;
 import java.util.Observer;
 
 import app.gameplay.GameplayClientInterna.Position;
-import entities.gameplay.Board;
-import entities.gameplay.Card;
-import entities.gameplay.Card.Color;
-import entities.gameplay.LocatedImage;
-import entities.gameplay.PlayerHand;
+import entities.game.play.Board;
+import entities.game.play.Card;
+import entities.game.play.LocatedImage;
+import entities.game.play.PlayerHand;
+import entities.game.play.Card.Color;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;

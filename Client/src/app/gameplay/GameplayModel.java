@@ -6,27 +6,28 @@ import java.util.List;
 
 import app.gameplay.GameplayClientInterna.ActionType;
 import app.gameplay.GameplayClientInterna.Type;
-import app.ui.Model;
-import entities.Game;
-import entities.SafePlayer;
-import entities.gameplay.Board;
-import entities.gameplay.Card;
-import entities.gameplay.PlayerHand;
-import entities.query.Evaluation;
-import entities.query.GameQuery;
-import entities.query.PlayersActionQuery;
-import entities.query.PlayersActionQuery.Option;
+import app.ui.ClientModel;
+import entities.game.Game;
+import entities.game.SafePlayer;
+import entities.game.play.Board;
+import entities.game.play.Card;
+import entities.game.play.PlayerHand;
+import entities.query.game.GameQuery;
+import entities.query.game.PlayerActionQuery;
+import entities.query.game.PlayerActionQuery.Option;
 import entities.query.server.GameServerMsg;
 
-public class GameplayModel extends Model {
+public class GameplayModel extends ClientModel {
 
 	private final SafePlayer loggedInPlayer;
 	private final String pw;
 	private final Game game;
+	private final int gamePlayPort;
 
 	public GameplayModel(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw, Game game) {
 		super(serverAdress);
 		this.loggedInPlayer = loggedInPlayer;
+		this.gamePlayPort = loggedInPlayer.getAdress().getPort() + 2;
 		this.pw = pw;
 		this.game = game;
 		runAsyncListener();
@@ -37,7 +38,7 @@ public class GameplayModel extends Model {
 			boolean running = true;
 			while (running) {
 				System.err.print("GameplayModel ");
-				GameServerMsg msg = (GameServerMsg) receiveObjectAsynchronous(loggedInPlayer.getAdress().getPort() + 1);
+				GameServerMsg msg = (GameServerMsg) receiveMsgAsynchronous(loggedInPlayer.getAdress().getPort() + 1);
 				if (msg == null) {
 					running = false;
 					break;
@@ -78,8 +79,8 @@ public class GameplayModel extends Model {
 	public List<Card> deal() {
 		List<Card> cards = new ArrayList<>(1);
 		for (int i = 0; i < 25; i++) {
-			sendObject(new GameQuery(entities.query.GameQuery.Option.NEW_CARD));
-			Object received = receiveObject();
+			sendQuery(new GameQuery.GQBuilder(entities.query.game.GameQuery.Option.NEW_CARD).build());
+			Object received = receiveMsg(gamePlayPort);
 			if (received instanceof Card) {
 				cards.add((Card) received);
 			}
@@ -89,16 +90,29 @@ public class GameplayModel extends Model {
 	}
 
 	public void newRound() {
-		sendObject(new GameQuery(entities.query.GameQuery.Option.NEW_ROUND));
+		sendQuery(new GameQuery.GQBuilder(entities.query.game.GameQuery.Option.NEW_ROUND).build());
 	}
 
+	/***
+	 * 
+	 * BIG TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! WHY THE HELL ARE PLAYER
+	 * HANDS ON CLIENT SAFED??!?!?!?!??! EACH PLAYER SHOULD ONLY RECEIVE playerHands
+	 * on RESULT (and then also only if necessary regarding game rules.)!
+	 * (EVALUATION) AND OWN HAND! MASSIVE SECURITY LAG! <br>
+	 * <br>
+	 * TODO: evaluation turned off here: //
+	 * 
+	 * @param board
+	 * @param hands
+	 * @return
+	 */
 	public String[] evaluate(Board board, List<PlayerHand> hands) {
-		sendObject(new Evaluation(board, hands));
-		Object receiced = receiveObject();
+		// sendQuery(new Evaluation(board, hands), gamePlayPort);
+		Object receiced = receiveMsg(gamePlayPort);
 		if (receiced instanceof String[]) {
 			return (String[]) receiced;
 		}
-		return null;
+		throw new IllegalArgumentException();
 	}
 
 	@Override
@@ -116,18 +130,23 @@ public class GameplayModel extends Model {
 	}
 
 	public void userCalled() {
-		sendObject(new PlayersActionQuery(loggedInPlayer.getId(), Option.CALL));
+		sendQuery(new PlayerActionQuery.PAQBuilder(Option.CALL).playerID(loggedInPlayer.getId()).build());
 	}
 
 	public void userChecked() {
-		sendObject(new PlayersActionQuery(loggedInPlayer.getId(), Option.CHECK));
+		sendQuery(new PlayerActionQuery.PAQBuilder(Option.CHECK).playerID(loggedInPlayer.getId()).build());
 	}
 
 	public void userFolded() {
-		sendObject(new PlayersActionQuery(loggedInPlayer.getId(), Option.FOLD));
+		sendQuery(new PlayerActionQuery.PAQBuilder(Option.FOLD).playerID(loggedInPlayer.getId()).build());
 	}
 
 	public void userRaised(double raiseValue) {
-		sendObject(new PlayersActionQuery(loggedInPlayer.getId(), raiseValue));
+		sendQuery(new PlayerActionQuery.PAQBuilder(Option.RAISE).playerID(loggedInPlayer.getId()).raiseValue(raiseValue)
+				.build());
+	}
+
+	public int getGamePlayPort() {
+		return gamePlayPort;
 	}
 }

@@ -1,10 +1,5 @@
 package backend;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,22 +7,20 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import backend.gameplay.Dealer;
-import backend.handler.ClientHandler;
-import backend.handler.PlayerActionClientHandler;
-import entities.Game;
-import entities.SafePlayer;
-import entities.gameplay.Board;
-import entities.gameplay.PlayerHand;
-import entities.query.PlayersActionQuery;
-import entities.query.PlayersActionQuery.Option;
-import entities.query.Query;
+import backend.handler.sub.PlayerActionClientHandler;
+import entities.game.Game;
+import entities.game.SafePlayer;
+import entities.game.play.Board;
+import entities.game.play.MinRoundBet;
+import entities.game.play.PlayerHand;
+import entities.query.game.PlayerActionQuery;
+import entities.query.game.PlayerActionQuery.Option;
 import entities.query.server.GameServerMsg;
 import entities.query.server.GameServerMsg.GameMsgType;
-import entities.query.server.MinRoundBet;
 import entities.query.server.ServerMsg;
 import entities.query.server.ServerMsg.MsgType;
 
-public class GameServer extends ClientHandler implements RemoteAccess {
+public class GameServer extends Server implements RemoteAccess {
 
 	private boolean running = true;
 	private Game game;
@@ -35,15 +28,15 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 	private final List<PlayerHand> playerHandsList;
 	private Board board;
 	private final int port;
-	private AtomicInteger readyCounter;
+	private final AtomicInteger readyCounter;
 	private boolean notAllPlayersReady;
 
 	public GameServer(Game idGame, int port) {
-		super(new byte[] {}, idGame.getPlayersList().get(0).getAdress());
 		this.game = idGame;
 		this.dealer = new Dealer();
 		this.playerHandsList = new ArrayList<>();
 		this.port = port;
+		this.readyCounter = new AtomicInteger(0);
 	}
 
 	@Override
@@ -54,12 +47,24 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 
 			for (int roundCounter = 0; roundCounter < 5 && playerHandsList.size() > 1; roundCounter++) {
 				MinRoundBet minRoundBet = new MinRoundBet(0);
-				for (int player = 0; player < orderedPlayers.size(); player++) {
+				for (int playerID = 0; playerID < orderedPlayers.size(); playerID++) {
 
-					InetSocketAddress asyncGameClientAddress = getClientAdress(orderedPlayers.get(player));
+					InetSocketAddress asyncGameClientAddress = getClientAdress(orderedPlayers.get(playerID));
 					if (roundCounter == 0) {
 						/** pre-pre-flop */
-						answer(new GameServerMsg(null, player, GameMsgType.YOUR_POSITION), asyncGameClientAddress);
+
+						answer(new GameServerMsg.GameServerMsgBuilder(
+								(ServerMsg) new ServerMsg.SMBuilder(MsgType.GAME)
+										.destAddress(asyncGameClientAddress).build())
+												.gameMsgType(GameMsgType.YOUR_POSITION).winnerID(playerID).build());
+						// TODO:
+						// called
+						// method
+						// should
+						// recognize
+						// playerID
+						// as
+						// winnerID--;
 					} else {
 						/**
 						 * r=1:pre-flop<br>
@@ -67,7 +72,10 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 						 * r=3:turn<br>
 						 * r=4:river
 						 */
-						answer(new GameServerMsg(null, -5, GameMsgType.YOUR_TURN, minRoundBet), asyncGameClientAddress);
+						answer(new GameServerMsg.GameServerMsgBuilder(
+								(ServerMsg) new ServerMsg.SMBuilder(MsgType.GAME)
+										.destAddress(asyncGameClientAddress).build()).gameMsgType(GameMsgType.YOUR_TURN)
+												.minRoundBet(minRoundBet).build());
 						new Thread(new PlayerActionClientHandler(receiveObject(), game.getPlayersList(),
 								playerHandsList, minRoundBet)).start();
 					}
@@ -108,8 +116,10 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 		for (SafePlayer player : game.getPlayersList()) {
 			InetSocketAddress asyncGameplayPlayerAddress = new InetSocketAddress(player.getAdress().getAddress(),
 					(player.getAdress().getPort() + 2));
-			answer(new GameServerMsg(MsgType.GAMES_SERVER_MSG, -5, GameMsgType.YOUR_HAND,
-					playerHandsList.get(playerID)), asyncGameplayPlayerAddress);
+
+			answer(new GameServerMsg.GameServerMsgBuilder((ServerMsg) new ServerMsg.SMBuilder(MsgType.GAME)
+					.destAddress(asyncGameplayPlayerAddress).build()).gameMsgType(GameMsgType.YOUR_HAND)
+							.playerHand(playerHandsList.get(playerID)).build());
 
 			System.err.println("GameServer answered to client-port: " + asyncGameplayPlayerAddress.toString()
 					+ "\nMessageType: YOUR_HAND");
@@ -121,9 +131,10 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 
 	private void runPlayersReady() {
 		notAllPlayersReady = true;
-		runCountingThread();
+		// players have 30s
+		runCountingThread(30);
 		while (notAllPlayersReady) {
-			PlayersActionQuery playerQuery = receiveObject();
+			PlayerActionQuery playerQuery = receiveObject();
 			if (Objects.nonNull(playerQuery)) {
 				if (playerQuery.getOption().equals(Option.READY)) {
 					readyCounter.incrementAndGet();
@@ -135,12 +146,17 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 		}
 	}
 
-	private void runCountingThread() {
+	private void runCountingThread(int sec) {
 		new Thread(() -> {
-			sleep(6000);
+			sleep(sec * 1000);
 			// TODO: add one digit after testing.
-			answer(new ServerMsg(null, port), new InetSocketAddress("localhost", port));
+			sendTimeout();
 		}).start();
+	}
+
+	private void sendTimeout() {
+		answer(new GameServerMsg.GameServerMsgBuilder((ServerMsg) new ServerMsg.SMBuilder(MsgType.GAME)
+				.destAddress(createLocalhost(port)).build()).gameMsgType(GameMsgType.TIMEOUT).build());
 	}
 
 	private List<SafePlayer> distributePlayerCardsServerside() {
@@ -170,27 +186,8 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 		return players;
 	}
 
-	private PlayersActionQuery receiveObject() {
-		try (DatagramSocket socket = new DatagramSocket(port)) {
-			byte[] incomingData = new byte[3048];
-			DatagramPacket incPacket = new DatagramPacket(incomingData, incomingData.length);
-			socket.receive(incPacket);
-			try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(incPacket.getData()))) {
-				Object received = ois.readObject();
-				if (received instanceof PlayersActionQuery) {
-					return (PlayersActionQuery) received;
-				}
-				if (received instanceof ServerMsg) {
-					// 30s later
-					setNotAllPlayersReady(false);
-				}
-			} catch (IOException | ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
+	private PlayerActionQuery receiveObject() {
+		return (PlayerActionQuery) receiveMsg(port);
 	}
 
 	private void printPlayers() {
@@ -228,16 +225,6 @@ public class GameServer extends ClientHandler implements RemoteAccess {
 
 	public Dealer getDealer() {
 		return dealer;
-	}
-
-	@Override
-	public void switchQuery(Query received) {
-		// ignored
-	}
-
-	@Override
-	public void triggerServerMsg(ServerMsg serverMsg) {
-		// ignored
 	}
 
 	public boolean isNotAllPlayersReady() {

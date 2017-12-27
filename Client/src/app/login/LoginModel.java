@@ -2,15 +2,17 @@ package app.login;
 
 import java.net.InetSocketAddress;
 
-import app.ui.Model;
-import entities.Player;
-import entities.SafePlayer;
-import entities.query.PlayersQuery;
-import entities.query.PlayersQuery.Option;
+import app.ui.ClientModel;
+import entities.game.Player;
+import entities.game.SafePlayer;
+import entities.query.game.PlayerQuery;
+import entities.query.game.PlayerQuery.Option;
+import entities.query.server.ServerMsg;
 
-public class LoginModel extends Model {
+public class LoginModel extends ClientModel {
 
 	private Player player;
+	private int playerPort;
 
 	public LoginModel(InetSocketAddress serverAdress) {
 		super(serverAdress);
@@ -22,22 +24,22 @@ public class LoginModel extends Model {
 	}
 
 	public SafePlayer checkLoginData(String nameProposal, String pwProposal) {
-		sendObject(new PlayersQuery(nameProposal, pwProposal));
-		return (SafePlayer) receiveObject();
+		sendQuery(new PlayerQuery.PQBuilder(Option.GET).pName(nameProposal).pW(pwProposal).build());
+		return ((ServerMsg) receiveMsg(playerPort)).getPlayer();
 	}
 
 	public SafePlayer isUserRegistered(String newUser) {
-		sendObject(new PlayersQuery(newUser));
-		return (SafePlayer) receiveObject();
+		sendQuery(new PlayerQuery.PQBuilder(Option.GET).pName(newUser).build());
+		return ((ServerMsg) receiveMsg(playerPort)).getPlayer();
 	}
 
 	public Player registerUser(String userName, String pw) {
-		sendObject(new PlayersQuery(Option.REGISTER, userName, pw));
-		return Player.fromSafePlayer((SafePlayer) receiveObject());
+		sendQuery(new PlayerQuery.PQBuilder(Option.REGISTER).pName(userName).pW(pw).build());
+		return Player.fromSafePlayer(((ServerMsg) receiveMsg(playerPort)).getPlayer());
 	}
 
 	public void setLoggedOut() {
-		sendObject(new PlayersQuery(Option.LOGOUT, player.getName()));
+		sendQuery(new PlayerQuery.PQBuilder(Option.LOGOUT).player(player).build());
 	}
 
 	@Override
@@ -47,5 +49,6 @@ public class LoginModel extends Model {
 
 	public void setPlayer(Player loggedInPlayer) {
 		this.player = loggedInPlayer;
+		this.playerPort = player.getAdress().getPort();
 	}
 }

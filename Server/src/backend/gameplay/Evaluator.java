@@ -6,20 +6,20 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import entities.gameplay.Board;
-import entities.gameplay.Card;
-import entities.gameplay.PlayerHand;
-import entities.gameplay.hand.Flush;
-import entities.gameplay.hand.FourOfAKind;
-import entities.gameplay.hand.FullHouse;
-import entities.gameplay.hand.HighCard;
-import entities.gameplay.hand.Pair;
-import entities.gameplay.hand.PokerHand;
-import entities.gameplay.hand.RoyalFlush;
-import entities.gameplay.hand.Straight;
-import entities.gameplay.hand.StraightFlush;
-import entities.gameplay.hand.ThreeOfAKind;
-import entities.gameplay.hand.TwoPair;
+import entities.game.hand.Flush;
+import entities.game.hand.FourOfAKind;
+import entities.game.hand.FullHouse;
+import entities.game.hand.HighCard;
+import entities.game.hand.Pair;
+import entities.game.hand.PokerHand;
+import entities.game.hand.RoyalFlush;
+import entities.game.hand.Straight;
+import entities.game.hand.StraightFlush;
+import entities.game.hand.ThreeOfAKind;
+import entities.game.hand.TwoPair;
+import entities.game.play.Board;
+import entities.game.play.Card;
+import entities.game.play.PlayerHand;
 
 public class Evaluator {
 

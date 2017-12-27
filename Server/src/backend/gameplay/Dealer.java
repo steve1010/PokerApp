@@ -3,10 +3,10 @@ package backend.gameplay;
 import java.util.LinkedList;
 import java.util.List;
 
-import entities.gameplay.Board;
-import entities.gameplay.Card;
-import entities.gameplay.PlayerHand;
-import entities.gameplay.Card.Color;
+import entities.game.play.Board;
+import entities.game.play.Card;
+import entities.game.play.PlayerHand;
+import entities.game.play.Card.Color;
 
 public final class Dealer {
 

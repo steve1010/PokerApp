@@ -9,7 +9,7 @@
 5.) - Zunächst wird random ein "Dealer-Button-Position-Spieler" bestimmt(delegiert davon dann SmallBlind, BigBlind links davon).
 
 							*** - Der Button wird visuell gesetzt. ***
-
+							- die Spiele werden in einer xml gemarshallt.
 	- Die Blinds werden von den Spielern in den Blinds abgezogen & visuell 'gesetzt'.
 	- Der SmallBlind bekommt zuerst eine Karte, dann rundum alle Spieler, das ganze bis jeder Spieler 
 	  2 Karten hat.

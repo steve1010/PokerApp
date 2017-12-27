@@ -7,9 +7,9 @@ import java.util.Observer;
 
 import app.lobby.LobbyView;
 import app.login.LoginView;
-import entities.Game;
-import entities.SafePlayer;
-import entities.gameplay.Card;
+import entities.game.Game;
+import entities.game.SafePlayer;
+import entities.game.play.Card;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -142,7 +142,7 @@ public class GameplayView implements Observer {
 
 	public void setData(InetSocketAddress serverAdress, SafePlayer loggedInPlayer, String pw, Stage primaryStage,
 			Stage runningGameStage, LoginView loginView, LobbyView lobbyView, Game idGame) {
-		
+
 		this.controller = new GameplayCtrl(serverAdress, loggedInPlayer, pw, primaryStage, playersPaneController,
 				loginView, lobbyView, idGame);
 		controller.addObserver(this);

@@ -6,8 +6,8 @@ import java.util.Observable;
 
 import app.lobby.LobbyView;
 import app.ui.Controller;
-import entities.Player;
-import entities.SafePlayer;
+import entities.game.Player;
+import entities.game.SafePlayer;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;

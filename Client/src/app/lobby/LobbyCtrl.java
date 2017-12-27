@@ -10,9 +10,9 @@ import app.gameplay.GameplayView;
 import app.lobby.LobbyClientInterna.Type;
 import app.login.LoginView;
 import app.ui.Controller;
-import app.ui.Model;
-import entities.Game;
-import entities.Player;
+import app.ui.ClientModel;
+import entities.game.Game;
+import entities.game.Player;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,7 +21,7 @@ import javafx.stage.Stage;
 
 public class LobbyCtrl extends Observable implements Controller {
 
-	private final Model model;
+	private final ClientModel model;
 	private final LobbyView lobbyView;
 	private final LoginView loginView;
 	private final Stage primaryStage;

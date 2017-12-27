@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 
 import backend.GameServer;
 import backend.RemoteAccess;
-import entities.Game;
-import entities.SafePlayer;
-import entities.query.server.One23;
-import entities.query.server.One23.Bool;
+import entities.game.Game;
+import entities.game.SafePlayer;
+import entities.query.server.ServerResult;
+import entities.query.server.ServerResult.Type;
 
 public final class GameContainer {
 
@@ -51,9 +51,9 @@ public final class GameContainer {
 	 * 
 	 * @param player
 	 * @param game
-	 * @return A {@link One23} representing the result.
+	 * @return A {@link ServerResult} representing the result.
 	 */
-	public One23 addPlayerToGame(SafePlayer player, Game game) {
+	public ServerResult addPlayerToGame(SafePlayer player, Game game) {
 		synchronized (gamesListLock) {
 			/**
 			 * If there is a player in the game's playersList named exactly equal to the
@@ -61,11 +61,11 @@ public final class GameContainer {
 			 */
 			if (!(gamesList.get(game.getId()).getPlayersList().stream()
 					.filter(plr -> plr.getName().equals(player.getName())).collect(Collectors.toList()).isEmpty())) {
-				return new One23(3, Bool.ERROR);
+				return new ServerResult.ServerResultBuilder(null, Type.ERROR).derivation(3).build();
 			}
-			One23 result = gamesList.get(game.getId()).addPlayer(player);
-			if (result.getB().equals(Bool.SUCCESS)) {
-				if (result.getI() == 4) {
+			ServerResult result = gamesList.get(game.getId()).addPlayer(player);
+			if (result.getType().equals(Type.SUCCESS)) {
+				if (result.getDerivation() == 4) {
 					game.addPlayer(player);
 					GameServer gameServer = new GameServer(game, (newGameServerPort()));
 					new Thread(gameServer).start();

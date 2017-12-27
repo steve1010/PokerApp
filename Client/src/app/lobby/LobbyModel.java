@@ -1,32 +1,27 @@
 package app.lobby;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import app.lobby.LobbyClientInterna.Type;
-import app.ui.Model;
-import entities.Game;
-import entities.Player;
-import entities.SafePlayer;
-import entities.query.GameQuery;
-import entities.query.GameQuery.Option;
-import entities.query.PlayersQuery;
-import entities.query.server.One23;
-import entities.query.server.PoisonPill;
+import app.ui.ClientModel;
+import entities.PoisonPill;
+import entities.game.Game;
+import entities.game.Player;
+import entities.game.SafePlayer;
+import entities.query.Query;
+import entities.query.game.GameQuery;
+import entities.query.game.GameQuery.Option;
+import entities.query.game.PlayerQuery;
+import entities.query.server.LobbyServerMsg;
+import entities.query.server.ServerResult;
 import entities.query.server.ServerMsg;
-import entities.query.server.ServerMsgObject;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class LobbyModel extends Model {
+public class LobbyModel extends ClientModel {
 
 	private static final String SUCCESS_MSG_0_BEGIN = "Successfully registered.\nTurnament starts on ";
 	private static final String SUCCESS_MSG_0_END = "th player enrolling.\nGood Luck!";
@@ -50,32 +45,34 @@ public class LobbyModel extends Model {
 		runAsyncListener();
 
 		// fetch games
-		sendObject(new GameQuery(Option.GET_GAMES), playerPort);
-		this.gamesTableData = FXCollections.observableArrayList((List<Game>) receiveObject(playerPort));
+		sendQuery(new GameQuery.GQBuilder(Option.GET_GAMES).build());
+		this.gamesTableData = FXCollections.observableArrayList((List<Game>) receiveMsg(playerPort));
 		// fetch loggedInPlayers
-		sendObject(new PlayersQuery(entities.query.PlayersQuery.Option.GETALL), playerPort);
-		this.playersTableData = FXCollections.observableArrayList((ArrayList<SafePlayer>) receiveObject(playerPort));
-
+		sendQuery(new PlayerQuery.PQBuilder(entities.query.game.PlayerQuery.Option.GETALL).build());
+		this.playersTableData = FXCollections.observableArrayList(((ServerMsg) receiveMsg(playerPort)).getPlayers());
 	}
 
 	private void runAsyncListener() {
+
 		new Thread(() -> {
+
 			boolean running = true;
+
 			while (running) {
+
 				System.err.print("LobbyModel ");
-				ServerMsgObject msgObj = receiveObjectAsynchronous(playerPort);
-				ServerMsg msg;
-				if (msgObj instanceof PoisonPill) {
-					msg = null;
-				} else {
-					msg = (ServerMsg) msgObj;
-				}
-				if (msg == null) {
+				Query query = receiveMsgAsynchronous(playerPort);
+				LobbyServerMsg msg;
+				if (query instanceof PoisonPill) {
 					running = false;
 					break;
 				}
+				msg = (LobbyServerMsg) query;
+
 				System.err.println("\nLobbyModel: " + msg.getMsgType().toString());
-				switch (msg.getMsgType()) {
+
+				switch (msg.getLobbyMsgType()) {
+
 				case NEW_PLAYER_ENROLLED:
 					newPlayerEnrolled(msg.getId(), msg.getPlayer());
 					break;
@@ -124,32 +121,33 @@ public class LobbyModel extends Model {
 
 	public void createGame(String name, double buyIn, int startChips, int maxPlayers, int paid) {
 		Game game = new Game(name, gamesTableData.size(), buyIn, startChips, maxPlayers, paid, 0);
-		sendObject(new GameQuery(game), playerPort);
+		sendQuery(new GameQuery.GQBuilder(Option.NEW_GAME).game(game).build());
 	}
 
-	public String enrollPlayerIn(Game selected) {
-		if (selected != null) {
-			if (this.player.getBankRoll() < selected.getBuyIn().doubleValue()) {
+	public String enrollPlayerIn(Game game) {
+		if (game != null) {
+			if (this.player.getBankRoll() < game.getBuyIn().doubleValue()) {
 				return ERROR_MESSAGE_0;
 			}
-			if (selected.getMaxPlayers() == selected.getSignedUp()) {
+			if (game.getMaxPlayers() == game.getSignedUp()) {
 				return ERROR_MESSAGE_1;
 			} else {
-				sendObject(new PlayersQuery(selected, Player.toSafePlayer(player)), playerPort);
-				One23 received = (One23) receiveObject(playerPort);
-				switch (received.getI()) {
+				sendQuery(new PlayerQuery.PQBuilder(entities.query.game.PlayerQuery.Option.ENROLL).game(game)
+						.player(Player.toSafePlayer(player)).build());
+				ServerResult received = ((ServerMsg) receiveMsg(playerPort)).getOneResult();
+				switch (received.getDerivation()) {
 				case 1:
-					player.commitTransaction(selected, selected.getBuyIn());
-					return createSuccessMsg(selected);
+					player.commitTransaction(game, game.getBuyIn());
+					return createSuccessMsg(game);
 				case 2:
 					return ERROR_MESSAGE_1;
 				case 3:
 					return ERROR_MESSAGE_2;
 				case 4:
-					player.commitTransaction(selected, selected.getBuyIn());
+					player.commitTransaction(game, game.getBuyIn());
 					return SUCCESS_MSG_1;
 				default:
-					throw new IllegalStateException("---------------- Illegal State ! ------------------");
+					throw new IllegalStateException("------- Illegal State ! --------");
 				}
 			}
 		}
@@ -158,11 +156,6 @@ public class LobbyModel extends Model {
 
 	private void newPlayerEnrolled(int gameID, SafePlayer player) {
 		this.gamesTableData.get(gameID).addPlayer(player);
-//		Game game = gamesTableData.get(gameID);
-//		game.addPlayer(player);
-//		Platform.runLater(() -> {
-//			gamesTableData.set(gameID, game);
-//		});
 		triggerNotification(new LobbyClientInterna(Type.UPDATE_GAMES, gamesTableData));
 	}
 
@@ -177,22 +170,13 @@ public class LobbyModel extends Model {
 	}
 
 	public void logoutUser() {
-		sendObject(new PlayersQuery(entities.query.PlayersQuery.Option.LOGOUT, player.getName(), playerPw));
+		sendQuery(new PlayerQuery.PQBuilder(entities.query.game.PlayerQuery.Option.LOGOUT).pName(player.getName())
+				.pW(playerPw).build());
 		poisonPill();
 	}
 
 	private void poisonPill() {
-		try (DatagramSocket clientSocket = new DatagramSocket();
-				ByteArrayOutputStream bos = new ByteArrayOutputStream();
-				ObjectOutputStream os = new ObjectOutputStream(bos)) {
-			os.writeObject(new PoisonPill());
-			byte[] toSendData = bos.toByteArray();
-			DatagramPacket toSendPacket = new DatagramPacket(toSendData, toSendData.length,
-					new InetSocketAddress("localhost", playerPort + 1));
-			clientSocket.send(toSendPacket);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		sendPoisonPill(new InetSocketAddress("localhost", (playerPort + 1)));
 	}
 
 	@Override

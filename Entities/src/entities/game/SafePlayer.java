@@ -56,7 +56,7 @@ public class SafePlayer implements Serializable {
 		}
 		this.gamesList = gamesList;
 
-		// TODO: set initial bankroll dynamically
+		// TODO: @MinorConstraint set initial bankroll dynamically
 		this.bankRoll = 10000;
 	}
 

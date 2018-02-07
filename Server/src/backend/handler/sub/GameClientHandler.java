@@ -64,7 +64,7 @@ public final class GameClientHandler extends TcpClientHandler {
 
 	@Override
 	public void triggerServerMsg(ServerMsg serverMsg) {
-		for (SafePlayer player : gameContainer.getPlayerStore().getAll()) {
+		for (SafePlayer player : gameContainer.getPlayerStore().getLoggedInPlayers()) {
 			int asyncClientPort = 1 + player.getAdress().getPort();
 			// answer(serverMsg, new InetSocketAddress(player.getAdress().getAddress(),
 			// asyncClientPort));

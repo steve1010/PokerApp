@@ -64,8 +64,8 @@ public class LoginView implements Initializable {
 	}
 
 	public void setData(Stage primaryStage, InetSocketAddress serverAdress) {
-		controller.setPrimaryStage(primaryStage);
-		controller.setSessionData(serverAdress);
+		controller.setStage(primaryStage);
+		controller.setData(serverAdress);
 	}
 
 	public void resetValues() {

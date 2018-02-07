@@ -53,18 +53,9 @@ public class GameServer extends Server implements RemoteAccess {
 					if (roundCounter == 0) {
 						/** pre-pre-flop */
 
-						answer(new GameServerMsg.GameServerMsgBuilder(
-								(ServerMsg) new ServerMsg.SMBuilder(MsgType.GAME)
-										.destAddress(asyncGameClientAddress).build())
-												.gameMsgType(GameMsgType.YOUR_POSITION).winnerID(playerID).build());
-						// TODO:
-						// called
-						// method
-						// should
-						// recognize
-						// playerID
-						// as
-						// winnerID--;
+						answer(new GameServerMsg.GameServerMsgBuilder((ServerMsg) new ServerMsg.SMBuilder(MsgType.GAME)
+								.destAddress(asyncGameClientAddress).build()).gameMsgType(GameMsgType.YOUR_POSITION)
+										.winnerID(playerID).build());
 					} else {
 						/**
 						 * r=1:pre-flop<br>
@@ -72,10 +63,9 @@ public class GameServer extends Server implements RemoteAccess {
 						 * r=3:turn<br>
 						 * r=4:river
 						 */
-						answer(new GameServerMsg.GameServerMsgBuilder(
-								(ServerMsg) new ServerMsg.SMBuilder(MsgType.GAME)
-										.destAddress(asyncGameClientAddress).build()).gameMsgType(GameMsgType.YOUR_TURN)
-												.minRoundBet(minRoundBet).build());
+						answer(new GameServerMsg.GameServerMsgBuilder((ServerMsg) new ServerMsg.SMBuilder(MsgType.GAME)
+								.destAddress(asyncGameClientAddress).build()).gameMsgType(GameMsgType.YOUR_TURN)
+										.minRoundBet(minRoundBet).build());
 						new Thread(new PlayerActionClientHandler(receiveObject(), game.getPlayersList(),
 								playerHandsList, minRoundBet)).start();
 					}
@@ -117,9 +107,9 @@ public class GameServer extends Server implements RemoteAccess {
 			InetSocketAddress asyncGameplayPlayerAddress = new InetSocketAddress(player.getAdress().getAddress(),
 					(player.getAdress().getPort() + 2));
 
-			answer(new GameServerMsg.GameServerMsgBuilder((ServerMsg) new ServerMsg.SMBuilder(MsgType.GAME)
-					.destAddress(asyncGameplayPlayerAddress).build()).gameMsgType(GameMsgType.YOUR_HAND)
-							.playerHand(playerHandsList.get(playerID)).build());
+			answer(new GameServerMsg.GameServerMsgBuilder(
+					(ServerMsg) new ServerMsg.SMBuilder(MsgType.GAME).destAddress(asyncGameplayPlayerAddress).build())
+							.gameMsgType(GameMsgType.YOUR_HAND).playerHand(playerHandsList.get(playerID)).build());
 
 			System.err.println("GameServer answered to client-port: " + asyncGameplayPlayerAddress.toString()
 					+ "\nMessageType: YOUR_HAND");
@@ -149,14 +139,15 @@ public class GameServer extends Server implements RemoteAccess {
 	private void runCountingThread(int sec) {
 		new Thread(() -> {
 			sleep(sec * 1000);
-			// TODO: add one digit after testing.
+			// TODO: @MinorConstraint add one digit after testing.
 			sendTimeout();
 		}).start();
 	}
 
 	private void sendTimeout() {
-		answer(new GameServerMsg.GameServerMsgBuilder((ServerMsg) new ServerMsg.SMBuilder(MsgType.GAME)
-				.destAddress(createLocalhost(port)).build()).gameMsgType(GameMsgType.TIMEOUT).build());
+		answer(new GameServerMsg.GameServerMsgBuilder(
+				(ServerMsg) new ServerMsg.SMBuilder(MsgType.GAME).destAddress(createLocalhost(port)).build())
+						.gameMsgType(GameMsgType.TIMEOUT).build());
 	}
 
 	private List<SafePlayer> distributePlayerCardsServerside() {

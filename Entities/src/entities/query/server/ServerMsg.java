@@ -18,13 +18,13 @@ public class ServerMsg extends Query {
 
 		GAME, PLAYER;
 		// NEW_PLAYER_ENROLLED, NEW_GAME_OFFERED, PLAYER_LOGOUT, PLAYER_LOGIN,
-		// PLAYER_NEW_REGISTERED, GAMES_LIST, LAST_PLAYER_ENROLLED, GAMES_SERVER_MSG,
-		// NEW_CARD, EVALUATION, PLAYERS_LIST, NONE, One23;
+		// PLAYER_NEW_REGISTERED, GAMES, LAST_PLAYER_ENROLLED, GAMES_SERVER_MSG,
+		// NEW_CARD, EVALUATION, PLAYERS, NONE, One23;
 	}
 
 	private final MsgType msgType;
 	private final int id;
-	private final Game game;
+	private final Game game;// TODO: remove them from here -> to own Msg types!
 	private final String username;
 	private final SafePlayer player;
 	private final Card card;
@@ -49,6 +49,7 @@ public class ServerMsg extends Query {
 		this.gamesList = gamesList;
 	}
 
+	// TODO: remove this construct.
 	public static class SMBuilder extends NetworkAddressBuilder {
 
 		private MsgType nestedMsgType;
@@ -64,6 +65,9 @@ public class ServerMsg extends Query {
 
 		public SMBuilder(MsgType type) {
 			this.nestedMsgType = type;
+		}
+
+		public SMBuilder() {
 		}
 
 		public SMBuilder id(int newID) {

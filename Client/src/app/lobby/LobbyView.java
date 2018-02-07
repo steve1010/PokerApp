@@ -204,7 +204,7 @@ public class LobbyView implements Controller, Initializable, Observer {
 				bankrollLbl.setText(String.valueOf(newValue));
 			}
 			/**
-			 * TODO: implement trigger to model here. Game should start on clicking ok.
+			 * TODO: @MediumConstraint implement trigger to model here. Game should start on clicking ok.
 			 */
 		}
 	}

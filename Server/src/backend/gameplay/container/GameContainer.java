@@ -11,6 +11,11 @@ import entities.game.SafePlayer;
 import entities.query.server.ServerResult;
 import entities.query.server.ServerResult.Type;
 
+/**
+ * <ul>
+ * <li>Contains games and playerContainer.
+ * <li>Initializes with all current games in the DB.
+ */
 public final class GameContainer {
 
 	private final PlayerContainer playerStore;

@@ -1,13 +1,22 @@
 package entities.query.server;
 
-import entities.game.SafePlayer;
+import java.util.List;
 
+import entities.game.SafePlayer;
+import entities.query.NetworkAddressBuilder;
+
+/**
+ * TODO: Steve: urgent: delete all ServerMsgs, implement 1 Protocol to message.
+ * 
+ * @author -steve-
+ *
+ */
 public class LobbyServerMsg extends ServerMsg {
 
 	public enum LobbyMsgType {
-		NEW_PLAYER_ENROLLED, NEW_GAME_OFFERED, PLAYER_LOGIN, PLAYER_LOGOUT, LAST_PLAYER_ENROLLED
+		NEW_PLAYER_ENROLLED, NEW_GAME_OFFERED, PLAYER_LOGIN, PLAYER_LOGOUT, LAST_PLAYER_ENROLLED, PLAYER_EXISTS, PLAYER_EXISTS_NOT, PLAYERS
 
-	}// TODO: extract enums to a extra enum file.
+	}// TODO: @MediumConstraint extract enums to a extra enum file.
 
 	private static final long serialVersionUID = -2853854047072376699L;
 
@@ -20,35 +29,42 @@ public class LobbyServerMsg extends ServerMsg {
 		this.lmType = lmt;
 	}
 
-	public static class LobbyServerMsgBuilder {
+	public static class LSMBuilder extends NetworkAddressBuilder {
 
 		private LobbyMsgType nestedLmType;
 		private ServerMsg nestedsMsg;
 		private String nestedPlayerName;
 		private SafePlayer nestedPlayer;
+		private List<SafePlayer> nestedPlayers;
 
-		public LobbyServerMsgBuilder(ServerMsg sMsg, LobbyMsgType type) {
+		public LSMBuilder(ServerMsg sMsg, LobbyMsgType type) {
 			this.nestedsMsg = sMsg;
 			this.nestedLmType = type;
 		}
 
-		public LobbyServerMsgBuilder playerName(String name) {
+		public LSMBuilder playerName(String name) {
 			this.nestedPlayerName = name;
 			return this;
 		}
 
-		public LobbyServerMsgBuilder player(SafePlayer player) {
+		public LSMBuilder player(SafePlayer player) {
 			this.nestedPlayer = player;
 			return this;
 		}
 
+		public LSMBuilder players(List<SafePlayer> newPlayers) {
+			this.nestedPlayers = newPlayers;
+			return this;
+		}
+
 		public LobbyServerMsg build() {
-			return new LobbyServerMsg(
-					new ServerMsg(nestedsMsg.getSrcAddress(), nestedsMsg.getDestAddress(), nestedsMsg.getMsgType(),
-							nestedsMsg.getId(), nestedsMsg.getGame(), nestedsMsg.getPlayer().getName(),
-							nestedsMsg.getPlayer(), nestedsMsg.getCard(), nestedsMsg.getEvaluation(),
-							nestedsMsg.getOneResult(), nestedsMsg.getPlayers(), nestedsMsg.getGames()),
-					nestedLmType, nestedPlayerName, nestedPlayer);
+			if (nestedPlayers == null && nestedsMsg != null) {
+				nestedPlayers = nestedsMsg.getPlayers();
+			}
+			return new LobbyServerMsg(new ServerMsg(nestedsMsg.getSrcAddress(), nestedsMsg.getDestAddress(),
+					nestedsMsg.getMsgType(), nestedsMsg.getId(), nestedsMsg.getGame(), nestedPlayerName, nestedPlayer,
+					nestedsMsg.getCard(), nestedsMsg.getEvaluation(), nestedsMsg.getOneResult(), nestedPlayers,
+					nestedsMsg.getGames()), nestedLmType, nestedPlayerName, nestedPlayer);
 		}
 	}
 

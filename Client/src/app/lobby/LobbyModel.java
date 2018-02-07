@@ -45,22 +45,19 @@ public class LobbyModel extends ClientModel {
 		runAsyncListener();
 
 		// fetch games
-		sendQuery(new GameQuery.GQBuilder(Option.GET_GAMES).build());
+		addressAndSend(new GameQuery.GQBuilder(GameQuery.Option.GET_GAMES).build());
 		this.gamesTableData = FXCollections.observableArrayList((List<Game>) receiveMsg(playerPort));
 		// fetch loggedInPlayers
-		sendQuery(new PlayerQuery.PQBuilder(entities.query.game.PlayerQuery.Option.GETALL).build());
+		addressAndSend(new PlayerQuery.PQBuilder(entities.query.game.PlayerQuery.Option.GETALL).build());
 		this.playersTableData = FXCollections.observableArrayList(((ServerMsg) receiveMsg(playerPort)).getPlayers());
 	}
 
 	private void runAsyncListener() {
-
 		new Thread(() -> {
-
 			boolean running = true;
-
 			while (running) {
-
 				System.err.print("LobbyModel ");
+				//TODO: SEND MSG: GIVE ME A NEW PORT
 				Query query = receiveMsgAsynchronous(playerPort);
 				LobbyServerMsg msg;
 				if (query instanceof PoisonPill) {
@@ -68,11 +65,9 @@ public class LobbyModel extends ClientModel {
 					break;
 				}
 				msg = (LobbyServerMsg) query;
-
 				System.err.println("\nLobbyModel: " + msg.getMsgType().toString());
 
 				switch (msg.getLobbyMsgType()) {
-
 				case NEW_PLAYER_ENROLLED:
 					newPlayerEnrolled(msg.getId(), msg.getPlayer());
 					break;
@@ -80,14 +75,12 @@ public class LobbyModel extends ClientModel {
 					Game sg = msg.getGame();
 					addNewGameFromServer(sg);
 					break;
-
 				case PLAYER_LOGIN:
 					Platform.runLater(() -> {
 						playersTableData.add((msg.getPlayer()));
 					});
 					triggerNotification(new LobbyClientInterna(Type.UPDATE_PLAYERS, playersTableData));
 					break;
-
 				case PLAYER_LOGOUT:
 					System.out.println("loggin out : " + msg.getId());
 					Platform.runLater(() -> {
@@ -96,7 +89,6 @@ public class LobbyModel extends ClientModel {
 					});
 					triggerNotification(new LobbyClientInterna(Type.UPDATE_PLAYERS, playersTableData));
 					break;
-
 				case LAST_PLAYER_ENROLLED:
 					newPlayerEnrolled(msg.getId(),
 							msg.getPlayer());/** TODO: extract method into Game: game.filter(cond) */
@@ -116,12 +108,12 @@ public class LobbyModel extends ClientModel {
 	private void addNewGameFromServer(Game game) {
 		player.getGamesList().add(game);
 		Platform.runLater(() -> gamesTableData.add(game));
-		triggerNotification(new LobbyClientInterna(Type.UPDATE_GAMES, gamesTableData));
+		triggerNotification(new LobbyClientInterna(Type.UPDATE_GAMES, gamesTableData));// TODO: required?
 	}
 
 	public void createGame(String name, double buyIn, int startChips, int maxPlayers, int paid) {
 		Game game = new Game(name, gamesTableData.size(), buyIn, startChips, maxPlayers, paid, 0);
-		sendQuery(new GameQuery.GQBuilder(Option.NEW_GAME).game(game).build());
+		addressAndSend(new GameQuery.GQBuilder(Option.NEW_GAME).game(game).build());
 	}
 
 	public String enrollPlayerIn(Game game) {
@@ -132,7 +124,7 @@ public class LobbyModel extends ClientModel {
 			if (game.getMaxPlayers() == game.getSignedUp()) {
 				return ERROR_MESSAGE_1;
 			} else {
-				sendQuery(new PlayerQuery.PQBuilder(entities.query.game.PlayerQuery.Option.ENROLL).game(game)
+				addressAndSend(new PlayerQuery.PQBuilder(entities.query.game.PlayerQuery.Option.ENROLL).game(game)
 						.player(Player.toSafePlayer(player)).build());
 				ServerResult received = ((ServerMsg) receiveMsg(playerPort)).getOneResult();
 				switch (received.getDerivation()) {
@@ -170,7 +162,7 @@ public class LobbyModel extends ClientModel {
 	}
 
 	public void logoutUser() {
-		sendQuery(new PlayerQuery.PQBuilder(entities.query.game.PlayerQuery.Option.LOGOUT).pName(player.getName())
+		addressAndSend(new PlayerQuery.PQBuilder(entities.query.game.PlayerQuery.Option.LOGOUT).pName(player.getName())
 				.pW(playerPw).build());
 		poisonPill();
 	}

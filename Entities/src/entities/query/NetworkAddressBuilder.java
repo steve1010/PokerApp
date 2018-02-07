@@ -2,7 +2,7 @@ package entities.query;
 
 import java.net.InetSocketAddress;
 
-public abstract class NetworkAddressBuilder {
+public abstract class NetworkAddressBuilder{
 	private InetSocketAddress srcAddress, destAddress;
 
 	public NetworkAddressBuilder srcAddress(InetSocketAddress newSrcAddress) {

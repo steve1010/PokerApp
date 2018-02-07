@@ -8,6 +8,7 @@ import entities.game.SafePlayer;
 import entities.game.play.Card;
 import entities.game.play.MinRoundBet;
 import entities.game.play.PlayerHand;
+import entities.query.NetworkAddressBuilder;
 
 public class GameServerMsg extends ServerMsg {
 
@@ -34,7 +35,7 @@ public class GameServerMsg extends ServerMsg {
 		this.playerHand = ph;
 	}
 
-	public static class GameServerMsgBuilder {
+	public static class GameServerMsgBuilder extends NetworkAddressBuilder {
 		private GameMsgType nestedGameMsgType;
 		private MinRoundBet nestedMinRoundBet;
 		private int nestedWinnerID;

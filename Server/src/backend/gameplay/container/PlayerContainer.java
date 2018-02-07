@@ -12,7 +12,10 @@ import entities.game.Player;
 import entities.game.SafePlayer;
 
 /**
- * ThreadSafeTicketStore
+ * <ul>
+ * <li>Contains Players known to the system
+ * <li>Regardless whether they are logged-in or not
+ * <li>Initializes with all players in DB
  */
 public final class PlayerContainer {
 
@@ -24,7 +27,7 @@ public final class PlayerContainer {
 	private final Object playersLock = new Object();
 	private Object idLock = new Object();
 
-	public List<SafePlayer> getAll() {
+	public List<SafePlayer> getLoggedInPlayers() {
 		synchronized (playersLock) {
 			return this.playersList.stream().filter(e -> e.isLoggedIn()).collect(Collectors.toList());
 		}

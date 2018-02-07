@@ -26,7 +26,7 @@ public class RegisterView {
 		
 		
 		
-		String alertMessage = loginController.signUpRequest(nameTxtField.getText(), pwField.getText(),
+		String alertMessage = loginController.registerRequest(nameTxtField.getText(), pwField.getText(),
 				pwConfirmField.getText());
 
 		if (alertMessage.endsWith(".")) {

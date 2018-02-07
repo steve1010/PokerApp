@@ -2,6 +2,7 @@ package app.ui;
 
 import java.net.InetSocketAddress;
 
+import entities.DBConnector;
 import entities.PoisonPill;
 import entities.SenderReceiver;
 import entities.game.SafePlayer;
@@ -27,10 +28,12 @@ public abstract class ClientModel extends SenderReceiver {
 
 	protected final InetSocketAddress serverAdress, clientAddress, clientPoisenPillSenderAddress;
 
+	private DBConnector database;
+
 	public ClientModel(InetSocketAddress serverAdress) {
 		this.serverAdress = serverAdress;
 		int port = newRandomPort();
-		clientAddress = createLocalhost(port); // shall be free!?
+		clientAddress = createLocalhost(port); // TODO:  - -port problem: -  shall be free!?
 		this.clientPoisenPillSenderAddress = createLocalhost(port + 3);
 	}
 
@@ -40,14 +43,13 @@ public abstract class ClientModel extends SenderReceiver {
 	 * @param type
 	 * @param query
 	 */
-	public void sendQuery(Query query) {
-
+	public void addressAndSend(Query query) {
 		if (query instanceof GameQuery) {
-			sendMsg(new GameQuery.GQBuilder(((GameQuery) query).getOption()).srcAddress(clientAddress)
-					.destAddress(serverAdress).build());
+			sendMsg(new GameQuery.GQBuilder((GameQuery) query).srcAddress(clientAddress).destAddress(serverAdress)
+					.build());
 		}
 		if (query instanceof PlayerActionQuery) {
-			sendMsg(new PlayerActionQuery.PAQBuilder(((PlayerActionQuery) query).getOption()).srcAddress(clientAddress)
+			sendMsg(new PlayerActionQuery.PAQBuilder((PlayerActionQuery) query).srcAddress(clientAddress)
 					.destAddress(serverAdress).build());
 		}
 		if (query instanceof PlayerQuery) {
@@ -65,7 +67,7 @@ public abstract class ClientModel extends SenderReceiver {
 	}
 
 	private int newRandomPort() {
-		return (int) (10000 + Math.random() * 54000);
+		return (int) (10000 + Math.random() * 54000); // TODO: expand this to a server-request to ensure port-safety.
 	}
 
 	public InetSocketAddress getServerAdress() {
@@ -80,5 +82,9 @@ public abstract class ClientModel extends SenderReceiver {
 	public abstract SafePlayer getLoggedInPlayer();
 
 	public abstract String getPw();
+
+	public DBConnector getDatabase() {
+		return database;
+	}
 
 }

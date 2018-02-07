@@ -8,15 +8,19 @@ import backend.handler.ServerDispatcher;
 import entities.PoisonPill;
 import entities.query.Query;
 
+/**
+ * Contains and triggers on opening threads GameContainer.
+ * Listens on port 50000.
+ */
 public class LobbyServer extends Server implements RemoteAccess {
 
 	private final int port;
-	private final GameContainer game;
+	private final GameContainer gameContainer;
 	private boolean running = true;
 
 	public LobbyServer(int port, ArrayList<RemoteAccess> remoteAccesses) {
 		this.port = port;
-		this.game = new GameContainer(new PlayerContainer(), remoteAccesses, port);
+		this.gameContainer = new GameContainer(new PlayerContainer(), remoteAccesses, port);
 	}
 
 	@Override
@@ -24,7 +28,7 @@ public class LobbyServer extends Server implements RemoteAccess {
 		while (running) {
 			Query query = (Query) receiveMsg(port);
 			if (!(query instanceof PoisonPill)) {
-				new Thread(new ServerDispatcher(query, game)).start();
+				new Thread(new ServerDispatcher(query, gameContainer)).start();
 			} else {
 				running = false;
 			}

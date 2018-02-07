@@ -54,7 +54,7 @@ public class PlayerActionClientHandler extends TcpClientHandler {
 		switch (query.getOption()) {
 
 		case READY:
-			// TODO: implement me
+			// TODO: @MajorConstraint PlayerActions turned off here :
 			break;
 		case CHECK:
 			// triggerServerMsg(new GameServerMsg(received.getSrcAddress(), MsgType.GAME,
@@ -87,9 +87,7 @@ public class PlayerActionClientHandler extends TcpClientHandler {
 
 	@Override
 	public void triggerServerMsg(ServerMsg serverMsg) {
-		// playersList.forEach(player -> answer(serverMsg, // build msg with dest. and
-		// implement new Builder+Class for PAQ
-		// // TODO: see here urgent
+		playersList.forEach(player -> answer(serverMsg));// TODO: @Urgent set dest in all msgs before sending..
 		// new InetSocketAddress(player.getAdress().getAddress(),
 		// player.getAdress().getPort() + 2)));
 	}

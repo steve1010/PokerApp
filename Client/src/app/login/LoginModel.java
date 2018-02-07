@@ -18,28 +18,52 @@ public class LoginModel extends ClientModel {
 		super(serverAdress);
 	}
 
-	@Override
-	public SafePlayer getLoggedInPlayer() {
-		return Player.toSafePlayer(this.player);
-	}
-
-	public SafePlayer checkLoginData(String nameProposal, String pwProposal) {
-		sendQuery(new PlayerQuery.PQBuilder(Option.GET).pName(nameProposal).pW(pwProposal).build());
+	/**
+	 * Used for user authentification.
+	 * 
+	 * @param nameProposal
+	 * @param pwProposal
+	 * @return
+	 */
+	public SafePlayer loginPlayerIfAuthentificated(String nameProposal, String pwProposal) {
+		addressAndSend(new PlayerQuery.PQBuilder(Option.EXISTS).pName(nameProposal).pW(pwProposal).build());
 		return ((ServerMsg) receiveMsg(playerPort)).getPlayer();
 	}
 
-	public SafePlayer isUserRegistered(String newUser) {
-		sendQuery(new PlayerQuery.PQBuilder(Option.GET).pName(newUser).build());
+	public void logoutUser() {
+		addressAndSend(new PlayerQuery.PQBuilder(Option.LOGOUT).pName(player.getName()).pW(player.getPw()).build());
+	}
+
+	/**
+	 * Used to check if prefered name is already in use.
+	 * 
+	 * @param newUser
+	 * @return
+	 */
+	public SafePlayer userRegistered(String newUser) {
+		addressAndSend(new PlayerQuery.PQBuilder(Option.EXISTS).pName(newUser).build());
 		return ((ServerMsg) receiveMsg(playerPort)).getPlayer();
 	}
 
+	/**
+	 * Used to register users.
+	 * 
+	 * @param userName
+	 * @param pw
+	 * @return
+	 */
 	public Player registerUser(String userName, String pw) {
-		sendQuery(new PlayerQuery.PQBuilder(Option.REGISTER).pName(userName).pW(pw).build());
+		addressAndSend(new PlayerQuery.PQBuilder(Option.REGISTER).pName(userName).pW(pw).build());
 		return Player.fromSafePlayer(((ServerMsg) receiveMsg(playerPort)).getPlayer());
 	}
 
-	public void setLoggedOut() {
-		sendQuery(new PlayerQuery.PQBuilder(Option.LOGOUT).player(player).build());
+	/**
+	 * Getter & Setter
+	 */
+
+	@Override
+	public SafePlayer getLoggedInPlayer() {
+		return Player.toSafePlayer(player);
 	}
 
 	@Override

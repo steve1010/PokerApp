@@ -64,7 +64,8 @@ public class GameplayModel extends ClientModel {
 							msg.getMinRoundBet().getMinRoundBet()));
 					break;
 				case YOUR_POSITION:
-					triggerNotification(new GameplayClientInterna(Type.POSITION, msg.getId(), game.getMaxPlayers()));
+					triggerNotification(
+							new GameplayClientInterna(Type.POSITION, msg.getWinnerID(), game.getMaxPlayers()));
 					break;
 				case ROUND_END:
 					triggerNotification(new GameplayClientInterna(msg.getWinnerID()));
@@ -79,7 +80,7 @@ public class GameplayModel extends ClientModel {
 	public List<Card> deal() {
 		List<Card> cards = new ArrayList<>(1);
 		for (int i = 0; i < 25; i++) {
-			sendQuery(new GameQuery.GQBuilder(entities.query.game.GameQuery.Option.NEW_CARD).build());
+			addressAndSend(new GameQuery.GQBuilder(entities.query.game.GameQuery.Option.NEW_CARD).build());
 			Object received = receiveMsg(gamePlayPort);
 			if (received instanceof Card) {
 				cards.add((Card) received);
@@ -90,17 +91,17 @@ public class GameplayModel extends ClientModel {
 	}
 
 	public void newRound() {
-		sendQuery(new GameQuery.GQBuilder(entities.query.game.GameQuery.Option.NEW_ROUND).build());
+		addressAndSend(new GameQuery.GQBuilder(entities.query.game.GameQuery.Option.NEW_ROUND).build());
 	}
 
 	/***
 	 * 
-	 * BIG TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! WHY THE HELL ARE PLAYER
-	 * HANDS ON CLIENT SAFED??!?!?!?!??! EACH PLAYER SHOULD ONLY RECEIVE playerHands
-	 * on RESULT (and then also only if necessary regarding game rules.)!
-	 * (EVALUATION) AND OWN HAND! MASSIVE SECURITY LAG! <br>
+	 * BIG TODO: !!!!wTHE HELL ARE PLAYER HANDS STORED ON CLIENT-SIDE !??! EACH
+	 * PLAYER.. SHOULD ONLY RECEIVE playerHands on RESULT (and then also only if
+	 * necessary regarding game rules.)! (EVALUATION) AND OWN HAND! MASSIVE SECURITY
+	 * LAG! <br>
 	 * <br>
-	 * TODO: evaluation turned off here: //
+	 * TODO: @MajorConstraint evaluation turned off here:
 	 * 
 	 * @param board
 	 * @param hands
@@ -130,20 +131,20 @@ public class GameplayModel extends ClientModel {
 	}
 
 	public void userCalled() {
-		sendQuery(new PlayerActionQuery.PAQBuilder(Option.CALL).playerID(loggedInPlayer.getId()).build());
+		addressAndSend(new PlayerActionQuery.PAQBuilder(Option.CALL).playerID(loggedInPlayer.getId()).build());
 	}
 
 	public void userChecked() {
-		sendQuery(new PlayerActionQuery.PAQBuilder(Option.CHECK).playerID(loggedInPlayer.getId()).build());
+		addressAndSend(new PlayerActionQuery.PAQBuilder(Option.CHECK).playerID(loggedInPlayer.getId()).build());
 	}
 
 	public void userFolded() {
-		sendQuery(new PlayerActionQuery.PAQBuilder(Option.FOLD).playerID(loggedInPlayer.getId()).build());
+		addressAndSend(new PlayerActionQuery.PAQBuilder(Option.FOLD).playerID(loggedInPlayer.getId()).build());
 	}
 
 	public void userRaised(double raiseValue) {
-		sendQuery(new PlayerActionQuery.PAQBuilder(Option.RAISE).playerID(loggedInPlayer.getId()).raiseValue(raiseValue)
-				.build());
+		addressAndSend(new PlayerActionQuery.PAQBuilder(Option.RAISE).playerID(loggedInPlayer.getId())
+				.raiseValue(raiseValue).build());
 	}
 
 	public int getGamePlayPort() {

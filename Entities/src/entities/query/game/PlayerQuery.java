@@ -17,7 +17,7 @@ public final class PlayerQuery extends Query {
 	private static final long serialVersionUID = -7893151765580772416L;
 
 	public enum Option {
-		GET, GETALL, LOGIN, REGISTER, LOGOUT, ENROLL;
+		EXISTS, GETALL, LOGIN, REGISTER, LOGOUT, ENROLL;
 	}
 
 	private final Option option;
@@ -47,12 +47,14 @@ public final class PlayerQuery extends Query {
 		private int nestedPlayerID;
 
 		public PQBuilder(PlayerQuery query) {
-			this.nestedOption = query.getOption();
-			this.nestedPlayer = query.getPlayer();
-			this.nestedPlayerID = query.getPlayerID();
-			this.nestedPw = query.getPw();
-			this.nestedPlayerName = query.getPlayerName();
-			this.nestedGame = query.getGame();
+			if (query != null) {
+				this.nestedOption = query.getOption();
+				this.nestedPlayer = query.getPlayer();
+				this.nestedPlayerName = query.getPlayerName();
+				this.nestedPw = query.getPw();
+				this.nestedGame = query.getGame();
+				this.nestedPlayerID = query.getPlayerID();
+			}
 		}
 
 		public PQBuilder(Option option) {

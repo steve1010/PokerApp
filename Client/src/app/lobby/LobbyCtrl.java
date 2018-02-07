@@ -49,11 +49,11 @@ public class LobbyCtrl extends Observable implements Controller {
 	private void openGameplayView(int i) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("../gameplay/Gameplay.fxml"));
-			Parent p = loader.load();
+			Parent gameplayRoot = loader.load();
 
 			Platform.runLater(() -> {
 				Stage runningGameStage = new Stage();
-				runningGameStage.setScene(new Scene(p));
+				runningGameStage.setScene(new Scene(gameplayRoot));
 				runningGameStage.sizeToScene();
 				runningGameStage.setX(200);
 				runningGameStage.setY(1);

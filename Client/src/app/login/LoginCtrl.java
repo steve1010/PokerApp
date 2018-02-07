@@ -30,14 +30,37 @@ public class LoginCtrl implements Controller {
 	public void update(Observable o, Object arg) {
 	}
 
-	public void loginRequest(final String name, final String pw) {
-		SafePlayer player = model.checkLoginData(name, pw);
+	public void loginRequest(String name, String pw) {
+		// returns player.loggedIn==false if anything wrong.
+		SafePlayer player = model.loginPlayerIfAuthentificated(name, pw);
 		if (player.isLoggedIn()) {
 			this.loggedInPlayer = new Player(player, pw);
 			model.setPlayer(this.loggedInPlayer);
 			openLobbyView(pw);
 		} else {
 			loginView.wrongLoginDataAlert();
+		}
+	}
+
+	public void logoutRequest() {
+		model.logoutUser();
+		repaint("login");
+	}
+
+	public String registerRequest(String userName, String pw, String pwConfirm) {
+
+		SafePlayer player = model.userRegistered(userName);
+		if (!(player.getId() == -1)) {
+			return "The choosen username is not available. Please try another one.";
+		}
+		if ("".equals(pw) || "".equals(pwConfirm)) {
+			return "The password field(s) must not be empty. Please enter a password.";
+		}
+		if (pw.equals(pwConfirm)) {
+			this.loggedInPlayer = model.registerUser(userName, pw);
+			return "Congratulations! You were successfully registered!";
+		} else {
+			return "The entered password is not the same. Please try again.";
 		}
 	}
 
@@ -78,32 +101,6 @@ public class LoginCtrl implements Controller {
 		}
 	}
 
-	public SafePlayer userRegistered(String userName) {
-		return model.isUserRegistered(userName);
-	}
-
-	public String signUpRequest(String userName, String pw, String pwConfirm) {
-
-		SafePlayer player = userRegistered(userName);
-		if (!(player.getId() == -1)) {
-			return "The choosen username is not available. Please try another one.";
-		}
-		if ("".equals(pw) || "".equals(pwConfirm)) {
-			return "The password field(s) must not be empty. Please enter a password.";
-		}
-		if (pw.equals(pwConfirm)) {
-			this.loggedInPlayer = model.registerUser(userName, pw);
-			return "Congratulations! You were successfully registered!";
-		} else {
-			return "The entered password is not the same. Please try again.";
-		}
-	}
-
-	public void logout() {
-		model.setLoggedOut();
-		repaint("login");
-	}
-
 	public void repaint(String view) {
 		primaryStage.close();
 		switch (view) {
@@ -125,16 +122,20 @@ public class LoginCtrl implements Controller {
 		primaryStage.show();
 	}
 
-	public Stage getPrimaryStage() {
+	/**
+	 * Getter & Setter
+	 */
+
+	public Stage getStage() {
 		return this.primaryStage;
 	}
 
-	public void setPrimaryStage(Stage primaryStage) {
+	public void setStage(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		this.loginNode = primaryStage.getScene().getRoot();
 	}
 
-	public void setSessionData(InetSocketAddress serverAdress) {
+	public void setData(InetSocketAddress serverAdress) {
 		model = new LoginModel(serverAdress);
 		model.addObserver(this);
 	}
